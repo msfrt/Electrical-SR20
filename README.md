@@ -47,7 +47,8 @@ The most common style guide for c++ code is the
 word-for-word, however, you should make your best attempt to follow it. CSE 232 uses the Google Style Guide, so if you
 haven't taken it yet, this is a great opportunity to get ahead of the pack. One deviation from the guide is the line
 length limit. Limits are important, but 80 is just too short. We will use a line length limit of 120, and anything
-after that length should wrap around to the next line. Uniformity to code is the one of the keys to understandability.
+after that length should wrap around to the next line (In Atom, you can change the preferred length in: File >
+Settings > Editor > Preferred line length). Uniformity to code is the one of the keys to understandability.
 If you look back at older code from the team, you'll probably struggle to understand it. This was because there was no
 style guide. The style guide is important. Always follow the style guide.
 
