@@ -8,6 +8,7 @@ unsigned long timer = 0;
 void setup() {
   // set the chip select pin as an output:
   pinMode(adcCS, OUTPUT);
+  pinMode(12, INPUT_PULLDOWN);
 
   // initialize serial communication
   Serial.begin(112500);
