@@ -9,6 +9,9 @@ void setup() {
   // set the chip select pin as an output:
   pinMode(adcCS, OUTPUT);
 
+  // set the chip select pin high
+  digitalWrite(adcCS, HIGH);
+
   // initialize serial communication
   Serial.begin(112500);
 
