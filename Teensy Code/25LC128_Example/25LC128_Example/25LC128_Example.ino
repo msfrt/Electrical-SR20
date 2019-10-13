@@ -2,11 +2,11 @@
 #include <SPI.h>
 
 // define the chip select pin for the ADC
-const int eepromCS = 9;
+const int eepromCS = 10;
 
 bool sent = false;
 uint16_t address = 4;
-uint8_t data = 101;
+uint8_t data = 255;
 
 void setup() {
   // set the chip select pin as an output:
@@ -21,7 +21,9 @@ void setup() {
   // initialize SPI:
   SPI.begin();
 
-  delay(10000);
+  delay(2000);
+
+  eepromWriteEnable(eepromCS);
 }
 
 void loop() {
@@ -31,11 +33,22 @@ void loop() {
 
  if(!sent){
    eepromWrite(eepromCS, address, data);
+   sent = true;
  }
  else{
    Serial.println(eepromRead(eepromCS, address));
  }
 
+}
+
+void eepromWriteEnable(int eepromCS){
+  SPI.beginTransaction(SPISettings(3200000, MSBFIRST, SPI_MODE0));
+
+  digitalWrite(eepromCS, LOW);
+
+  SPI.transfer(0b00000110);
+
+  digitalWrite(eepromCS, HIGH);
 }
 
 void eepromWrite(int eepromCS, uint16_t address, uint8_t data){
