@@ -3,13 +3,17 @@
 
 // define the chip select pin for the ADC
 const int adcCS = 9;
+unsigned long timer = 0;
 
 void setup() {
   // set the chip select pin as an output:
-  pinMode (adcCS, OUTPUT);
+  pinMode(adcCS, OUTPUT);
+
+  // set the chip select pin high
+  digitalWrite(adcCS, HIGH);
 
   // initialize serial communication
-  Serial.begin(9600);
+  Serial.begin(112500);
 
   // initialize SPI:
   SPI.begin();
@@ -17,11 +21,13 @@ void setup() {
 
 void loop() {
 
-  // slow down the read rate for testing
-  delay(100);
 
-  // call the read function
-  anaRead(adcCS,1);
+  if ((micros() - timer) > 5){
+    // call the read function
+    anaRead(adcCS,0);
+    timer = micros();
+  }
+  
 
 }
 
@@ -45,7 +51,7 @@ int anaRead(int adcCS, uint16_t channelNo) {
 
   // Start the SPI communication
   // SPISettings(clk frequency, bit order, SPI Mode (google arduino SPI modes for details))
-  SPI.beginTransaction(SPISettings(1600000, MSBFIRST, SPI_MODE0));
+  SPI.beginTransaction(SPISettings(3200000, MSBFIRST, SPI_MODE0));
 
   // take the CS pin low to enable the chip:
   digitalWrite(adcCS,LOW);
@@ -81,10 +87,10 @@ int anaRead(int adcCS, uint16_t channelNo) {
   // }
 
   // the following is for debugging the returned value from the ADC
-  // Serial.print("Input ")
-  // Serial.print(channelNo);
-  // Serial.print(": ");
-  // Serial.println(readValue);
+ //  Serial.print("Input ");
+ //  Serial.print(channelNo);
+ //  Serial.print(": ");
+ //  Serial.println(readValue);
 
 
   // take the CS pin high to de-select the chip:
