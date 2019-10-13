@@ -59,7 +59,7 @@ int anaRead(int adcCS, uint16_t channelNo) {
   //--------------------------------------------------------------------------------------------------------------------
 
 
-  int readValue = 0;
+  uint16_t readValue = 0;
 
   // Start the SPI communication
   // SPISettings(clk frequency, bit order, SPI Mode (google arduino SPI modes for details))
@@ -75,10 +75,10 @@ int anaRead(int adcCS, uint16_t channelNo) {
   // The SPI sequence lasts 16 clock cycles so both the sent value and recieved value are 16 bits, one for each clock cycle.
   //
   // Example: If you want to read the 2nd channel of the ADC the function call would be adaRead(adcSC, 2). 2 in a 16 bit
-  // binary number is "0100000000000000" (LSB first). The the position of the channelNo must be in the following position
-  // "00000000000XXX00", (X represents the position) as defined by the ADC's datasheet (remember it is sent in reverse
-  // order). To achieve this, the value inputted into this function is bit shifted by 11 to the left. The SPI.transfer16()
-  // sends this value and returns the value sent back by the ADC.
+  // binary number is "0000000000000010" (MSB first). The the position of the channelNo must be in the following position
+  // "00XXX00000000000", (X represents the position) as defined by the ADC's datasheet. To achieve this, the value
+  // inputted into this function is bit shifted by 11 to the left. The SPI.transfer16( )sends this value and returns
+  // the value sent back by the ADC.
   //--------------------------------------------------------------------------------------------------------------------
 
 
@@ -103,10 +103,14 @@ int anaRead(int adcCS, uint16_t channelNo) {
 
   //--------------------------------------------------------------------------------------------------------------------
   // the following is for debugging the returned value from the ADC
-  //  Serial.print("Input ");
-  //  Serial.print(channelNo);
-  //  Serial.print(": ");
-  //  Serial.println(readValue);
+  float voltage = (float(readValue) / 4095) * 5;
+  Serial.print("Input ");
+  Serial.print(channelNo);
+  Serial.print(": ");
+  Serial.print(readValue);
+  Serial.print("  which is: ");
+  Serial.print(voltage, 4);
+  Serial.println(" Volts");
   //--------------------------------------------------------------------------------------------------------------------
 
 
