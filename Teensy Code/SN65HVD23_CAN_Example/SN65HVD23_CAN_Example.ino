@@ -13,19 +13,19 @@ void setup() {
   // initialize serial communication
   //Serial.begin(112500);
 
-  
-  
+
+
   Can0.begin();
-  Can0.setBaudRate(500000);
+  Can0.setBaudRate(1000000);
 
 }
 
 void loop() {
 
         CAN_message_t msg;
-        delay(10);
+        delay(100);
         analogWrite(13, HIGH);
-        delay(10);
+        delay(100);
         analogWrite(13, LOW);
         msg.buf[0] = 1;
         msg.buf[1] = 9;
@@ -34,11 +34,11 @@ void loop() {
         msg.buf[4] = 50;
         msg.buf[5] = 0;
         msg.buf[6] = 99;
-        msg.buf[7] = 0;  
+        msg.buf[7] = 0;
 
         msg.len = 8;  //CAN message length unit: Byte (8 bits)
         msg.id = 11; //CAN ID
-        
+
         Serial.println(Can0.write(msg));
 
 
