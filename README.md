@@ -62,7 +62,7 @@ Here are some things that you should change in Atom to be compliant with the sty
 Our code is compiled in the [Arduino IDE](https://www.arduino.cc/en/Main/Software). If you're on Windows, look for the
 non-windows-app version.
 
-Because we are not savages, and we use Atom as our preferred text editor, we need to tell Arduino that the code is being updated elsewhere. That way, we don't have to close and reopen a file everything we want to flash some new updates to a microcontroller. To do this, navigate to your settings page in Arduino, and check the box `Use external editor`.
+Because we are not savages, and we use Atom as our preferred text editor, we need to tell Arduino that the code is being updated elsewhere. That way, we don't have to close and reopen a program file every time we want to flash some new updates to a microcontroller. To do this, navigate to your settings page in Arduino, and check the box `Use external editor`.
 
 ##### Teensyduino
 The [Teensyduino](https://www.pjrc.com/teensy/teensyduino.html) Arduino add-on adds the Teensy microcontroller boards
