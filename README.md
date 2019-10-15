@@ -52,11 +52,17 @@ Settings > Editor > Preferred line length). Uniformity to code is the one of the
 If you look back at older code from the team, you'll probably struggle to understand it. This was because there was no
 style guide. The style guide is important. Always follow the style guide.
 
+Here are some things that you should change in Atom to be compliant with the style guide:
+* Preferred line length: 120 (as mentioned above)
+* Tab size: 2 (preferences > settings > editor > tab length)
+
 ## Software Flow
 
 ##### Arduino IDE
 Our code is compiled in the [Arduino IDE](https://www.arduino.cc/en/Main/Software). If you're on Windows, look for the
 non-windows-app version.
+
+Because we are not savages, and we use Atom as our preferred text editor, we need to tell Arduino that the code is being updated elsewhere. That way, we don't have to close and reopen a file everything we want to flash some new updates to a microcontroller. To do this, navigate to your settings page in Arduino, and check the box `Use external editor`.
 
 ##### Teensyduino
 The [Teensyduino](https://www.pjrc.com/teensy/teensyduino.html) Arduino add-on adds the Teensy microcontroller boards
