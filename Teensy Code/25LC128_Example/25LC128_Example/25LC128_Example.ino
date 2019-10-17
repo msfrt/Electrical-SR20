@@ -14,7 +14,7 @@
 #include <SPI.h>
 
 // define the chip select pin for the ADC
-const int eepromCS = 10;
+const int eepromCS = 9;
 
 //----------------------------------------------------------------------------------------------------------------------
 // EEPROM memory has a limitied number of write cycles per address before it physically degrades. Therefore you must
@@ -99,12 +99,6 @@ void setup() {
   // initialize SPI:
   SPI.begin();
 
-  // populate the data array to be written to EEPROM
-  for(auto i=0; i<(sizeof(pageData) / sizeof(pageData[0])); i++)
-  {
-    pageData[i] = (sizeof(pageData) / sizeof(pageData[0])) - i;
-  }
-
 }
 
 void loop() {
@@ -127,7 +121,13 @@ void loop() {
   //  Serial.println(eepromRead(eepromCS, address));
   // }
 
-  eepromWritePage(0, 0, pageData, sizeof(pageData));
+  // populate the data array to be written to EEPROM
+  for(auto i=0; i<(sizeof(pageData) / sizeof(pageData[0])); i++)
+  {
+    pageData[i] = (sizeof(pageData) / sizeof(pageData[0])) - i;
+  }
+
+  eepromWritePage(eepromCS, 0, pageData, sizeof(pageData));
 
 
   // Serial.println(sizeof(pageData[0]));
@@ -159,7 +159,7 @@ void eepromWritePage(int eepromCS, uint16_t pageNum, int16_t data[], int dataSiz
   //--------------------------------------------------------------------------------------------------------------------
 
   // do not attempt to write to the eeprom if the data is larger than a page
-  if(dataSize > pageSize)
+  if(dataSize <= pageSize)
   {
     // Start the SPI communication
     // SPISettings(clk frequency, bit order, SPI Mode (google arduino SPI modes for details))
@@ -167,6 +167,7 @@ void eepromWritePage(int eepromCS, uint16_t pageNum, int16_t data[], int dataSiz
 
     // calculate the address of the page
     uint16_t address = pageSize * pageNum;
+
 
     //--------------------------------------------------------------------------------------------------------------------
     // The following three commands are needed to write data to the EEPROM module. As specified in the datasheet
@@ -176,12 +177,12 @@ void eepromWritePage(int eepromCS, uint16_t pageNum, int16_t data[], int dataSiz
     //--------------------------------------------------------------------------------------------------------------------
 
 
-    // take the CS pin low to enable the chip
-    digitalWrite(eepromCS, LOW);
-    // send the "WREN" command
-    SPI.transfer(0b00000110);
-    // take the CS high to disable the chip and set the write enable latch
-    digitalWrite(eepromCS, HIGH);
+    // // take the CS pin low to enable the chip
+    // digitalWrite(eepromCS, LOW);
+    // // send the "WREN" command
+    // SPI.transfer(0b00000110);
+    // // take the CS high to disable the chip and set the write enable latch
+    // digitalWrite(eepromCS, HIGH);
 
 
 
