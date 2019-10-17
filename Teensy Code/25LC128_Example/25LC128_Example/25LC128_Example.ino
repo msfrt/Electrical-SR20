@@ -6,7 +6,8 @@
 
 //----------------------------------------------------------------------------------------------------------------------
 //  TODOS:
-//    - add functions for reading and writing pages/multiple bytes
+//    - add function for reading pages/multiple bytes
+//    - validate function for writing pages 
 //    - needs to be changed into a header file format before being used in other code
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -106,28 +107,40 @@ void loop() {
   // slow down the read rate for testing
   delay(1000);
 
-  //  // only write the data to the EEPROM module once
-  //  if(!sent){
-  //
-  //  // write the data
-  //  eepromWriteByte(eepromCS, address, data);
-  //
-  //  // toggle sent to prevent the eeprom from being written to
-  //  sent = true;
-  // }
-  //
-  // // repeatly read the data that was written
-  // else{
-  //  Serial.println(eepromRead(eepromCS, address));
-  // }
 
-  // populate the data array to be written to EEPROM
-  for(auto i=0; i<(sizeof(pageData) / sizeof(pageData[0])); i++)
-  {
-    pageData[i] = (sizeof(pageData) / sizeof(pageData[0])) - i;
+
+  //--------------------------------------------------------------------------------------------------------------------
+  //                      For sending one byte
+  //--------------------------------------------------------------------------------------------------------------------
+
+
+   // only write the data to the EEPROM module once
+   if(!sent){
+
+   // write the data
+   eepromWriteByte(eepromCS, address, data);
+
+   // toggle sent to prevent the eeprom from being written to
+   sent = true;
   }
 
-  eepromWritePage(eepromCS, 0, pageData, sizeof(pageData));
+  // repeatly read the data that was written
+  else{
+   Serial.println(eepromRead(eepromCS, address));
+  }
+
+  //--------------------------------------------------------------------------------------------------------------------
+  //                      For sending one page *HAS NOT BEEN VALIDATED YET* (also rewrites to the module constantly)
+  //--------------------------------------------------------------------------------------------------------------------
+
+  // populate the data array to be written to EEPROM. You must do this every time you call the writePage function bc
+  // SPI.transfer replaces the array data with recieved data.
+  // for(auto i=0; i<(sizeof(pageData) / sizeof(pageData[0])); i++)
+  // {
+  //   pageData[i] = (sizeof(pageData) / sizeof(pageData[0])) - i;
+  // }
+
+  // eepromWritePage(eepromCS, 0, pageData, sizeof(pageData));
 
 
   // Serial.println(sizeof(pageData[0]));
