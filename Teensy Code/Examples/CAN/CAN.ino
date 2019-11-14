@@ -1,3 +1,5 @@
+//CHECK GITHUB FOR LATEST VERSION
+
 // if CAN is not working make sure that the original FlexCAN is not
 // installed. (Check the onenote for instructions)
 #include <FlexCAN.h>
@@ -7,6 +9,11 @@
 static CAN_message_t msg; // this is the outgoing message buffer
 static CAN_message_t rxmsg; // this is the recieving message buffer
 
+// signals that we will prettend are being sent on the CAN bus (we love global variables!)
+// ...(not really, try to refrain from using them, but in many of our cases they are unavoidable)
+int my_intel_var;
+int my_motorola_var;
+
 
 void setup() {
 
@@ -15,10 +22,6 @@ void setup() {
 
   // Serial bus for arduino debugging
   Serial.begin(9600);
-
-  // signals that we will prettend are being sent on the can bus
-  int my_intel_var;
-  int my_motorola_var;
 
 }
 
