@@ -38,7 +38,7 @@ EasyTimer my_timer(20); // initialize a timer to 20Hz
 
 ### Checking if a timer is up
 
-This one's pretty simple. There are two functions to do this and they both do the exact same thing. To check if a timer is up, you can either use the member function `check()` or `isup()`. These functions accept no parameters and return a boolean - true is the timer is up, false otherwise.
+This one's pretty simple. There are two functions to do this and they both do the exact same thing. To check if a timer is up, you can either use the member function `check()` or `isup()`. These functions accept no parameters and return a boolean - true if the timer is up, false otherwise.
 
 ```cpp
 if (my_timer.isup()){
