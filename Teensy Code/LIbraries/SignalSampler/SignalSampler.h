@@ -25,17 +25,20 @@ class Sensor{
     int analog_min_;
     int analog_max_;
     int analog_avg_;
-    int sensor_avg_;
+    double sensor_min_;
+    double sensor_max_;
+    double sensor_avg_;
     const bool temp_sensor_;
 
     // sensor-specific stuffs
     int zero_volt_mV10_ = 0;
-    int mV10_per_sensor_unit_ = 0; // ex. 30 for 30mV/degree C
+    double mV10_per_sensor_unit_ = 0.00; // ex. 30 for 3mV/degree C (type:double to avoid integer math data conversion)
     int z1_ = 1200; // z1 & z2 are for the voltage divider (units are ohms)
     int z2_ = 2200; // check the wikipedia page for a diagram en.wikipedia.org/wiki/Voltage_divider
   public:
 
-    double maths();
+    // converts all of the analog values to meaningful values
+    void maths(int conversions=3);
 
 };
 
