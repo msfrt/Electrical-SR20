@@ -3,12 +3,12 @@
 
 #include "Arduino.h"
 
-class Signal{
+class CanSignal{
 
   private:
     unsigned long last_recieve_ = 0;
     unsigned int can_value_ = 0;
-    int value_ = 0;
+    double value_ = 0;
     const unsigned int bit_length_ = 0;
     const bool intel_ = true;
     const bool signed_ = false;
@@ -18,12 +18,6 @@ class Signal{
     int upper_bound_ = 0;
     bool valid_ = true;
 
-    // variables for sampling, if appropriate
-    int sample_min_ = 2147483647;
-    int sample_max_ = -2147483647;
-    int sample_total_ = 0;
-    int sample_average_ = 0;
-    int sample_count_ = 0;
 
   public:
     Signal() = default;
@@ -32,11 +26,10 @@ class Signal{
               upper_bound_(ub) {}; // new constructor for a signal that sends over CAN
 
     // getters
-    int value() const {return value_;}
-    int avg();
+    double value() const {return value_;}
 
     // setters
-    void sample(int&); // sample a sensor reading
+    void can_value(unsigned int&);
 
     // allow us to use the = operator to assign values to the Signal
     const int& operator=(int);
@@ -44,11 +37,9 @@ class Signal{
     const int& operator=(unsigned int);
 
     // implicit conversion to a int value
-    operator int() const { return value_; }
-
-    // reset sensor values
-    void reset();
-
+    operator int() const { return static_cast<int>(value_); }
+    //implicit conversion to a double value
+    operator double() const { return value_; }
 
 };
 
