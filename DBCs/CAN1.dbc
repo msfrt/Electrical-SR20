@@ -99,7 +99,7 @@ BO_ 100 M400_dataSet1: 8 M400
  SG_ M400_gearDet m5 : 39|16@0- (1,0) [-32768|32767] "" Vector__XXX
  SG_ M400_gear m5 : 23|16@0- (1,0) [-32768|32767] "" Vector__XXX
  SG_ M400_throttlePosition m4 : 55|16@0- (0.1,0) [-3276.8|3276.7] "%" Vector__XXX
- SG_ M400_RPM m4 : 39|16@0- (1,0) [-32768|32767] "RPM" Vector__XXX
+ SG_ M400_rpm m4 : 39|16@0- (1,0) [-32768|32767] "RPM" Vector__XXX
  SG_ M400_ignCutLevelTotal m4 : 23|16@0- (1,0) [-32768|32767] "%" Vector__XXX
  SG_ M400_wheelSlip m3 : 55|16@0- (0.1,0) [-3276.8|3276.7] "%" Vector__XXX
  SG_ M400_tcSlipAimValue m3 : 39|16@0- (0.1,0) [-3276.8|3276.7] "" Vector__XXX
@@ -178,7 +178,7 @@ CM_ SG_ 100 M400_gearSensorVoltage "Gear Sensor Voltage";
 CM_ SG_ 100 M400_gearDet "Gear Det ";
 CM_ SG_ 100 M400_gear "Gear";
 CM_ SG_ 100 M400_throttlePosition "Throttle Position ";
-CM_ SG_ 100 M400_RPM "RPM";
+CM_ SG_ 100 M400_rpm "RPM";
 CM_ SG_ 100 M400_ignCutLevelTotal "Ign Cut Level Total ";
 CM_ SG_ 100 M400_wheelSlip "Wheel Slip";
 CM_ SG_ 100 M400_tcSlipAimValue "TC Slip Aim Value";
