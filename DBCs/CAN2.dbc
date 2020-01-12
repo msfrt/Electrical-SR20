@@ -33,10 +33,19 @@ NS_ :
 
 BS_:
 
-BU_:
+BU_: PDM ATCCR ATCCF
 
 
 BO_ 3221225472 VECTOR__INDEPENDENT_SIG_MSG: 0 Vector__XXX
+ SG_ ATCCF_counterMsg415 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ ATCCF_counterMsg414 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ ATCCF_counterMsg413 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ ATCCF_counterMsg412 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ ATCCF_counterMsg411 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ PDM_pdmCurrentMin : 0|16@1- (0.01,0) [-327.68|327.67] "" Vector__XXX
+ SG_ PDM_pdmCurrentAvg : 0|16@1- (0.01,0) [-327.68|327.67] "" Vector__XXX
+ SG_ PDM_pdmCurrentMax : 0|16@1- (0.01,0) [-327.68|327.67] "" Vector__XXX
+ SG_ PDM_boardTemp : 0|16@1- (0.01,0) [-327.68|327.67] "" Vector__XXX
  SG_ ATCCR_tireTempRRO : 0|16@1- (1,0) [-32768|32767] "" Vector__XXX
  SG_ ATCCR_tireTempRRM : 0|16@1- (1,0) [-32768|32767] "" Vector__XXX
  SG_ ATCCR_tireTempRRI : 0|16@1- (1,0) [-32768|32767] "" Vector__XXX
@@ -56,15 +65,18 @@ BO_ 3221225472 VECTOR__INDEPENDENT_SIG_MSG: 0 Vector__XXX
  SG_ ATCCF_tireTempFLO : 0|16@1- (1,0) [-32768|32767] "" Vector__XXX
  SG_ ATCCF_tireTempFLM : 0|16@1- (1,0) [-32768|32767] "" Vector__XXX
  SG_ ATCCF_tireTempFLI : 0|16@1- (1,0) [-32768|32767] "" Vector__XXX
- SG_ ATCCF_suspensionTravelFR : 0|16@1- (1,0) [-32768|32767] "" Vector__XXX
- SG_ ATCCF_suspensionTravelFL : 0|16@1- (1,0) [-32768|32767] "" Vector__XXX
  SG_ ATCCF_steeringWheelAngle : 0|16@1- (1,0) [-32768|32767] "" Vector__XXX
  SG_ ATCCF_coolantTempRadMiddle : 0|16@1- (1,0) [-32768|32767] "" Vector__XXX
  SG_ ATCCF_brakeTempFR : 0|16@1- (1,0) [-32768|32767] "" Vector__XXX
  SG_ ATCCF_brakeTempFL : 0|16@1- (1,0) [-32768|32767] "" Vector__XXX
  SG_ ATCCF_brakePressureR : 0|16@1- (1,0) [-32768|32767] "" Vector__XXX
  SG_ ATCCF_brakePressureF : 0|16@1- (1,0) [-32768|32767] "" Vector__XXX
- SG_ ATCCF_boardTemp : 0|16@1- (1,0) [-32768|32767] "" Vector__XXX
+
+BO_ 410 ATCCF_10: 8 ATCCF
+ SG_ ATCCF_suspensionTravelFR : 48|16@1- (1,0) [-32768|32767] "" Vector__XXX
+ SG_ ATCCF_suspensionTravelFL : 32|16@1- (1,0) [-32768|32767] "" Vector__XXX
+ SG_ ATCCF_counterMsg410 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ ATCCF_boardTemp : 16|16@1- (1,0) [-32768|32767] "" Vector__XXX
 
 
 
@@ -88,15 +100,15 @@ CM_ SG_ 3221225472 ATCCF_tireTempFRI "Tire Temp FRI";
 CM_ SG_ 3221225472 ATCCF_tireTempFLO "Tire Temp FLO";
 CM_ SG_ 3221225472 ATCCF_tireTempFLM "Tire Temp FLM";
 CM_ SG_ 3221225472 ATCCF_tireTempFLI "Tire Temp FLI";
-CM_ SG_ 3221225472 ATCCF_suspensionTravelFR "Suspension Travel FR";
-CM_ SG_ 3221225472 ATCCF_suspensionTravelFL "Suspension Travel FL";
 CM_ SG_ 3221225472 ATCCF_steeringWheelAngle "Steering Wheel Angle";
 CM_ SG_ 3221225472 ATCCF_coolantTempRadMiddle "Coolant Temp Radiator Middle";
 CM_ SG_ 3221225472 ATCCF_brakeTempFR "Brake Temp FR";
 CM_ SG_ 3221225472 ATCCF_brakeTempFL "Brake Temp FL";
 CM_ SG_ 3221225472 ATCCF_brakePressureR "Brake Pressure R";
 CM_ SG_ 3221225472 ATCCF_brakePressureF "Brake Pressure F";
-CM_ SG_ 3221225472 ATCCF_boardTemp "Board Temp";
+CM_ SG_ 410 ATCCF_suspensionTravelFR "Suspension Travel FR";
+CM_ SG_ 410 ATCCF_suspensionTravelFL "Suspension Travel FL";
+CM_ SG_ 410 ATCCF_boardTemp "Board Temp";
 BA_DEF_  "BusType" STRING ;
 BA_DEF_DEF_  "BusType" "CAN";
 
