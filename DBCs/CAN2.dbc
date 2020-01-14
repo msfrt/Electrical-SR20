@@ -42,10 +42,10 @@ BO_ 3221225472 VECTOR__INDEPENDENT_SIG_MSG: 0 Vector__XXX
  SG_ ATCCF_counterMsg413 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
  SG_ ATCCF_counterMsg412 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
  SG_ ATCCF_counterMsg411 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
- SG_ PDM_pdmCurrentMin : 0|16@1- (0.01,0) [-327.68|327.67] "" Vector__XXX
- SG_ PDM_pdmCurrentAvg : 0|16@1- (0.01,0) [-327.68|327.67] "" Vector__XXX
- SG_ PDM_pdmCurrentMax : 0|16@1- (0.01,0) [-327.68|327.67] "" Vector__XXX
- SG_ PDM_boardTemp : 0|16@1- (0.01,0) [-327.68|327.67] "" Vector__XXX
+ SG_ PDM_pdmCurrentMin : 0|16@1- (0.01,0) [-327.68|327.67] "A" Vector__XXX
+ SG_ PDM_pdmCurrentAvg : 0|16@1- (0.01,0) [-327.68|327.67] "A" Vector__XXX
+ SG_ PDM_pdmCurrentMax : 0|16@1- (0.01,0) [-327.68|327.67] "A" Vector__XXX
+ SG_ PDM_boardTemp : 0|16@1- (0.1,0) [-3276.8|3276.7] "C" Vector__XXX
  SG_ ATCCR_tireTempRRO : 0|16@1- (1,0) [-32768|32767] "" Vector__XXX
  SG_ ATCCR_tireTempRRM : 0|16@1- (1,0) [-32768|32767] "" Vector__XXX
  SG_ ATCCR_tireTempRRI : 0|16@1- (1,0) [-32768|32767] "" Vector__XXX
