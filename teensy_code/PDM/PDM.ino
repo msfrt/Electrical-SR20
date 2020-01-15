@@ -11,15 +11,15 @@
 
 void setup() {
 
-  // left fan table population
+  // populate left fan table
   int *fanl_table_ptr = fan_left_table[0]; // create a temp ptr to populate PWM device
   fan_left.fill_table(fanl_table_ptr); // populate the PWMDevice table
 
-  // right fan table population
+  // populate right fan table
   int *fanr_table_ptr = fan_right_table[0];
   fan_right.fill_table(fanr_table_ptr);
 
-  // water pump table population
+  // populate water pump table
   int *wp_table_ptr = wp_table[0];
   water_pump.fill_table(wp_table_ptr);
 
