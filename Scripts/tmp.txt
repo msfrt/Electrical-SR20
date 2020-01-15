@@ -1,2 +1,0 @@
-temp file so that git adds the folder
-remove once actual script file is added
