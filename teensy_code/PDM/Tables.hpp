@@ -1,6 +1,8 @@
 #ifndef TABLES_HPP
 #define TABLES_HPP
 
+#include <PWMControl.h>
+
 // Dave Yonkers, 2020
 
 // rows: temp in degrees celcius * 10
