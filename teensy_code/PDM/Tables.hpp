@@ -51,9 +51,9 @@ int fan_right_table[fanr_table_rows][fanr_table_cols] =
 
 // rows: temp in degrees celcius * 10
 // cols: RPM
-const int pump_table_rows = 12;
-const int pump_table_cols = 8;
-int water_pump_table[pump_table_rows][pump_table_cols] =
+const int wp_table_rows = 12;
+const int wp_table_cols = 8;
+int wp_table[wp_table_rows][wp_table_cols] =
 {
   {   00,   0,  10,  20, 500, 510,  5000, 15000},
   {  100,   0,   0,   0,   0,  20,    20,    20},
