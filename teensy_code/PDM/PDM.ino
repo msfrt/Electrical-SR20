@@ -6,8 +6,8 @@
 #include <StateCAN.h>
 #include <FlexCAN_T4.h>
 
-// this file contains all of the control tables for fans and water pump
-#include "Tables.hpp"
+// this file contains all of the control tables & declarations for fans and water pump
+#include "fans.hpp"
 
 void setup() {
 
