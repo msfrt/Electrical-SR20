@@ -1,3 +1,8 @@
+#ifndef TABLES_HPP
+#define TABLES_HPP
+
+// Dave Yonkers, 2020
+
 // rows: temp in degrees celcius * 10
 // cols: battery voltage in mV * 10
 const int fanl_table_rows = 12;
@@ -46,9 +51,9 @@ int fan_right_table[fanr_table_rows][fanr_table_cols] =
 
 // rows: temp in degrees celcius * 10
 // cols: RPM
-const int fanr_table_rows = 12;
-const int fanr_table_cols = 8;
-int water_pump_table[fanr_table_rows][fanr_table_cols] =
+const int pump_table_rows = 12;
+const int pump_table_cols = 8;
+int water_pump_table[pump_table_rows][pump_table_cols] =
 {
   {   00,   0,  10,  20, 500, 510,  5000, 15000},
   {  100,   0,   0,   0,   0,  20,    20,    20},
@@ -63,3 +68,6 @@ int water_pump_table[fanr_table_rows][fanr_table_cols] =
   { 1000, 100, 100,   0,   0, 100,   100,   100},
   { 1500, 100, 100,   0,   0, 100,   100,   100},
 };
+
+
+#endif
