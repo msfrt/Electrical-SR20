@@ -41,9 +41,9 @@ BO_ 3221225472 VECTOR__INDEPENDENT_SIG_MSG: 0 Vector__XXX
  SG_ ATCCF_counterMsg415 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
 
 BO_ 710 USER_10: 8 Vector__XXX
- SG_ USER_wpOverride : 32|16@1- (1,0) [-32768|32767] "Duty %" Vector__XXX
+ SG_ USER_wpOverride : 32|16@1- (1,0) [-5|100] "Duty %" Vector__XXX
  SG_ USER_fanRightOverride : 16|16@1- (1,0) [-5|100] "Duty %" Vector__XXX
- SG_ USER_fanLeftOverride : 0|16@1- (1,0) [-32768|32767] "Duty %" Vector__XXX
+ SG_ USER_fanLeftOverride : 0|16@1- (1,0) [-5|100] "Duty %" Vector__XXX
  SG_ USER_brakeLightOverride : 48|16@1- (1,0) [-32768|32767] "Duty %" Vector__XXX
 
 BO_ 274 PDM_24: 8 PDM
@@ -197,6 +197,71 @@ BO_ 410 ATCCF_10: 8 ATCCF
 
 
 CM_ BO_ 3221225472 "This is a message for not used signals, created by Vector CANdb++ DBC OLE DB Provider.";
+CM_ SG_ 710 USER_wpOverride "Manual override percentage";
+CM_ SG_ 710 USER_fanRightOverride "Manual override percentage";
+CM_ SG_ 710 USER_fanLeftOverride "Manual override percentage";
+CM_ SG_ 710 USER_brakeLightOverride "Manual Brakelight Override";
+CM_ SG_ 274 PDM_wpPWM "Water Pump Duty Cycle";
+CM_ SG_ 274 PDM_fanRightPWM "Right Fan Duty Cycle";
+CM_ SG_ 274 PDM_fanLeftPWM "Left Fan Duty Cycle";
+CM_ SG_ 273 PDM_starterRelayVoltAvg "Starter Relay Voltage Average";
+CM_ SG_ 273 PDM_brakelightVoltAvg "Brakelight Voltage Average";
+CM_ SG_ 273 PDM_boardTemp "PDM Board Temp
+";
+CM_ SG_ 272 PDM_keepAliveVoltMin "PDM Microcontroller Keep Alive Circuit Voltage Minimum";
+CM_ SG_ 272 PDM_keepAliveVoltMax "PDM Microcontroller Keep Alive Circuit Voltage Maximum";
+CM_ SG_ 272 PDM_keepAliveVoltAvg "PDM Microcontroller Keep Alive Circuit Voltage Average";
+CM_ SG_ 271 PDM_dataVoltMin "Data Voltage Minimum";
+CM_ SG_ 271 PDM_dataVoltMax "Data Voltage Maximum";
+CM_ SG_ 271 PDM_dataVoltAvg "Data Voltage Average
+";
+CM_ SG_ 270 PDM_mainVoltMin "Main Voltage Minimum
+";
+CM_ SG_ 270 PDM_mainVoltMax "Main Voltage Maximum
+";
+CM_ SG_ 270 PDM_mainVoltAvg "Main Voltage Average";
+CM_ SG_ 269 PDM_fuelVoltMin "Fuel Voltage Minimum";
+CM_ SG_ 269 PDM_fuelVoltMax "Fuel Voltage Maximum";
+CM_ SG_ 269 PDM_fuelVoltAvg "Fuel Voltage Average
+";
+CM_ SG_ 268 PDM_fuelCurrentMin "Fuel Current Minimum";
+CM_ SG_ 268 PDM_fuelCurrentMax "Fuel Current Maximum";
+CM_ SG_ 268 PDM_fuelCurrentAvg "Fuel Current Average";
+CM_ SG_ 267 PDM_wpVoltMin "Water Pump Voltage Minimum";
+CM_ SG_ 267 PDM_wpVoltMax "Water Pump Voltage Maximum";
+CM_ SG_ 267 PDM_wpVoltAvg "Water Pump Voltage Average";
+CM_ SG_ 266 PDM_wpCurrentMin "Water Pump Current Minimum";
+CM_ SG_ 266 PDM_wpCurrentMax "Water Pump Current Maximum";
+CM_ SG_ 266 PDM_wpCurrentAvg "Water Pump Current Average
+";
+CM_ SG_ 265 PDM_fanLeftVoltMin "Left Fan Voltage Minimum
+";
+CM_ SG_ 265 PDM_fanLeftVoltMax "Left Fan Voltage Maximum
+";
+CM_ SG_ 265 PDM_fanLeftVoltAvg "Left Fan Voltage Average
+";
+CM_ SG_ 264 PDM_fanLeftCurrentMin "Left Fan Current Minimum";
+CM_ SG_ 264 PDM_fanLeftCurrentMax "Left Fan Current Maximum
+";
+CM_ SG_ 264 PDM_fanLeftCurrentAvg "Left Fan Current Average
+";
+CM_ SG_ 261 PDM_pdmVoltMin "PDM Voltage Minimum";
+CM_ SG_ 261 PDM_pdmVoltMax "PDM Voltage Maximum";
+CM_ SG_ 261 PDM_pdmVoltAvg "PDM Voltage Average
+";
+CM_ SG_ 263 PDM_fanRightVoltMin "Right Fan Voltage Minimum";
+CM_ SG_ 263 PDM_fanRightVoltMax "Right Fan Voltage Maximum";
+CM_ SG_ 263 PDM_fanRightVoltAvg "Right Fan Voltage Average";
+CM_ SG_ 262 PDM_fanRightCurrentMin "Right Fan Current Minimum";
+CM_ SG_ 262 PDM_fanRightCurrentMax "Right Fan Current Maximum";
+CM_ SG_ 262 PDM_fanRightCurrentAvg "Right Fan Current Average
+";
+CM_ SG_ 260 PDM_pdmCurrentMin "PDM Current Minimum
+";
+CM_ SG_ 260 PDM_pdmCurrentMax "PDM Current Maximum
+";
+CM_ SG_ 260 PDM_pdmCurrentAvg "PDM Current Average
+";
 CM_ SG_ 464 ATCCR_tireTempRRO "Tire Temp RRO";
 CM_ SG_ 464 ATCCR_tireTempRRM "Tire Temp RRM";
 CM_ SG_ 464 ATCCR_tireTempRRI "Tire Temp RRI";
