@@ -37,24 +37,32 @@ BU_: PDM ATCCR ATCCF
 
 
 BO_ 3221225472 VECTOR__INDEPENDENT_SIG_MSG: 0 Vector__XXX
- SG_ PDM_counterMsg274 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
- SG_ PDM_counterMsg273 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
- SG_ PDM_counterMsg272 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
- SG_ PDM_counterMsg271 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
  SG_ ATCCR_counterMsg465 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
- SG_ PWM_wpPWM : 0|8@1+ (1,0) [0|255] "%" Vector__XXX
- SG_ PDM_fanLeftPWM : 0|8@1+ (1,0) [0|255] "%" Vector__XXX
- SG_ PDM_fanRightPWM : 0|8@1+ (1,0) [0|255] "%" Vector__XXX
- SG_ PDM_keepAliveVoltMin : 0|16@1- (0.001,0) [-32.768|32.767] "V" Vector__XXX
- SG_ PDM_keepAliveVoltAvg : 0|16@1- (0.001,0) [-32.768|32.767] "V" Vector__XXX
- SG_ PDM_keepAliveVoltMax : 0|16@1- (0.001,0) [-32.768|32.767] "V" Vector__XXX
- SG_ PDM_starterRelayVoltAvg : 0|16@1- (0.001,0) [-32.768|32.767] "V" Vector__XXX
- SG_ PDM_brakelightVoltAvg : 0|16@1- (0.001,0) [-32.768|32.767] "V" Vector__XXX
- SG_ PDM_dataVoltMin : 0|16@1- (0.001,0) [-32.768|32.767] "V" Vector__XXX
- SG_ PDM_dataVoltAvg : 0|16@1- (0.001,0) [-32.768|32.767] "V" Vector__XXX
- SG_ PDM_dataVoltMax : 0|16@1- (0.001,0) [-32.768|32.767] "V" Vector__XXX
  SG_ ATCCF_counterMsg415 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
- SG_ PDM_boardTemp : 0|16@1- (0.1,0) [-3276.8|3276.7] "C" Vector__XXX
+
+BO_ 274 PDM_24: 8 PDM
+ SG_ PWM_wpPWM : 32|8@1+ (1,0) [0|255] "%" Vector__XXX
+ SG_ PDM_fanRightPWM : 24|8@1+ (1,0) [0|255] "%" Vector__XXX
+ SG_ PDM_fanLeftPWM : 16|8@1+ (1,0) [0|255] "%" Vector__XXX
+ SG_ PDM_counterMsg274 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
+
+BO_ 273 PDM_23: 8 PDM
+ SG_ PDM_starterRelayVoltAvg : 48|16@1- (0.001,0) [-32.768|32.767] "V" Vector__XXX
+ SG_ PDM_counterMsg273 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ PDM_brakelightVoltAvg : 32|16@1- (0.001,0) [-32.768|32.767] "V" Vector__XXX
+ SG_ PDM_boardTemp : 16|16@1- (0.1,0) [-3276.8|3276.7] "C" Vector__XXX
+
+BO_ 272 PDM_22: 8 PDM
+ SG_ PDM_keepAliveVoltMin : 48|16@1- (0.001,0) [-32.768|32.767] "V" Vector__XXX
+ SG_ PDM_keepAliveVoltMax : 32|16@1- (0.001,0) [-32.768|32.767] "V" Vector__XXX
+ SG_ PDM_keepAliveVoltAvg : 16|16@1- (0.001,0) [-32.768|32.767] "V" Vector__XXX
+ SG_ PDM_counterMsg272 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
+
+BO_ 271 PDM_21: 8 PDM
+ SG_ PDM_dataVoltMin : 48|16@1- (0.001,0) [-32.768|32.767] "V" Vector__XXX
+ SG_ PDM_dataVoltMax : 32|16@1- (0.001,0) [-32.768|32.767] "V" Vector__XXX
+ SG_ PDM_dataVoltAvg : 16|16@1- (0.001,0) [-32.768|32.767] "V" Vector__XXX
+ SG_ PDM_counterMsg271 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
 
 BO_ 270 PDM_20: 8 PDM
  SG_ PDM_mainVoltMin : 48|16@1- (0.001,0) [-32.768|32.767] "V" Vector__XXX
