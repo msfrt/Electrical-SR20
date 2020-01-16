@@ -37,12 +37,14 @@ BU_: PDM ATCCR ATCCF
 
 
 BO_ 3221225472 VECTOR__INDEPENDENT_SIG_MSG: 0 Vector__XXX
- SG_ USER_brakeLightOverride : 0|8@1- (1,0) [-5|100] "Duty %" Vector__XXX
- SG_ USER_wpOverride : 0|16@1- (1,0) [-32768|32767] "Duty %" Vector__XXX
- SG_ USER_fanRightOverride : 0|16@1- (1,0) [-5|100] "Duty %" Vector__XXX
- SG_ USER_fanLeftOverride : 0|16@1- (1,0) [-32768|32767] "Duty %" Vector__XXX
  SG_ ATCCR_counterMsg465 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
  SG_ ATCCF_counterMsg415 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
+
+BO_ 710 USER_10: 8 Vector__XXX
+ SG_ USER_wpOverride : 32|16@1- (1,0) [-32768|32767] "Duty %" Vector__XXX
+ SG_ USER_fanRightOverride : 16|16@1- (1,0) [-5|100] "Duty %" Vector__XXX
+ SG_ USER_fanLeftOverride : 0|16@1- (1,0) [-32768|32767] "Duty %" Vector__XXX
+ SG_ USER_brakeLightOverride : 48|16@1- (1,0) [-32768|32767] "Duty %" Vector__XXX
 
 BO_ 274 PDM_24: 8 PDM
  SG_ PDM_wpPWM : 32|8@1+ (1,0) [0|255] "Duty %" Vector__XXX
