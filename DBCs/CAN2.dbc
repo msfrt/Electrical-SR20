@@ -1,0 +1,224 @@
+VERSION ""
+
+
+NS_ : 
+	NS_DESC_
+	CM_
+	BA_DEF_
+	BA_
+	VAL_
+	CAT_DEF_
+	CAT_
+	FILTER
+	BA_DEF_DEF_
+	EV_DATA_
+	ENVVAR_DATA_
+	SGTYPE_
+	SGTYPE_VAL_
+	BA_DEF_SGTYPE_
+	BA_SGTYPE_
+	SIG_TYPE_REF_
+	VAL_TABLE_
+	SIG_GROUP_
+	SIG_VALTYPE_
+	SIGTYPE_VALTYPE_
+	BO_TX_BU_
+	BA_DEF_REL_
+	BA_REL_
+	BA_DEF_DEF_REL_
+	BU_SG_REL_
+	BU_EV_REL_
+	BU_BO_REL_
+	SG_MUL_VAL_
+
+BS_:
+
+BU_: PDM ATCCR ATCCF
+
+
+BO_ 3221225472 VECTOR__INDEPENDENT_SIG_MSG: 0 Vector__XXX
+ SG_ ATCCR_counterMsg465 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ ATCCF_counterMsg415 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
+
+BO_ 274 PDM_24: 8 PDM
+ SG_ PWM_wpPWM : 32|8@1+ (1,0) [0|255] "%" Vector__XXX
+ SG_ PDM_fanRightPWM : 24|8@1+ (1,0) [0|255] "%" Vector__XXX
+ SG_ PDM_fanLeftPWM : 16|8@1+ (1,0) [0|255] "%" Vector__XXX
+ SG_ PDM_counterMsg274 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
+
+BO_ 273 PDM_23: 8 PDM
+ SG_ PDM_starterRelayVoltAvg : 48|16@1- (0.001,0) [-32.768|32.767] "V" Vector__XXX
+ SG_ PDM_counterMsg273 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ PDM_brakelightVoltAvg : 32|16@1- (0.001,0) [-32.768|32.767] "V" Vector__XXX
+ SG_ PDM_boardTemp : 16|16@1- (0.1,0) [-3276.8|3276.7] "C" Vector__XXX
+
+BO_ 272 PDM_22: 8 PDM
+ SG_ PDM_keepAliveVoltMin : 48|16@1- (0.001,0) [-32.768|32.767] "V" Vector__XXX
+ SG_ PDM_keepAliveVoltMax : 32|16@1- (0.001,0) [-32.768|32.767] "V" Vector__XXX
+ SG_ PDM_keepAliveVoltAvg : 16|16@1- (0.001,0) [-32.768|32.767] "V" Vector__XXX
+ SG_ PDM_counterMsg272 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
+
+BO_ 271 PDM_21: 8 PDM
+ SG_ PDM_dataVoltMin : 48|16@1- (0.001,0) [-32.768|32.767] "V" Vector__XXX
+ SG_ PDM_dataVoltMax : 32|16@1- (0.001,0) [-32.768|32.767] "V" Vector__XXX
+ SG_ PDM_dataVoltAvg : 16|16@1- (0.001,0) [-32.768|32.767] "V" Vector__XXX
+ SG_ PDM_counterMsg271 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
+
+BO_ 270 PDM_20: 8 PDM
+ SG_ PDM_mainVoltMin : 48|16@1- (0.001,0) [-32.768|32.767] "V" Vector__XXX
+ SG_ PDM_mainVoltMax : 32|16@1- (0.001,0) [-32.768|32.767] "V" Vector__XXX
+ SG_ PDM_mainVoltAvg : 16|16@1- (0.001,0) [-32.768|32.767] "V" Vector__XXX
+ SG_ PDM_counterMsg270 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
+
+BO_ 269 PDM_19: 8 PDM
+ SG_ PDM_fuelVoltMin : 48|16@1- (0.001,0) [-32.768|32.767] "V" Vector__XXX
+ SG_ PDM_fuelVoltMax : 32|16@1- (0.001,0) [-32.768|32.767] "V" Vector__XXX
+ SG_ PDM_fuelVoltAvg : 16|16@1- (0.001,0) [-32.768|32.767] "V" Vector__XXX
+ SG_ PDM_counterMsg269 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
+
+BO_ 268 PDM_18: 8 PDM
+ SG_ PDM_fuelCurrentMin : 48|16@1- (0.01,0) [-327.68|327.67] "A" Vector__XXX
+ SG_ PDM_fuelCurrentMax : 32|16@1- (0.01,0) [-327.68|327.67] "A" Vector__XXX
+ SG_ PDM_fuelCurrentAvg : 16|16@1- (0.01,0) [-327.68|327.67] "A" Vector__XXX
+ SG_ PDM_counterMsg268 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
+
+BO_ 267 PDM_17: 8 PDM
+ SG_ PDM_wpVoltMin : 48|16@1- (0.001,0) [-32.768|32.767] "V" Vector__XXX
+ SG_ PDM_wpVoltMax : 32|16@1- (0.001,0) [-32.768|32.767] "V" Vector__XXX
+ SG_ PDM_wpVoltAvg : 16|16@1- (0.001,0) [-32.768|32.767] "V" Vector__XXX
+ SG_ PDM_counterMsg267 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
+
+BO_ 266 PDM_16: 8 PDM
+ SG_ PDM_wpCurrentMin : 48|16@1- (0.01,0) [-327.68|327.67] "A" Vector__XXX
+ SG_ PDM_wpCurrentMax : 32|16@1- (0.01,0) [-327.68|327.67] "A" Vector__XXX
+ SG_ PDM_wpCurrentAvg : 16|16@1- (0.01,0) [-327.68|327.67] "A" Vector__XXX
+ SG_ PDM_counterMsg266 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
+
+BO_ 265 PDM_15: 8 PDM
+ SG_ PDM_fanLeftVoltMin : 48|16@1- (0.001,0) [-32.768|32.767] "V" Vector__XXX
+ SG_ PDM_fanLeftVoltMax : 32|16@1- (0.001,0) [-32.768|32.767] "V" Vector__XXX
+ SG_ PDM_fanLeftVoltAvg : 16|16@1- (0.001,0) [-32.768|32.767] "V" Vector__XXX
+ SG_ PDM_counterMsg265 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
+
+BO_ 264 PDM_14: 8 PDM
+ SG_ PDM_fanLeftCurrentMin : 48|16@1- (0.01,0) [-327.68|327.67] "A" Vector__XXX
+ SG_ PDM_fanLeftCurrentMax : 32|16@1- (1,0) [-32768|32767] "A" Vector__XXX
+ SG_ PDM_fanLeftCurrentAvg : 16|16@1- (0.01,0) [-327.68|327.67] "A" Vector__XXX
+ SG_ PDM_counterMsg264 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
+
+BO_ 261 PDM_11: 8 PDM
+ SG_ PDM_pdmVoltMin : 48|16@1- (0.001,0) [-32.768|32.767] "V" Vector__XXX
+ SG_ PDM_pdmVoltMax : 32|16@1- (0.001,0) [-32.768|32.767] "V" Vector__XXX
+ SG_ PDM_pdmVoltAvg : 16|16@1- (0.001,0) [-32.768|32.767] "V" Vector__XXX
+ SG_ PDM_counterMsg261 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
+
+BO_ 263 PDM_13: 8 PDM
+ SG_ PDM_fanRightVoltMin : 48|16@1- (0.001,0) [-32.768|32.767] "V" Vector__XXX
+ SG_ PDM_fanRightVoltMax : 32|16@1- (0.001,0) [-32.768|32.767] "V" Vector__XXX
+ SG_ PDM_fanRightVoltAvg : 16|16@1- (0.001,0) [-32.768|32.767] "V" Vector__XXX
+ SG_ PDM_counterMsg263 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
+
+BO_ 262 PDM_12: 8 PDM
+ SG_ PDM_counterMsg262 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ PDM_fanRightCurrentMin : 48|16@1- (0.01,0) [-327.68|327.67] "A" Vector__XXX
+ SG_ PDM_fanRightCurrentMax : 32|16@1- (0.01,0) [-327.68|327.67] "A" Vector__XXX
+ SG_ PDM_fanRightCurrentAvg : 16|16@1- (0.01,0) [-327.68|327.67] "A" Vector__XXX
+
+BO_ 260 PDM_10: 8 PDM
+ SG_ PDM_pdmCurrentMin : 48|16@1- (0.01,0) [-327.68|327.67] "A" Vector__XXX
+ SG_ PDM_pdmCurrentMax : 32|16@1- (0.01,0) [-327.68|327.67] "A" Vector__XXX
+ SG_ PDM_pdmCurrentAvg : 16|16@1- (0.01,0) [-327.68|327.67] "A" Vector__XXX
+ SG_ PDM_counterMsg260 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
+
+BO_ 464 ATCCR_14: 8 ATCCR
+ SG_ ATCCR_tireTempRRO : 48|16@1- (0.1,0) [-3276.8|3276.7] "C" Vector__XXX
+ SG_ ATCCR_tireTempRRM : 32|16@1- (0.1,0) [-3276.8|3276.7] "C" Vector__XXX
+ SG_ ATCCR_tireTempRRI : 16|16@1- (0.1,0) [-3276.8|3276.7] "C" Vector__XXX
+ SG_ ATCCR_counterMsg464 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
+
+BO_ 463 ATCCR_13: 8 ATCCR
+ SG_ ATCCR_tireTempRLO : 48|16@1- (0.1,0) [-3276.8|3276.7] "C" Vector__XXX
+ SG_ ATCCR_tireTempRLM : 32|16@1- (0.1,0) [-3276.8|3276.7] "C" Vector__XXX
+ SG_ ATCCR_tireTempRLI : 16|16@1- (0.1,0) [-3276.8|3276.7] "C" Vector__XXX
+ SG_ ATCCR_counterMsg463 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
+
+BO_ 462 ATCCR_12: 8 ATCCR
+ SG_ ATCCR_counterMsg462 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ ATCCR_coolantTempRadOutlet : 48|16@1- (0.1,0) [-3276.8|3276.7] "C" Vector__XXX
+ SG_ ATCCR_coolantTempRadInlet : 32|16@1- (0.1,0) [-3276.8|3276.7] "C" Vector__XXX
+
+BO_ 461 ATCCR_11: 8 ATCCR
+ SG_ ATCCR_rotorTempRR : 48|16@1- (0.1,0) [-3276.8|3276.7] "C" Vector__XXX
+ SG_ ATCCR_rotorTempRL : 32|16@1- (0.1,0) [-3276.8|3276.7] "C" Vector__XXX
+ SG_ ATCCR_counterMsg461 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ ATCCR_boardTemp : 16|16@1- (0.1,0) [-3276.8|3276.7] "C" Vector__XXX
+
+BO_ 460 ATCCR_10: 8 ATCCR
+ SG_ ATCCR_suspensionTravelRR : 48|16@1- (0.001,0) [-32.768|32.767] "in" Vector__XXX
+ SG_ ATCCR_suspensionTravelRL : 32|16@1- (0.001,0) [-32.768|32.767] "in" Vector__XXX
+ SG_ ATCCR_counterMsg460 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
+
+BO_ 414 ATCCF_14: 8 ATCCF
+ SG_ ATCCF_tireTempFRO : 48|16@1- (0.1,0) [-3276.8|3276.7] "C" Vector__XXX
+ SG_ ATCCF_tireTempFRM : 32|16@1- (0.1,0) [-3276.8|3276.7] "C" Vector__XXX
+ SG_ ATCCF_tireTempFRI : 16|16@1- (0.1,0) [-3276.8|3276.7] "C" Vector__XXX
+ SG_ ATCCF_counterMsg414 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
+
+BO_ 413 ATCCF_13: 8 ATCCF
+ SG_ ATCCF_tireTempFLO : 48|16@1- (0.1,0) [-3276.8|3276.7] "C" Vector__XXX
+ SG_ ATCCF_tireTempFLM : 32|16@1- (0.1,0) [-3276.8|3276.7] "C" Vector__XXX
+ SG_ ATCCF_tireTempFLI : 16|16@1- (0.1,0) [-3276.8|3276.7] "C" Vector__XXX
+ SG_ ATCCF_counterMsg413 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
+
+BO_ 412 ATCCF_12: 8 ATCCF
+ SG_ ATCCF_rotorTempFR : 48|16@1- (0.1,0) [-3276.8|3276.7] "C" Vector__XXX
+ SG_ ATCCF_rotorTempFL : 32|16@1- (0.1,0) [-3276.8|3276.7] "C" Vector__XXX
+ SG_ ATCCF_counterMsg412 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ ATCCF_coolantTempRadMiddle : 16|16@1- (0.1,0) [-3276.8|3276.7] "C" Vector__XXX
+
+BO_ 411 ATCCF_11: 8 ATCCF
+ SG_ ATCCF_steeringWheelAngle : 48|16@1- (0.1,0) [-3276.8|3276.7] "deg" Vector__XXX
+ SG_ ATCCF_brakePressureR : 32|16@1- (0.1,0) [-3276.8|3276.7] "PSI" Vector__XXX
+ SG_ ATCCF_brakePressureF : 16|16@1- (0.1,0) [-3276.8|3276.7] "PSI" Vector__XXX
+ SG_ ATCCF_counterMsg411 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
+
+BO_ 410 ATCCF_10: 8 ATCCF
+ SG_ ATCCF_suspensionTravelFR : 48|16@1- (0.001,0) [-32.768|32.767] "in" Vector__XXX
+ SG_ ATCCF_suspensionTravelFL : 32|16@1- (0.001,0) [-32.768|32.767] "in" Vector__XXX
+ SG_ ATCCF_counterMsg410 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ ATCCF_boardTemp : 16|16@1- (0.1,0) [-3276.8|3276.7] "C" Vector__XXX
+
+
+
+CM_ BO_ 3221225472 "This is a message for not used signals, created by Vector CANdb++ DBC OLE DB Provider.";
+CM_ SG_ 464 ATCCR_tireTempRRO "Tire Temp RRO";
+CM_ SG_ 464 ATCCR_tireTempRRM "Tire Temp RRM";
+CM_ SG_ 464 ATCCR_tireTempRRI "Tire Temp RRI";
+CM_ SG_ 463 ATCCR_tireTempRLO "Tire Temp RLO";
+CM_ SG_ 463 ATCCR_tireTempRLM "Tire Temp RLM";
+CM_ SG_ 463 ATCCR_tireTempRLI "Tire Temp RLI";
+CM_ SG_ 462 ATCCR_coolantTempRadOutlet "Coolant Temp Radiator Outlet";
+CM_ SG_ 462 ATCCR_coolantTempRadInlet "Coolant Temp Radiator Inlet";
+CM_ SG_ 461 ATCCR_rotorTempRR "Brake Temp RR";
+CM_ SG_ 461 ATCCR_rotorTempRL "Brake Temp RL";
+CM_ SG_ 461 ATCCR_boardTemp "Board Temp";
+CM_ SG_ 460 ATCCR_suspensionTravelRR "Suspension Travel RR";
+CM_ SG_ 460 ATCCR_suspensionTravelRL "Suspension Travel RL";
+CM_ SG_ 414 ATCCF_tireTempFRO "Tire Temp FRO";
+CM_ SG_ 414 ATCCF_tireTempFRM "Tire Temp FRM";
+CM_ SG_ 414 ATCCF_tireTempFRI "Tire Temp FRI";
+CM_ SG_ 413 ATCCF_tireTempFLO "Tire Temp FLO";
+CM_ SG_ 413 ATCCF_tireTempFLM "Tire Temp FLM";
+CM_ SG_ 413 ATCCF_tireTempFLI "Tire Temp FLI";
+CM_ SG_ 412 ATCCF_rotorTempFR "Brake Temp FR";
+CM_ SG_ 412 ATCCF_rotorTempFL "Brake Temp FL";
+CM_ SG_ 412 ATCCF_coolantTempRadMiddle "Coolant Temp Radiator Middle";
+CM_ SG_ 411 ATCCF_steeringWheelAngle "Steering Wheel Angle";
+CM_ SG_ 411 ATCCF_brakePressureR "Brake Pressure R";
+CM_ SG_ 411 ATCCF_brakePressureF "Brake Pressure F";
+CM_ SG_ 410 ATCCF_suspensionTravelFR "Suspension Travel FR";
+CM_ SG_ 410 ATCCF_suspensionTravelFL "Suspension Travel FL";
+CM_ SG_ 410 ATCCF_boardTemp "Board Temp";
+BA_DEF_  "BusType" STRING ;
+BA_DEF_DEF_  "BusType" "CAN";
+
