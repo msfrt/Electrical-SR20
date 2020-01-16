@@ -6,6 +6,9 @@
 #include <PWMControl.h>
 #include <StateCAN.h>
 
+// signal definitions
+#include "sigs_inside.hpp"
+
 // rows: temp in degrees C
 // cols: battery voltage V
 const int fanl_table_rows = 12;
@@ -85,7 +88,7 @@ int fanl_pwm_freq_norm = 40; // normal pwm frequency in Hz
 int fanl_pwm_freq_ss = 420; // soft start pwm frequency in Hz
 PWMDevice fan_left(fanl_pin, fanl_table_rows, fanl_table_cols,
                    fanl_table_row_scalar, fanl_table_col_scalar,
-                   ROW_SIG, COL_SIG, fanl_min_pwm, fanl_max_pwm,
+                   M400_engineTemp, M400_batteryVoltage, fanl_min_pwm, fanl_max_pwm,
                    fanl_ss_dur, fanl_update_freq, fanl_pwm_freq_norm, fanl_pwm_freq_ss);
 
 // right fan definition & partial initialization
@@ -98,7 +101,7 @@ int fanr_pwm_freq_norm = 40; // normal pwm frequency in Hz
 int fanr_pwm_freq_ss = 420; // soft start pwm frequency in Hz
 PWMDevice fan_right(fanr_pin, fanr_table_rows, fanr_table_cols,
                     fanr_table_row_scalar, fanr_table_col_scalar,
-                    ROW_SIG, COL_SIG, fanr_min_pwm, fanr_max_pwm,
+                    M400_engineTemp, M400_batteryVoltage, fanr_min_pwm, fanr_max_pwm,
                     fanr_ss_dur, fanr_update_freq, fanr_pwm_freq_norm, fanr_pwm_freq_ss);
 
 // water pump definition & partial initialization
@@ -111,7 +114,7 @@ int wp_pwm_freq_norm = 40; // normal pwm frequency in Hz
 int wp_pwm_freq_ss = 420; // soft start pwm frequency in Hz
 PWMDevice water_pump(wp_pin, wp_table_rows, wp_table_cols,
                      wp_table_row_scalar, wp_table_col_scalar,
-                     ROW_SIG, COL_SIG, wp_min_pwm, wp_max_pwm,
+                     M400_engineTemp, M400_rpm, wp_min_pwm, wp_max_pwm,
                      wp_ss_dur, wp_update_freq, wp_pwm_freq_norm, wp_pwm_freq_ss);
 
 

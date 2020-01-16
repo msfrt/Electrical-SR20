@@ -9,6 +9,12 @@
 // this file contains all of the control tables & declarations for fans and water pump
 #include "fans.hpp"
 
+// signal definitions are inside
+#include "sigs_inside.hpp"
+
+// global variable definition
+int GLO_engine_state = 0;
+
 void setup() {
 
   // populate left fan table
@@ -29,5 +35,5 @@ void loop() {
   // put your main code here, to run repeatedly:
 
 
-  //fan_left.set_pwm(engine_temp.value(), battery_volt.value(), engine_mode, fanl_override.value())
+  //fan_left.set_pwm(GLO_engine_state, fanl_override.value())
 }
