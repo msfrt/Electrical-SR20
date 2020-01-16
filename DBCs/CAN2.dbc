@@ -41,7 +41,7 @@ BO_ 3221225472 VECTOR__INDEPENDENT_SIG_MSG: 0 Vector__XXX
  SG_ ATCCF_counterMsg415 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
 
 BO_ 274 PDM_24: 8 PDM
- SG_ PWM_wpPWM : 32|8@1+ (1,0) [0|255] "%" Vector__XXX
+ SG_ PDM_wpPWM : 32|8@1+ (1,0) [0|255] "%" Vector__XXX
  SG_ PDM_fanRightPWM : 24|8@1+ (1,0) [0|255] "%" Vector__XXX
  SG_ PDM_fanLeftPWM : 16|8@1+ (1,0) [0|255] "%" Vector__XXX
  SG_ PDM_counterMsg274 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
