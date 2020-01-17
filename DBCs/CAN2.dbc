@@ -197,6 +197,8 @@ BO_ 410 ATCCF_10: 8 ATCCF
 
 
 CM_ BO_ 3221225472 "This is a message for not used signals, created by Vector CANdb++ DBC OLE DB Provider.";
+CM_ SG_ 3221225472 ATCCR_counterMsg465 "Counter for Message 465";
+CM_ SG_ 3221225472 ATCCF_counterMsg415 "Counter for Message 415";
 CM_ SG_ 710 USER_wpOverride "Manual override percentage";
 CM_ SG_ 710 USER_fanRightOverride "Manual override percentage";
 CM_ SG_ 710 USER_fanLeftOverride "Manual override percentage";
@@ -204,54 +206,69 @@ CM_ SG_ 710 USER_brakeLightOverride "Manual Brakelight Override";
 CM_ SG_ 274 PDM_wpPWM "Water Pump Duty Cycle";
 CM_ SG_ 274 PDM_fanRightPWM "Right Fan Duty Cycle";
 CM_ SG_ 274 PDM_fanLeftPWM "Left Fan Duty Cycle";
+CM_ SG_ 274 PDM_counterMsg274 "Counter for Message 274";
 CM_ SG_ 273 PDM_starterRelayVoltAvg "Starter Relay Voltage Average";
+CM_ SG_ 273 PDM_counterMsg273 "Counter for Message 273";
 CM_ SG_ 273 PDM_brakelightVoltAvg "Brakelight Voltage Average";
 CM_ SG_ 273 PDM_boardTemp "PDM Board Temp
 ";
 CM_ SG_ 272 PDM_keepAliveVoltMin "PDM Microcontroller Keep Alive Circuit Voltage Minimum";
 CM_ SG_ 272 PDM_keepAliveVoltMax "PDM Microcontroller Keep Alive Circuit Voltage Maximum";
 CM_ SG_ 272 PDM_keepAliveVoltAvg "PDM Microcontroller Keep Alive Circuit Voltage Average";
+CM_ SG_ 272 PDM_counterMsg272 "Counter for Message 272";
 CM_ SG_ 271 PDM_dataVoltMin "Data Voltage Minimum";
 CM_ SG_ 271 PDM_dataVoltMax "Data Voltage Maximum";
 CM_ SG_ 271 PDM_dataVoltAvg "Data Voltage Average
 ";
+CM_ SG_ 271 PDM_counterMsg271 "Counter for Message 271";
 CM_ SG_ 270 PDM_mainVoltMin "Main Voltage Minimum
 ";
 CM_ SG_ 270 PDM_mainVoltMax "Main Voltage Maximum
 ";
 CM_ SG_ 270 PDM_mainVoltAvg "Main Voltage Average";
+CM_ SG_ 270 PDM_counterMsg270 "Counter for Message 270";
 CM_ SG_ 269 PDM_fuelVoltMin "Fuel Voltage Minimum";
 CM_ SG_ 269 PDM_fuelVoltMax "Fuel Voltage Maximum";
 CM_ SG_ 269 PDM_fuelVoltAvg "Fuel Voltage Average
 ";
+CM_ SG_ 269 PDM_counterMsg269 "Counter for Message 269";
 CM_ SG_ 268 PDM_fuelCurrentMin "Fuel Current Minimum";
 CM_ SG_ 268 PDM_fuelCurrentMax "Fuel Current Maximum";
 CM_ SG_ 268 PDM_fuelCurrentAvg "Fuel Current Average";
+CM_ SG_ 268 PDM_counterMsg268 "Counter for Message 268";
 CM_ SG_ 267 PDM_wpVoltMin "Water Pump Voltage Minimum";
 CM_ SG_ 267 PDM_wpVoltMax "Water Pump Voltage Maximum";
 CM_ SG_ 267 PDM_wpVoltAvg "Water Pump Voltage Average";
+CM_ SG_ 267 PDM_counterMsg267 "Counter for Message 267
+";
 CM_ SG_ 266 PDM_wpCurrentMin "Water Pump Current Minimum";
 CM_ SG_ 266 PDM_wpCurrentMax "Water Pump Current Maximum";
 CM_ SG_ 266 PDM_wpCurrentAvg "Water Pump Current Average
 ";
+CM_ SG_ 266 PDM_counterMsg266 "Counter for Message 266";
 CM_ SG_ 265 PDM_fanLeftVoltMin "Left Fan Voltage Minimum
 ";
 CM_ SG_ 265 PDM_fanLeftVoltMax "Left Fan Voltage Maximum
 ";
 CM_ SG_ 265 PDM_fanLeftVoltAvg "Left Fan Voltage Average
 ";
+CM_ SG_ 265 PDM_counterMsg265 "Counter for Message 265";
 CM_ SG_ 264 PDM_fanLeftCurrentMin "Left Fan Current Minimum";
 CM_ SG_ 264 PDM_fanLeftCurrentMax "Left Fan Current Maximum
 ";
 CM_ SG_ 264 PDM_fanLeftCurrentAvg "Left Fan Current Average
 ";
+CM_ SG_ 264 PDM_counterMsg264 "Counter for Message 264";
 CM_ SG_ 261 PDM_pdmVoltMin "PDM Voltage Minimum";
 CM_ SG_ 261 PDM_pdmVoltMax "PDM Voltage Maximum";
 CM_ SG_ 261 PDM_pdmVoltAvg "PDM Voltage Average
 ";
+CM_ SG_ 261 PDM_counterMsg261 "Counter for Message 261";
 CM_ SG_ 263 PDM_fanRightVoltMin "Right Fan Voltage Minimum";
 CM_ SG_ 263 PDM_fanRightVoltMax "Right Fan Voltage Maximum";
 CM_ SG_ 263 PDM_fanRightVoltAvg "Right Fan Voltage Average";
+CM_ SG_ 263 PDM_counterMsg263 "Counter for Message 263";
+CM_ SG_ 262 PDM_counterMsg262 "Counter for Message 262";
 CM_ SG_ 262 PDM_fanRightCurrentMin "Right Fan Current Minimum";
 CM_ SG_ 262 PDM_fanRightCurrentMax "Right Fan Current Maximum";
 CM_ SG_ 262 PDM_fanRightCurrentAvg "Right Fan Current Average
@@ -262,33 +279,46 @@ CM_ SG_ 260 PDM_pdmCurrentMax "PDM Current Maximum
 ";
 CM_ SG_ 260 PDM_pdmCurrentAvg "PDM Current Average
 ";
+CM_ SG_ 260 PDM_counterMsg260 "Counter for Message 260";
 CM_ SG_ 464 ATCCR_tireTempRRO "Tire Temp RRO";
 CM_ SG_ 464 ATCCR_tireTempRRM "Tire Temp RRM";
 CM_ SG_ 464 ATCCR_tireTempRRI "Tire Temp RRI";
+CM_ SG_ 464 ATCCR_counterMsg464 "Counter for Message 464";
 CM_ SG_ 463 ATCCR_tireTempRLO "Tire Temp RLO";
 CM_ SG_ 463 ATCCR_tireTempRLM "Tire Temp RLM";
 CM_ SG_ 463 ATCCR_tireTempRLI "Tire Temp RLI";
+CM_ SG_ 463 ATCCR_counterMsg463 "Counter for Message 463";
+CM_ SG_ 462 ATCCR_counterMsg462 "Counter for Message 462
+";
 CM_ SG_ 462 ATCCR_coolantTempRadOutlet "Coolant Temp Radiator Outlet";
 CM_ SG_ 462 ATCCR_coolantTempRadInlet "Coolant Temp Radiator Inlet";
 CM_ SG_ 461 ATCCR_rotorTempRR "Brake Temp RR";
 CM_ SG_ 461 ATCCR_rotorTempRL "Brake Temp RL";
+CM_ SG_ 461 ATCCR_counterMsg461 "Counter for Message 461";
 CM_ SG_ 461 ATCCR_boardTemp "Board Temp";
 CM_ SG_ 460 ATCCR_suspensionTravelRR "Suspension Travel RR";
 CM_ SG_ 460 ATCCR_suspensionTravelRL "Suspension Travel RL";
+CM_ SG_ 460 ATCCR_counterMsg460 "Counter for Message 460";
 CM_ SG_ 414 ATCCF_tireTempFRO "Tire Temp FRO";
 CM_ SG_ 414 ATCCF_tireTempFRM "Tire Temp FRM";
 CM_ SG_ 414 ATCCF_tireTempFRI "Tire Temp FRI";
+CM_ SG_ 414 ATCCF_counterMsg414 "Counter for Message 414";
 CM_ SG_ 413 ATCCF_tireTempFLO "Tire Temp FLO";
 CM_ SG_ 413 ATCCF_tireTempFLM "Tire Temp FLM";
 CM_ SG_ 413 ATCCF_tireTempFLI "Tire Temp FLI";
+CM_ SG_ 413 ATCCF_counterMsg413 "Counter for Message 413";
 CM_ SG_ 412 ATCCF_rotorTempFR "Brake Temp FR";
 CM_ SG_ 412 ATCCF_rotorTempFL "Brake Temp FL";
+CM_ SG_ 412 ATCCF_counterMsg412 "Counter for Message 412";
 CM_ SG_ 412 ATCCF_coolantTempRadMiddle "Coolant Temp Radiator Middle";
 CM_ SG_ 411 ATCCF_steeringWheelAngle "Steering Wheel Angle";
 CM_ SG_ 411 ATCCF_brakePressureR "Brake Pressure R";
 CM_ SG_ 411 ATCCF_brakePressureF "Brake Pressure F";
+CM_ SG_ 411 ATCCF_counterMsg411 "Counter for Message 411";
 CM_ SG_ 410 ATCCF_suspensionTravelFR "Suspension Travel FR";
 CM_ SG_ 410 ATCCF_suspensionTravelFL "Suspension Travel FL";
+CM_ SG_ 410 ATCCF_counterMsg410 "Counter for Message 410
+";
 CM_ SG_ 410 ATCCF_boardTemp "Board Temp";
 BA_DEF_  "BusType" STRING ;
 BA_DEF_DEF_  "BusType" "CAN";
