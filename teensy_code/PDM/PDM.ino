@@ -6,6 +6,9 @@
 #include <StateCAN.h>
 #include <FlexCAN_T4.h>
 
+// useful sensor sampling definitions can be found here
+#include "sensors.hpp"
+
 // this file contains all of the control tables & declarations for fans and water pump
 #include "fans.hpp"
 
