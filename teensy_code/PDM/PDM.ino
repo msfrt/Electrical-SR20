@@ -5,6 +5,7 @@
 #include <ReadADC.h>
 #include <StateCAN.h>
 #include <FlexCAN_T4.h>
+#include <SPI.h>
 
 // useful sensor sampling definitions can be found here
 #include "sensors.hpp"
@@ -31,6 +32,9 @@ void setup() {
   // populate water pump table
   int *wp_table_ptr = wp_table[0];
   water_pump.fill_table(wp_table_ptr);
+
+  // initialize the ADC sensors
+  initialize_ADCs();
 
 }
 
