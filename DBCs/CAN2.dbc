@@ -37,6 +37,7 @@ BU_: PDM ATCCR ATCCF
 
 
 BO_ 3221225472 VECTOR__INDEPENDENT_SIG_MSG: 0 Vector__XXX
+ SG_ PDM_teensyTemp : 0|16@1- (0.1,0) [-3276.8|3276.7] "C" Vector__XXX
  SG_ ATCCR_counterMsg465 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
  SG_ ATCCF_counterMsg415 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
 
@@ -197,6 +198,7 @@ BO_ 410 ATCCF_10: 8 ATCCF
 
 
 CM_ BO_ 3221225472 "This is a message for not used signals, created by Vector CANdb++ DBC OLE DB Provider.";
+CM_ SG_ 3221225472 PDM_teensyTemp "PDM Teensy ECU Temp";
 CM_ SG_ 3221225472 ATCCR_counterMsg465 "Counter for Message 465";
 CM_ SG_ 3221225472 ATCCF_counterMsg415 "Counter for Message 415";
 CM_ SG_ 710 USER_wpOverride "Manual override percentage";
