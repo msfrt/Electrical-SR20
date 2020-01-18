@@ -22,7 +22,22 @@
 // global variable definition
 int GLO_engine_state = 0;
 
+// timer that you can use to print things out for debugging
+EasyTimer debug(10);
+
 void setup() {
+
+  // Initialize serial communication
+  Serial.begin(112500);
+
+  // initialize SPI communication
+  SPI.begin();
+
+  //initialize the CAN Bus and set its baud rate to 1Mb
+  cbus1.begin();
+  cbus1.setBaudRate(1000000);
+  cbus2.begin();
+  cbus2.setBaudRate(1000000);
 
   // populate left fan table
   int *fanl_table_ptr = fan_left_table[0]; // create a temp ptr to populate PWM device
@@ -43,9 +58,15 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  sample_ADCs();
+  //sample_ADCs();
 
   fan_left.set_pwm(GLO_engine_state);
   fan_right.set_pwm(GLO_engine_state);
   water_pump.set_pwm(GLO_engine_state);
+
+  if (debug.isup()){
+    send_PDM_10();
+    send_PDM_11();
+  }
+
 }

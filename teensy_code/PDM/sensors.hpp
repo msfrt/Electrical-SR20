@@ -13,8 +13,8 @@ ADCSensor      fanr_volt_sens(3, 5, 0, 313);
 ADCSensor        wp_volt_sens(3, 6, 0, 313);
 ADCSensor      fuel_volt_sens(3, 7, 0, 313);
 // ADC2
-ADCSensor       fuel_curr_sens(10, 1, 2500, 20);
-ADCSensor         wp_curr_sens(10, 2, 2500, 20);
+ADCSensor    fuel_current_sens(10, 1, 2500, 20);
+ADCSensor      wp_current_sens(10, 2, 2500, 20);
 ADCSensor    fanr_current_sens(10, 3, 2500, 20);
 ADCSensor    fanl_current_sens(10, 4, 2500, 20);
 ADCSensor     pdm_current_sens(10, 5, 2500, 20);
@@ -42,8 +42,8 @@ void sample_ADCs(){
        pdm_current_sens.sample();
       fanl_current_sens.sample();
       fanr_current_sens.sample();
-           wp_curr_sens.sample();
-         fuel_curr_sens.sample();
+        wp_current_sens.sample();
+      fuel_current_sens.sample();
   }
 
   if (sample_timer_2.isup()){
@@ -66,8 +66,8 @@ void initialize_ADCs(){
           wp_volt_sens.begin();
         fuel_volt_sens.begin();
   // ADC2
-        fuel_curr_sens.begin();
-          wp_curr_sens.begin();
+     fuel_current_sens.begin();
+       wp_current_sens.begin();
      fanr_current_sens.begin();
      fanl_current_sens.begin();
       pdm_current_sens.begin();
