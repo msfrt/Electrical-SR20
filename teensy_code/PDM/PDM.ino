@@ -7,6 +7,14 @@
 #include <FlexCAN_T4.h>
 #include <SPI.h>
 
+/* TODOS:
+ *  - update board temperature pin in sensors.hpp
+*/
+
+// global variable definition
+int GLO_engine_state = 0;
+int GLO_read_resolution_bits = 10;
+
 // useful sensor sampling definitions can be found here
 #include "sensors.hpp"
 
@@ -19,8 +27,8 @@
 // CAN message definitions are inside
 #include "can_msgs.hpp"
 
-// global variable definition
-int GLO_engine_state = 0;
+// support class for diode-based board temp
+#include "board_temp.hpp"
 
 // timer that you can use to print things out for debugging
 EasyTimer debug(10);

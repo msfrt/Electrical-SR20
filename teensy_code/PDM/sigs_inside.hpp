@@ -20,6 +20,10 @@ StateSignal USER_wpOverride(16, true, 1, 0, -5, 100, -1, 1000);
 
 
 // outgoing/internal signals
+StateSignal PDM_brakelightVoltAvg(16, true, 1000, 0, -32, 32, 0);
+
+StateSignal PDM_boardTemp(16, true, 10, 0, -3276, 3276, 0);
+
 StateSignal PDM_dataVoltAvg(16, true, 1000, 0, -32, 32, 0);
 StateSignal PDM_dataVoltMax(16, true, 1000, 0, -32, 32, 0);
 StateSignal PDM_dataVoltMin(16, true, 1000, 0, -32, 32, 0);
@@ -73,5 +77,7 @@ StateSignal PDM_wpPWM(8, false, 1, 0, 0, 255, 0);
 StateSignal PDM_wpVoltAvg(16, true, 1000, 0, -32, 32, 0);
 StateSignal PDM_wpVoltMax(16, true, 1000, 0, -32, 32, 0);
 StateSignal PDM_wpVoltMin(16, true, 1000, 0, -32, 32, 0);
+
+StateSignal PDM_teensyTemp(16, true, 10, 0, -3276, 3276, 0);
 
 #endif

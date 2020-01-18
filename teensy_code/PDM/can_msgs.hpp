@@ -313,7 +313,7 @@ void send_PDM_23(){
   msg.len = 8;
 
   // MESSAGE NOT COMPLETED. NEEDS PDM BOARD TEMP
-  PDM_keepAliveVoltAvg = keepalive_volt_sens.avg();
+  PDM_boardTemp = keepalive_volt_sens.avg();
   PDM_keepAliveVoltMax = keepalive_volt_sens.max();
   PDM_keepAliveVoltMin = keepalive_volt_sens.min();
 
