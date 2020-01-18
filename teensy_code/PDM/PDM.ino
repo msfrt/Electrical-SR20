@@ -8,7 +8,7 @@
 #include <SPI.h>
 
 /* TODOS:
- *  - update board temperature pin in sensors.hpp
+ *  - 
 */
 
 // global variable definition

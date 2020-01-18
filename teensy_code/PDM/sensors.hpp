@@ -22,7 +22,7 @@ ADCSensor     pdm_current_sens(10, 5, 2500, 20);
 ADCSensor brakelight_volt_sens(10, 6,    0, 313);
 ADCSensor    starter_volt_sens(10, 7,    0, 313);
 // stupid board temp
-BoardTemp pdm_board_temp(1, GLO_read_resolution_bits, 22.2222, 187);
+BoardTemp pdm_board_temp(21, GLO_read_resolution_bits, 22.2222, 187);
 
 
 // this function uses the local timers to determine when to call the ADCSensor sample function
