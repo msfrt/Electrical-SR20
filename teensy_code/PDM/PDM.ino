@@ -16,6 +16,9 @@
 // signal definitions are inside
 #include "sigs_inside.hpp"
 
+// CAN message definitions are inside
+#include "can_msgs.hpp"
+
 // global variable definition
 int GLO_engine_state = 0;
 
@@ -40,7 +43,9 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-
+  sample_ADCs();
 
   fan_left.set_pwm(GLO_engine_state);
+  fan_right.set_pwm(GLO_engine_state);
+  water_pump.set_pwm(GLO_engine_state);
 }
