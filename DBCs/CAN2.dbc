@@ -38,6 +38,9 @@ BU_: PDM ATCCR ATCCF
 
 BO_ 3221225472 VECTOR__INDEPENDENT_SIG_MSG: 0 Vector__XXX
  SG_ ATCCR_counterMsg465 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
+
+BO_ 415 ATCCF_15: 8 ATCCF
+ SG_ ATCCF_teensyTemp : 16|16@1- (0.1,0) [-3276.8|3276.7] "C" Vector__XXX
  SG_ ATCCF_counterMsg415 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
 
 BO_ 710 USER_10: 8 Vector__XXX
@@ -150,6 +153,7 @@ BO_ 463 ATCCR_13: 8 ATCCR
  SG_ ATCCR_counterMsg463 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
 
 BO_ 462 ATCCR_12: 8 ATCCR
+ SG_ ATCCR_teensyTemp : 16|16@1- (0.1,0) [-3276.8|3276.7] "C" Vector__XXX
  SG_ ATCCR_counterMsg462 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
  SG_ ATCCR_coolantTempRadOutlet : 48|16@1- (0.1,0) [-3276.8|3276.7] "C" Vector__XXX
  SG_ ATCCR_coolantTempRadInlet : 32|16@1- (0.1,0) [-3276.8|3276.7] "C" Vector__XXX
@@ -199,7 +203,8 @@ BO_ 410 ATCCF_10: 8 ATCCF
 
 CM_ BO_ 3221225472 "This is a message for not used signals, created by Vector CANdb++ DBC OLE DB Provider.";
 CM_ SG_ 3221225472 ATCCR_counterMsg465 "Counter for Message 465";
-CM_ SG_ 3221225472 ATCCF_counterMsg415 "Counter for Message 415";
+CM_ SG_ 415 ATCCF_teensyTemp "PDM Teensy ECU Temp";
+CM_ SG_ 415 ATCCF_counterMsg415 "Counter for Message 415";
 CM_ SG_ 710 USER_wpOverride "Manual override percentage";
 CM_ SG_ 710 USER_fanRightOverride "Manual override percentage";
 CM_ SG_ 710 USER_fanLeftOverride "Manual override percentage";
@@ -290,6 +295,7 @@ CM_ SG_ 463 ATCCR_tireTempRLO "Tire Temp RLO";
 CM_ SG_ 463 ATCCR_tireTempRLM "Tire Temp RLM";
 CM_ SG_ 463 ATCCR_tireTempRLI "Tire Temp RLI";
 CM_ SG_ 463 ATCCR_counterMsg463 "Counter for Message 463";
+CM_ SG_ 462 ATCCR_teensyTemp "PDM Teensy ECU Temp";
 CM_ SG_ 462 ATCCR_counterMsg462 "Counter for Message 462
 ";
 CM_ SG_ 462 ATCCR_coolantTempRadOutlet "Coolant Temp Radiator Outlet";
