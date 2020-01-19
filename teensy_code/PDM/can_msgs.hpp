@@ -312,19 +312,41 @@ void send_PDM_23(){
   msg.id = 273;
   msg.len = 8;
 
-  // MESSAGE NOT COMPLETED. NEEDS PDM BOARD TEMP
-  PDM_boardTemp = keepalive_volt_sens.avg();
-  PDM_keepAliveVoltMax = keepalive_volt_sens.max();
-  PDM_keepAliveVoltMin = keepalive_volt_sens.min();
+  PDM_boardTemp = pdm_board_temp_sens.value();
+  PDM_brakelightVoltAvg = brakelight_volt_sens.avg();
+  PDM_starterRelayVoltAvg = starterRelayVoltAvg.avg();
 
   msg.buf[0] = ctr.value();
   msg.buf[1] = 0;
-  msg.buf[2] = PDM_keepAliveVoltAvg.can_value();
-  msg.buf[3] = PDM_keepAliveVoltAvg.can_value() >> 8;
-  msg.buf[4] = PDM_keepAliveVoltMax.can_value();
-  msg.buf[5] = PDM_keepAliveVoltMax.can_value() >> 8;
-  msg.buf[6] = PDM_keepAliveVoltMin.can_value();
-  msg.buf[7] = PDM_keepAliveVoltMin.can_value() >> 8;
+  msg.buf[2] = PDM_boardTemp.can_value();
+  msg.buf[3] = PDM_boardTemp.can_value() >> 8;
+  msg.buf[4] = PDM_brakelightVoltAvg.can_value();
+  msg.buf[5] = PDM_brakelightVoltAvg.can_value() >> 8;
+  msg.buf[6] = PDM_starterRelayVoltAvg.can_value();
+  msg.buf[7] = PDM_starterRelayVoltAvg.can_value() >> 8;
+
+  cbus2.write(msg);
+}
+
+
+void send_PDM_24(){
+  static StateCounter ctr;
+  msg.id = 274;
+  msg.len = 8;
+
+  PDM_fanLeftPWM = fan_left.actual();
+  PDM_fanRightPWM = fan_right.actual();
+  PDM_wpPWM = water_pump.actual();
+  PDM_teensyTemp = tempmonGetTemp(); // built-in teensy function
+
+  msg.buf[0] = ctr.value();
+  msg.buf[1] = 0;
+  msg.buf[2] = PDM_fanLeftPWM.can_value();
+  msg.buf[3] = PDM_fanRightPWM.can_value();
+  msg.buf[4] = PDM_wpPWM.can_value();
+  msg.buf[5] = 0;
+  msg.buf[6] = PDM_teensyTemp.can_value();
+  msg.buf[7] = PDM_teensyTemp.can_value() >> 8;
 
   cbus2.write(msg);
 }
