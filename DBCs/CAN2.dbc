@@ -37,7 +37,6 @@ BU_: PDM ATCCR ATCCF
 
 
 BO_ 3221225472 VECTOR__INDEPENDENT_SIG_MSG: 0 Vector__XXX
- SG_ PDM_teensyTemp : 0|16@1- (0.1,0) [-3276.8|3276.7] "C" Vector__XXX
  SG_ ATCCR_counterMsg465 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
  SG_ ATCCF_counterMsg415 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
 
@@ -48,6 +47,7 @@ BO_ 710 USER_10: 8 Vector__XXX
  SG_ USER_brakeLightOverride : 48|16@1- (1,0) [-32768|32767] "Duty %" Vector__XXX
 
 BO_ 274 PDM_24: 8 PDM
+ SG_ PDM_teensyTemp : 48|16@1- (0.1,0) [-3276.8|3276.7] "C" Vector__XXX
  SG_ PDM_wpPWM : 32|8@1+ (1,0) [0|255] "Duty %" Vector__XXX
  SG_ PDM_fanRightPWM : 24|8@1+ (1,0) [0|255] "Duty %" Vector__XXX
  SG_ PDM_fanLeftPWM : 16|8@1+ (1,0) [0|255] "Duty %" Vector__XXX
@@ -198,13 +198,13 @@ BO_ 410 ATCCF_10: 8 ATCCF
 
 
 CM_ BO_ 3221225472 "This is a message for not used signals, created by Vector CANdb++ DBC OLE DB Provider.";
-CM_ SG_ 3221225472 PDM_teensyTemp "PDM Teensy ECU Temp";
 CM_ SG_ 3221225472 ATCCR_counterMsg465 "Counter for Message 465";
 CM_ SG_ 3221225472 ATCCF_counterMsg415 "Counter for Message 415";
 CM_ SG_ 710 USER_wpOverride "Manual override percentage";
 CM_ SG_ 710 USER_fanRightOverride "Manual override percentage";
 CM_ SG_ 710 USER_fanLeftOverride "Manual override percentage";
 CM_ SG_ 710 USER_brakeLightOverride "Manual Brakelight Override";
+CM_ SG_ 274 PDM_teensyTemp "PDM Teensy ECU Temp";
 CM_ SG_ 274 PDM_wpPWM "Water Pump Duty Cycle";
 CM_ SG_ 274 PDM_fanRightPWM "Right Fan Duty Cycle";
 CM_ SG_ 274 PDM_fanLeftPWM "Left Fan Duty Cycle";
