@@ -36,6 +36,17 @@ BS_:
 BU_: C50 TC_GPS_TELEM PDM MM5 DRIVERDISPLAY M400
 
 
+BO_ 380 MM5_02: 8 MM5
+ SG_ MM5_Az : 32|16@1+ (-0.0001274,4.2) [0|0] "" Vector__XXX
+
+BO_ 376 MM5_01: 8 MM5
+ SG_ MM5_rollRate : 0|16@1+ (-0.005,163.9) [0|0] "" Vector__XXX
+ SG_ MM5_Ax : 32|16@1+ (-0.0001274,4.2) [0|0] "" Vector__XXX
+
+BO_ 372 MM5_00: 8 MM5
+ SG_ MM5_yawRate : 0|16@1+ (0.005,-163.9) [0|0] "" Vector__XXX
+ SG_ MM5_Ay : 32|16@1+ (-0.0001274,4.2) [0|0] "" Vector__XXX
+
 BO_ 101 M400_dataSet2: 8 M400
  SG_ M400_oilTemp m16 : 23|16@0- (0.1,0) [-3276.8|3276.7] "C" Vector__XXX
  SG_ M400_oilPressure m15 : 55|16@0- (0.1,0) [-3276.8|3276.7] "PSI" Vector__XXX
