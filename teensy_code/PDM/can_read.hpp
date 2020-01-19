@@ -1,7 +1,7 @@
 #ifndef CAN_FUNCTIONS_HPP
 #define CAN_FUNCTIONS_HPP
 
-#include "can_msgs.hpp"
+#include "can_send.hpp"
 #include "sigs_inside.hpp"
 
 

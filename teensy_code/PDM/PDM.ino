@@ -22,7 +22,7 @@ const int GLO_cranking_rpm_threshold = 2000;
 // engine running min rpm threshold
 const int GLO_engine_on_rpm_threshold = 900;
 // engine cooldown state duration in milliseconds
-const int GLO_engine_cooldown_duration = 2500;
+const int GLO_engine_cooldown_duration = 5000;
 
 const int GLO_brakelight_min_pressure_F = 60; // minimum pressure required to activate the brakelight (PSI)
 const int GLO_brakelight_min_pressure_R = 60;
@@ -38,10 +38,10 @@ const int GLO_brakelight_teensy_pin = 4;
 #include "sigs_inside.hpp"
 
 // CAN message definitions are inside
-#include "can_msgs.hpp"
+#include "can_send.hpp"
 
-// CAN send & read functions are inside
-#include "can_fcns.hpp"
+// CAN read functions are inside
+#include "can_read.hpp"
 
 // support class for diode-based board temp
 #include "board_temp.hpp"
