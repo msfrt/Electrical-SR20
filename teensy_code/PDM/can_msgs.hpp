@@ -7,7 +7,7 @@
 FlexCAN_T4<CAN1, RX_SIZE_256, TX_SIZE_16> cbus1;
 FlexCAN_T4<CAN2, RX_SIZE_256, TX_SIZE_16> cbus2;
 
-static CAN_message_t msg;
+static CAN_message_t msg, rxmsg;
 
 // send message definitions
 
@@ -314,7 +314,7 @@ void send_PDM_23(){
 
   PDM_boardTemp = pdm_board_temp_sens.value();
   PDM_brakelightVoltAvg = brakelight_volt_sens.avg();
-  PDM_starterRelayVoltAvg = starterRelayVoltAvg.avg();
+  PDM_starterRelayVoltAvg = starter_volt_sens.avg();
 
   msg.buf[0] = ctr.value();
   msg.buf[1] = 0;
@@ -349,6 +349,93 @@ void send_PDM_24(){
   msg.buf[7] = PDM_teensyTemp.can_value() >> 8;
 
   cbus2.write(msg);
+}
+
+
+
+
+
+
+
+
+// ID 411 on bus 2
+void read_ATCCF_11(CAN_message_t &imsg){
+  ATCCF_brakePressureF = imsg.buf[2] | imsg.buf[3] << 8;
+  ATCCF_brakePressureR = imsg.buf[4] | imsg.buf[5] << 8;
+}
+
+
+// ID 710 on bus 2
+void read_USER_10(CAN_message_t &imsg){
+  USER_fanLeftOverride    = imsg.buf[0] | imsg.buf[1] << 8;
+  USER_fanRightOverride   = imsg.buf[2] | imsg.buf[3] << 8;
+  USER_wpOverride         = imsg.buf[4] | imsg.buf[5] << 8;
+  USER_brakeLightOverride = imsg.buf[6] | imsg.buf[7] << 8;
+}
+
+
+// ID 100 on bus 1
+void read_M400_100(CAN_message_t &imsg){
+  // multiplexer first-bit
+  switch (imsg.buf[0]) {
+    case 4:
+      M400_rpm = imsg.buf[4] << 8 | imsg.buf[5];
+      break;
+  }
+}
+
+
+// ID 101 on bus 1
+void read_M400_101(CAN_message_t &imsg){
+  // multiplexer first-bit
+  switch (imsg.buf[0]) {
+
+    case 2:
+      M400_batteryVoltage = imsg.buf[6] << 8 | imsg.buf[7];
+      break;
+
+    case 3:
+      M400_engineTemp = imsg.buf[6] << 8 | imsg.buf[7];
+      break;
+  }
+}
+
+
+
+
+
+
+// function that reads the msg and then directs that data elsewhere
+void read_can1(){
+  if (cbus1.read(rxmsg)){
+
+    switch (rxmsg.id) {
+      case 100:
+        read_M400_100(rxmsg);
+        break;
+      case 101:
+        read_M400_101(rxmsg);
+        break;
+    } // end switch statement
+
+  }
+}
+
+
+// function that reads the msg and then directs that data elsewhere
+void read_can2(){
+  if (cbus2.read(rxmsg)){
+
+    switch (rxmsg.id) {
+      case 411:
+        read_ATCCF_11(rxmsg);
+        break;
+      case 710:
+        read_USER_10(rxmsg);
+        break;
+    } // end switch statement
+
+  }
 }
 
 #endif

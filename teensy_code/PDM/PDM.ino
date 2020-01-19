@@ -8,8 +8,10 @@
 #include <SPI.h>
 
 /* TODOS:
- *  - 
+ *  -
 */
+
+float temp_volt = 0;
 
 // global variable definition
 int GLO_engine_state = 0;
@@ -29,6 +31,9 @@ int GLO_read_resolution_bits = 10;
 
 // support class for diode-based board temp
 #include "board_temp.hpp"
+
+// odds and ends functions
+#include "misc_fcns.hpp"
 
 // timer that you can use to print things out for debugging
 EasyTimer debug(10);
@@ -68,13 +73,15 @@ void loop() {
   // put your main code here, to run repeatedly:
   //sample_ADCs();
 
+  // read both can buses
+  read_can1();
+  read_can2();
+
+  determine_engine_state(GLO_engine_state);
   fan_left.set_pwm(GLO_engine_state);
   fan_right.set_pwm(GLO_engine_state);
   water_pump.set_pwm(GLO_engine_state);
 
   if (debug.isup()){
-    send_PDM_10();
-    send_PDM_11();
   }
-
 }

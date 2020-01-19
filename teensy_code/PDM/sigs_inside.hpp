@@ -17,6 +17,9 @@ StateSignal USER_fanLeftOverride(16, true, 1, 0, -5, 100, -1, 1000);
 StateSignal USER_fanRightOverride(16, true, 1, 0, -5, 100, -1, 1000);
 StateSignal USER_wpOverride(16, true, 1, 0, -5, 100, -1, 1000);
 
+StateSignal ATCCF_brakePressureF(16, true, 10, 0, -3276.8, 3276.7, 0, 500);
+StateSignal ATCCF_brakePressureR(16, true, 10, 0, -3276.8, 3276.7, 0, 500);
+
 
 
 // outgoing/internal signals
