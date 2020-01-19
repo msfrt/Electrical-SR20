@@ -11,11 +11,22 @@
  *  -
 */
 
-float temp_volt = 0;
-
 // global variable definition
-int GLO_engine_state = 0;
-int GLO_read_resolution_bits = 10;
+int GLO_engine_state = 0; // engine state
+int GLO_read_resolution_bits = 10; // bits for Teensy-based read resolution
+
+// minimum voltage for the engine to be in "cranking" mode
+const int GLO_cranking_starter_volt_threshold = 5;
+// max rpm for the engine to still be in "cranking" mode
+const int GLO_cranking_rpm_threshold = 2000;
+// engine running min rpm threshold
+const int GLO_engine_on_rpm_threshold = 900;
+// engine cooldown state duration in milliseconds
+const int GLO_engine_cooldown_duration = 2500;
+
+const int GLO_brakelight_min_pressure_F = 60; // minimum pressure required to activate the brakelight (PSI)
+const int GLO_brakelight_min_pressure_R = 60;
+const int GLO_brakelight_teensy_pin = 4;
 
 // useful sensor sampling definitions can be found here
 #include "sensors.hpp"
@@ -28,6 +39,9 @@ int GLO_read_resolution_bits = 10;
 
 // CAN message definitions are inside
 #include "can_msgs.hpp"
+
+// CAN send & read functions are inside
+#include "can_fcns.hpp"
 
 // support class for diode-based board temp
 #include "board_temp.hpp"
@@ -76,7 +90,14 @@ void loop() {
   // read both can buses
   read_can1();
   read_can2();
+  // send things (includes timers)
+  send_can1();
+  send_can2();
 
+  // run the brakelight
+  brakelight();
+
+  // determine engine state and control PWM outputs
   determine_engine_state(GLO_engine_state);
   fan_left.set_pwm(GLO_engine_state);
   fan_right.set_pwm(GLO_engine_state);

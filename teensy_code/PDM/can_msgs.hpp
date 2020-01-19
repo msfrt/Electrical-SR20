@@ -2,6 +2,7 @@
 #define CAN_MESSAGES_HPP
 
 #include <FlexCAN_T4.h>
+#include <EasyTimer.h>
 #include "sigs_inside.hpp"
 
 FlexCAN_T4<CAN1, RX_SIZE_256, TX_SIZE_16> cbus1;
@@ -352,90 +353,87 @@ void send_PDM_24(){
 }
 
 
-
-
-
-
-
-
-// ID 411 on bus 2
-void read_ATCCF_11(CAN_message_t &imsg){
-  ATCCF_brakePressureF = imsg.buf[2] | imsg.buf[3] << 8;
-  ATCCF_brakePressureR = imsg.buf[4] | imsg.buf[5] << 8;
+void send_can1(){
+  // hey, there's nothing in here! (for now, at least)
 }
 
+void send_can2(){
 
-// ID 710 on bus 2
-void read_USER_10(CAN_message_t &imsg){
-  USER_fanLeftOverride    = imsg.buf[0] | imsg.buf[1] << 8;
-  USER_fanRightOverride   = imsg.buf[2] | imsg.buf[3] << 8;
-  USER_wpOverride         = imsg.buf[4] | imsg.buf[5] << 8;
-  USER_brakeLightOverride = imsg.buf[6] | imsg.buf[7] << 8;
-}
-
-
-// ID 100 on bus 1
-void read_M400_100(CAN_message_t &imsg){
-  // multiplexer first-bit
-  switch (imsg.buf[0]) {
-    case 4:
-      M400_rpm = imsg.buf[4] << 8 | imsg.buf[5];
-      break;
+  static EasyTimer PDM_10_timer(100); // 100Hz
+  if (PDM_10_timer.isup()){
+    send_PDM_10();
   }
-}
 
-
-// ID 101 on bus 1
-void read_M400_101(CAN_message_t &imsg){
-  // multiplexer first-bit
-  switch (imsg.buf[0]) {
-
-    case 2:
-      M400_batteryVoltage = imsg.buf[6] << 8 | imsg.buf[7];
-      break;
-
-    case 3:
-      M400_engineTemp = imsg.buf[6] << 8 | imsg.buf[7];
-      break;
+  static EasyTimer PDM_11_timer(100); // 100Hz
+  if (PDM_11_timer.isup()){
+    send_PDM_11();
   }
-}
 
-
-
-
-
-
-// function that reads the msg and then directs that data elsewhere
-void read_can1(){
-  if (cbus1.read(rxmsg)){
-
-    switch (rxmsg.id) {
-      case 100:
-        read_M400_100(rxmsg);
-        break;
-      case 101:
-        read_M400_101(rxmsg);
-        break;
-    } // end switch statement
-
+  static EasyTimer PDM_12_timer(100); // 100Hz
+  if (PDM_12_timer.isup()){
+    send_PDM_12();
   }
-}
 
-
-// function that reads the msg and then directs that data elsewhere
-void read_can2(){
-  if (cbus2.read(rxmsg)){
-
-    switch (rxmsg.id) {
-      case 411:
-        read_ATCCF_11(rxmsg);
-        break;
-      case 710:
-        read_USER_10(rxmsg);
-        break;
-    } // end switch statement
-
+  static EasyTimer PDM_13_timer(100); // 100Hz
+  if (PDM_13_timer.isup()){
+    send_PDM_13();
   }
+
+  static EasyTimer PDM_14_timer(100); // 100Hz
+  if (PDM_14_timer.isup()){
+    send_PDM_14();
+  }
+
+  static EasyTimer PDM_15_timer(100); // 100Hz
+  if (PDM_15_timer.isup()){
+    send_PDM_15();
+  }
+
+  static EasyTimer PDM_16_timer(100); // 100Hz
+  if (PDM_16_timer.isup()){
+    send_PDM_16();
+  }
+
+  static EasyTimer PDM_17_timer(100); // 100Hz
+  if (PDM_17_timer.isup()){
+    send_PDM_17();
+  }
+
+  static EasyTimer PDM_18_timer(100); // 100Hz
+  if (PDM_18_timer.isup()){
+    send_PDM_18();
+  }
+
+  static EasyTimer PDM_19_timer(100); // 100Hz
+  if (PDM_19_timer.isup()){
+    send_PDM_19();
+  }
+
+  static EasyTimer PDM_20_timer(100); // 100Hz
+  if (PDM_20_timer.isup()){
+    send_PDM_20();
+  }
+
+  static EasyTimer PDM_21_timer(100); // 100Hz
+  if (PDM_21_timer.isup()){
+    send_PDM_21();
+  }
+
+  static EasyTimer PDM_22_timer(100); // 100Hz
+  if (PDM_22_timer.isup()){
+    send_PDM_22();
+  }
+
+  static EasyTimer PDM_23_timer(50); // 50Hz
+  if (PDM_23_timer.isup()){
+    send_PDM_23();
+  }
+
+  static EasyTimer PDM_24_timer(50); // 50Hz
+  if (PDM_24_timer.isup()){
+    send_PDM_24();
+  }
+
 }
 
 #endif
