@@ -28,6 +28,8 @@ const int GLO_brakelight_min_pressure_F = 60; // minimum pressure required to ac
 const int GLO_brakelight_min_pressure_R = 60;
 const int GLO_brakelight_teensy_pin = 4;
 
+const int GLO_data_circuit_teensy_pin = 5;
+
 // useful sensor sampling definitions can be found here
 #include "sensors.hpp"
 
@@ -48,6 +50,9 @@ const int GLO_brakelight_teensy_pin = 4;
 
 // odds and ends functions
 #include "misc_fcns.hpp"
+
+// on-board diagnostics
+#include "obd.hpp"
 
 // timer that you can use to print things out for debugging
 EasyTimer debug(3);
@@ -82,11 +87,14 @@ void setup() {
   // initialize the ADC sensors
   initialize_ADCs();
 
+  // initialize the data circuit pin
+  pinMode(GLO_data_circuit_teensy_pin, OUTPUT);
+  // turn the data circuit on
+  digitalWrite(GLO_data_circuit_teensy_pin, HIGH);
+
 }
 
 void loop() {
-
-
   //sample_ADCs();
 
   // read both can buses
@@ -104,6 +112,9 @@ void loop() {
   fan_left.set_pwm(GLO_engine_state);
   fan_right.set_pwm(GLO_engine_state);
   water_pump.set_pwm(GLO_engine_state);
+
+  // continously run OBD (individual timers are included)
+  obd();
 
   if (debug.isup()){
     Serial.println();Serial.println();Serial.println();
