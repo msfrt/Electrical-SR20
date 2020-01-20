@@ -117,13 +117,5 @@ void loop() {
   obd();
 
   if (debug.isup()){
-    Serial.println();Serial.println();Serial.println();
-
-    Serial.print("rpm: "); Serial.println(M400_rpm.value());
-    Serial.print("engine temp: "); Serial.println(M400_engineTemp.value());
-    Serial.print("battery volt: "); Serial.println(M400_batteryVoltage.value());
-    Serial.print("eng state: "); Serial.println(GLO_engine_state);
-    Serial.print("user fanl: "); Serial.println(USER_fanLeftOverride.value());
-    Serial.print("fanl duty: "); Serial.println(PDM_fanLeftPWM.value());
   }
 }

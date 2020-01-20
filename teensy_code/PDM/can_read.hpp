@@ -63,8 +63,6 @@ void read_can1(){
       case 101:
         read_M400_101(rxmsg);
         break;
-      case 710: // TEMPORARY - REMOVE
-        read_USER_10(rxmsg);
     } // end switch statement
 
   }

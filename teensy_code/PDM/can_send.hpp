@@ -349,7 +349,7 @@ void send_PDM_24(){
   msg.buf[6] = PDM_teensyTemp.can_value();
   msg.buf[7] = PDM_teensyTemp.can_value() >> 8;
 
-  cbus1.write(msg);
+  cbus2.write(msg);
 }
 
 
