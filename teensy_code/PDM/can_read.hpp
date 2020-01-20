@@ -7,17 +7,17 @@
 
 // ID 411 on bus 2
 void read_ATCCF_11(CAN_message_t &imsg){
-  ATCCF_brakePressureF = imsg.buf[2] | imsg.buf[3] << 8;
-  ATCCF_brakePressureR = imsg.buf[4] | imsg.buf[5] << 8;
+  ATCCF_brakePressureF.set_can_value(imsg.buf[2] | imsg.buf[3] << 8);
+  ATCCF_brakePressureR.set_can_value(imsg.buf[4] | imsg.buf[5] << 8);
 }
 
 
 // ID 710 on bus 2
 void read_USER_10(CAN_message_t &imsg){
-  USER_fanLeftOverride    = imsg.buf[0] | imsg.buf[1] << 8;
-  USER_fanRightOverride   = imsg.buf[2] | imsg.buf[3] << 8;
-  USER_wpOverride         = imsg.buf[4] | imsg.buf[5] << 8;
-  USER_brakeLightOverride = imsg.buf[6] | imsg.buf[7] << 8;
+  USER_fanLeftOverride.set_can_value(imsg.buf[0] | imsg.buf[1] << 8);
+  USER_fanRightOverride.set_can_value(imsg.buf[2] | imsg.buf[3] << 8);
+  USER_wpOverride.set_can_value(imsg.buf[4] | imsg.buf[5] << 8);
+  USER_brakeLightOverride.set_can_value(imsg.buf[6] | imsg.buf[7] << 8);
 }
 
 
@@ -26,7 +26,7 @@ void read_M400_100(CAN_message_t &imsg){
   // multiplexer first-bit
   switch (imsg.buf[0]) {
     case 4:
-      M400_rpm = imsg.buf[4] << 8 | imsg.buf[5];
+      M400_rpm.set_can_value(imsg.buf[4] << 8 | imsg.buf[5]);
       break;
   }
 }
@@ -38,11 +38,11 @@ void read_M400_101(CAN_message_t &imsg){
   switch (imsg.buf[0]) {
 
     case 2:
-      M400_batteryVoltage = imsg.buf[6] << 8 | imsg.buf[7];
+      M400_batteryVoltage.set_can_value(imsg.buf[6] << 8 | imsg.buf[7]);
       break;
 
     case 3:
-      M400_engineTemp = imsg.buf[6] << 8 | imsg.buf[7];
+      M400_engineTemp.set_can_value(imsg.buf[6] << 8 | imsg.buf[7]);
       break;
   }
 }
@@ -63,6 +63,8 @@ void read_can1(){
       case 101:
         read_M400_101(rxmsg);
         break;
+      case 710: // TEMPORARY - REMOVE
+        read_USER_10(rxmsg);
     } // end switch statement
 
   }

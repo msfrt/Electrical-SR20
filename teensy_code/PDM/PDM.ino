@@ -50,7 +50,8 @@ const int GLO_brakelight_teensy_pin = 4;
 #include "misc_fcns.hpp"
 
 // timer that you can use to print things out for debugging
-EasyTimer debug(10);
+EasyTimer debug(3);
+
 
 void setup() {
 
@@ -84,7 +85,8 @@ void setup() {
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
+
+
   //sample_ADCs();
 
   // read both can buses
@@ -104,5 +106,13 @@ void loop() {
   water_pump.set_pwm(GLO_engine_state);
 
   if (debug.isup()){
+    Serial.println();Serial.println();Serial.println();
+
+    Serial.print("rpm: "); Serial.println(M400_rpm.value());
+    Serial.print("engine temp: "); Serial.println(M400_engineTemp.value());
+    Serial.print("battery volt: "); Serial.println(M400_batteryVoltage.value());
+    Serial.print("eng state: "); Serial.println(GLO_engine_state);
+    Serial.print("user fanl: "); Serial.println(USER_fanLeftOverride.value());
+    Serial.print("fanl duty: "); Serial.println(PDM_fanLeftPWM.value());
   }
 }
