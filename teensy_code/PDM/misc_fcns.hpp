@@ -64,11 +64,4 @@ bool brakelight(){
 }
 
 
-bool data_circuit_on(bool on_bool = true){
-  if (on_bool){
-    digitalWrite()
-  }
-}
-
-
 #endif

@@ -12,8 +12,8 @@
 */
 
 // global variable definition
-int GLO_engine_state = 0; // engine state
-int GLO_read_resolution_bits = 10; // bits for Teensy-based read resolution
+int GLO_engine_state = 0; // engine state (no need to change this variable)
+const int GLO_read_resolution_bits = 10; // bits for Teensy-based read resolution
 
 // minimum voltage for the engine to be in "cranking" mode
 const int GLO_cranking_starter_volt_threshold = 5;
