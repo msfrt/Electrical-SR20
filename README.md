@@ -76,3 +76,4 @@ few packages that we highly recommend:
 * [Linter](https://atom.io/packages/linter)
 * [Minimap](https://atom.io/packages/minimap)
 * [File Icons](https://atom.io/packages/file-icons)
+* [autosave](https://atom.io/packages/autosave)
