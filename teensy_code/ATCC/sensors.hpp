@@ -37,8 +37,8 @@ ADCSensor sus_travel_rl_sens(ADC3_CS, 3, 0, 1000);
 ADCSensor coolant_temp_outlet_sens(ADC3_CS, 5, 0, 1000);
 ADCSensor coolant_temp_inlet_sens(ADC3_CS, 7, 0, 1000);
 
-ADCSensor tire_temp_rl_inner__sens(ADC2_CS, 3, 400, 30);
-ADCSensor tire_temp_rl_middle__sens(ADC2_CS, 5, 400, 30);
+ADCSensor tire_temp_rl_inner_sens(ADC2_CS, 3, 400, 30);
+ADCSensor tire_temp_rl_middle_sens(ADC2_CS, 5, 400, 30);
 ADCSensor tire_temp_rl_outer_sens(ADC2_CS, 6, 400, 30);
 ADCSensor tire_temp_rr_inner_sens(ADC1_CS, 5, 400, 30);
 ADCSensor tire_temp_rr_middle_sens(ADC1_CS, 6, 400, 30);
@@ -62,14 +62,15 @@ void initialize_ADCs_F(){
   tire_temp_fl_inner_sens.begin();
   tire_temp_fl_middle_sens.begin();
   tire_temp_fl_outer_sens.begin();
+}
 
 void initialize_ADCs_R(){
   sus_travel_rr_sens.begin();
   sus_travel_rl_sens.begin();
   coolant_temp_outlet_sens.begin();
   coolant_temp_inlet_sens.begin();
-  tire_temp_rl_inner__sens.begin();
-  tire_temp_rl_middle__sens.begin();
+  tire_temp_rl_inner_sens.begin();
+  tire_temp_rl_middle_sens.begin();
   tire_temp_rl_outer_sens.begin();
   tire_temp_rr_inner_sens.begin();
   tire_temp_rr_middle_sens.begin();
@@ -90,7 +91,7 @@ void sample_ADCs_F(){
 
   // 200 Hz
   static EasyTimer sample_timer_2(200);
-  if sample_timer_2.isup(){
+  if (sample_timer_2.isup()){
     // brake pressures
     brake_pressure_front_sens.sample();
     brake_pressure_rear_sens.sample();
@@ -100,7 +101,7 @@ void sample_ADCs_F(){
 
   // 100 Hz
   static EasyTimer sample_timer_3(100);
-  if sample_timer_3.isup(){
+  if (sample_timer_3.isup()){
     // rotor temps
     brake_temp_fl_sens.sample();
     brake_temp_fr_sens.sample();
@@ -128,7 +129,7 @@ void sample_ADCs_R(){
 
   // 100 Hz
   static EasyTimer sample_timer_2(100);
-  if sample_timer_2.isup(){
+  if (sample_timer_2.isup()){
     // rotor temps
     brake_temp_rl_sens.sample();
     brake_temp_rr_sens.sample();

@@ -30,9 +30,6 @@ StateSignal ATCCF_tireTempFRI(16, true, 10, 0, -3276, 3276, 0);
 StateSignal ATCCF_tireTempFRM(16, true, 10, 0, -3276, 3276, 0);
 StateSignal ATCCF_tireTempFRO(16, true, 10, 0, -3276, 3276, 0);
 
-StateSignal ATCCF_suspensionTravelFL(16, true, 1000, 0, -32, 32, 0);
-StateSignal ATCCF_suspensionTravelFR(16, true, 1000, 0, -32, 32, 0);
-
 // rear ATCC
 StateSignal ATCCR_boardTemp(16, true, 10, 0, -3276, 3276, 0);
 StateSignal ATCCR_coolantTempRadInlet(16, true, 10, 0, -3276, 3276, 0);

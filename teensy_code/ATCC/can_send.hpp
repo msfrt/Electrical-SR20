@@ -45,16 +45,16 @@ void send_ATCCF_11(){
   msg.id = 411;
   msg.len = 8;
 
-  ATCCF_breakPressureF = brake_pressure_front_sens.avg();
-  ATCCF_breakPressureR = brake_pressure_rear_sens.avg();
+  ATCCF_brakePressureF = brake_pressure_front_sens.avg();
+  ATCCF_brakePressureR = brake_pressure_rear_sens.avg();
   ATCCF_steeringWheelAngle =swa_sens.avg();
 
   msg.buf[0] = ctr.value();
   msg.buf[1] = 0;
-  msg.buf[2] = ATCCF_breakPressureF.can_value();
-  msg.buf[3] = ATCCF_breakPressureF.can_value() >> 8;
-  msg.buf[4] = ATCCF_breakPressureR.can_value();
-  msg.buf[5] = ATCCF_breakPressureR.can_value() >> 8;
+  msg.buf[2] = ATCCF_brakePressureF.can_value();
+  msg.buf[3] = ATCCF_brakePressureF.can_value() >> 8;
+  msg.buf[4] = ATCCF_brakePressureR.can_value();
+  msg.buf[5] = ATCCF_brakePressureR.can_value() >> 8;
   msg.buf[6] = ATCCF_steeringWheelAngle.can_value();
   msg.buf[7] = ATCCF_steeringWheelAngle.can_value() >> 8;
 
