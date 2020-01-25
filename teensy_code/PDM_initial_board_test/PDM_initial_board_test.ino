@@ -23,7 +23,7 @@ Adafruit_NeoPixel led = Adafruit_NeoPixel(1, ledSig, NEO_GRB + NEO_KHZ800);
 void setup() {
   // put your setup code here, to run once:
 
-  pinMode(ledSig, OUTPUT);
+  //pinMode(ledSig, OUTPUT);
   pinMode(adc1_cs, OUTPUT);
   pinMode(brakelightSig, OUTPUT);
   pinMode(dataSig, OUTPUT);
@@ -38,14 +38,22 @@ void setup() {
   pinMode(drsSig, OUTPUT);
   pinMode(boardTemp, OUTPUT);
 
+  digitalWrite(drsSig, LOW);
+
   led.setBrightness(ledBrightness);
   led.begin();
   led.show();
-  led.setPixelColor(1, 0, 30, 0);
 
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
+
+  led.setPixelColor(0, 0, 30, 0);
+  led.show();
+  delay(200);
+  led.setPixelColor(0, 0, 0, 0);
+  led.show();
+  delay(200);
 
 }
