@@ -100,9 +100,6 @@ void loop() {
   // read both can buses
   read_can1();
   read_can2();
-  // send things (includes timers)
-  send_can1();
-  send_can2();
 
   // run the brakelight
   brakelight();
@@ -115,6 +112,10 @@ void loop() {
 
   // continously run OBD (individual timers are included)
   obd();
+
+  // send all of the things
+  send_can1();
+  send_can2();
 
   if (debug.isup()){
   }
