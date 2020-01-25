@@ -1,5 +1,3 @@
-// written by Dave Yonkers, 2020
-
 #include <EasyTimer.h>
 #include <PWMControl.h>
 #include <ReadADC.h>
@@ -24,6 +22,9 @@ void setup() {
   // Initialize serial communication
   Serial.begin(112500);
 
+  // initialize SPI communication
+  SPI.begin();
+
   //initialize the CAN Bus and set its baud rate to 1Mb
   cbus2.begin();
   cbus2.setBaudRate(1000000);
@@ -35,13 +36,22 @@ void setup() {
     case 0:
       initialize_ADCs_F();
       break;
+    case 1:
+      initialize_ADCs_R();
+      break;
   }
-
 }
 
-void loop() {
-  // put your main code here, to run repeatedly:
 
-  //
-  // send_can_front(); // this will go somewhere in here.
+void loop() {
+  switch (ATCCMS) {
+    case 0:
+      sample_ADCs_F();
+      send_can_F();
+      break;
+    case 1:
+      sample_ADCs_R();
+      send_can_R();
+      break;
+  }
 }
