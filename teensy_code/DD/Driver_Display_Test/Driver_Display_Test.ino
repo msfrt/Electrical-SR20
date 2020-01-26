@@ -18,8 +18,8 @@ Adafruit_NeoPixel ledRight (4, 3, NEO_GRB + NEO_KHZ800);
 EasyTimer ledTimer(1);
 
 //CAN Setup
-FlexCAN_T4<Can1, RX_SIZE_256, TX_SIZE_16> cbus1;
-FlexCAN_T4<Can2, RX_SIZE_256, TX_SIZE_16> cbus2;
+FlexCAN_T4<CAN1, RX_SIZE_256, TX_SIZE_16> cbus1;
+FlexCAN_T4<CAN2, RX_SIZE_256, TX_SIZE_16> cbus2;
 
 StateSignal testCAN1(8, true, 1, 0, -127, 127, 0);
 StateSignal testCAN2(8, true, 1, 0, -127, 127, 0);
