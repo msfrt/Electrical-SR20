@@ -91,18 +91,30 @@ void loop() {
 //  digitalWrite(drsSig, LOW);
 //  delay(200);
 
-//  // call anaRead() every 5uS which is 200000 Hz or 200000 Sps, the max rate for the ADC128S022
-//  if ((micros() - timer) > 100){
-//    anaRead(adc2_cs,0);
-//    anaRead(adc2_cs,1);
-//    anaRead(adc2_cs,2);
-//    anaRead(adc2_cs,3);
-//    anaRead(adc2_cs,4);
-//    anaRead(adc2_cs,5);
-//    anaRead(adc2_cs,6);
-//    anaRead(adc2_cs,7);
-//    timer = micros();
-//  }
+  // call anaRead() every 5uS which is 200000 Hz or 200000 Sps, the max rate for the ADC128S022
+  if ((micros() - timer) > 100000){
+    anaRead(adc1_cs,0);
+    anaRead(adc1_cs,1);
+    anaRead(adc1_cs,2);
+    anaRead(adc1_cs,3);
+    anaRead(adc1_cs,4);
+    anaRead(adc1_cs,5);
+    anaRead(adc1_cs,6);
+    anaRead(adc1_cs,7);
+    timer = micros();
+
+    anaRead(adc2_cs,0);
+    anaRead(adc2_cs,1);
+    anaRead(adc2_cs,2);
+    anaRead(adc2_cs,3);
+    anaRead(adc2_cs,4);
+    anaRead(adc2_cs,5);
+    anaRead(adc2_cs,6);
+    anaRead(adc2_cs,7);
+    timer = micros();
+
+    Serial.println("-------------------");
+  }
 
 //
 //  // slow down the read rate for testing
