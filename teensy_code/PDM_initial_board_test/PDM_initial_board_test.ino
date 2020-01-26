@@ -40,6 +40,8 @@ const uint8_t numPages = 256;
 
 Adafruit_NeoPixel led = Adafruit_NeoPixel(1, ledSig, NEO_GRB + NEO_KHZ800);
 
+int buff[8];
+
 void setup() {
   // put your setup code here, to run once:
 
@@ -69,6 +71,11 @@ void setup() {
   // write the CS pin high to disable the eeprom chip
   digitalWrite(eepromCS, HIGH);
 
+  digitalWrite(rightFanSig, HIGH);
+  digitalWrite(leftFanSig, HIGH);
+  digitalWrite(wpSig, HIGH);
+  //digitalWrite(dataSig, HIGH);
+
   // initialize serial communication
   Serial.begin(112500);
 
@@ -93,24 +100,36 @@ void loop() {
 
   // call anaRead() every 5uS which is 200000 Hz or 200000 Sps, the max rate for the ADC128S022
   if ((micros() - timer) > 100000){
-    anaRead(adc1_cs,1);
-    anaRead(adc1_cs,2);
-    anaRead(adc1_cs,3);
-    anaRead(adc1_cs,4);
-    anaRead(adc1_cs,5);
-    anaRead(adc1_cs,6);
-    anaRead(adc1_cs,7);
-    anaRead(adc1_cs,8);
-    timer = micros();
 
-    anaRead(adc2_cs,1);
-    anaRead(adc2_cs,2);
-    anaRead(adc2_cs,3);
-    anaRead(adc2_cs,4);
-    anaRead(adc2_cs,5);
-    anaRead(adc2_cs,6);
-    anaRead(adc2_cs,7);
-    anaRead(adc2_cs,8);
+//    for(auto i = 1; i <= 8; i++){
+//      buff[i-1] = anaRead(adc1_cs,i);
+//      //delay(20);
+//      
+//      }
+  anaRead(adc1_cs,1);
+
+//  for(auto i = 0; i < 8; i++){
+//    
+//    float voltage;
+//    voltage = (float(buff[i]) / 4095) * 5;
+//    Serial.print("Input ");
+//    Serial.print(i);
+//    Serial.print(": ");
+//    Serial.print(buff[i]);
+//    Serial.print("  which is: ");
+//    Serial.print(voltage, 4);
+//    Serial.println(" Volts");
+//  }
+ 
+
+//    anaRead(adc2_cs,1);
+//    anaRead(adc2_cs,2);
+//    anaRead(adc2_cs,3);
+//    anaRead(adc2_cs,4);
+//    anaRead(adc2_cs,5);
+//    anaRead(adc2_cs,6);
+//    anaRead(adc2_cs,7);
+//    anaRead(adc2_cs,8);
     timer = micros();
 
     Serial.println("-------------------");
@@ -155,6 +174,11 @@ int anaRead(int adcCS, uint16_t channelNo) {
 
 
   uint16_t readValue = 0;
+  uint16_t readValue1 = 0;
+  uint16_t readValue2 = 0;
+  uint16_t readValue3 = 0;
+  uint16_t readValue4 = 0;
+  uint16_t readValue5 = 0;
 
   // Start the SPI communication
   // SPISettings(clk frequency, bit order, SPI Mode (google arduino SPI modes for details))
@@ -179,6 +203,18 @@ int anaRead(int adcCS, uint16_t channelNo) {
 
   // send the channelNo for the ADC to read
   readValue = SPI.transfer16(channelNo << 11);
+  readValue1 = SPI.transfer16(channelNo+1 << 11);
+  readValue2 = SPI.transfer16(channelNo+2 << 11);
+  readValue3 = SPI.transfer16(channelNo+3 << 11);
+  readValue4 = SPI.transfer16(channelNo+4 << 11);
+  readValue5 = SPI.transfer16(channelNo+5 << 11);
+
+  Serial.println(readValue);
+  Serial.println(readValue1);
+  Serial.println(readValue2);
+  Serial.println(readValue3);
+  Serial.println(readValue4);
+  Serial.println(readValue5);
 
   //--------------------------------------------------------------------------------------------------------------------
   // the following is for debugging the bitshifting process
@@ -201,14 +237,14 @@ int anaRead(int adcCS, uint16_t channelNo) {
   
   //--------------------------------------------------------------------------------------------------------------------
   // the following is for debugging the returned value from the ADC
-  float voltage = (float(readValue) / 4095) * 5;
-  Serial.print("Input ");
-  Serial.print(channelNo);
-  Serial.print(": ");
-  Serial.print(readValue);
-  Serial.print("  which is: ");
-  Serial.print(voltage, 4);
-  Serial.println(" Volts");
+//  float voltage = (float(readValue) / 4095) * 5;
+//  Serial.print("Input ");
+//  Serial.print(channelNo);
+//  Serial.print(": ");
+//  Serial.print(readValue);
+//  Serial.print("  which is: ");
+//  Serial.print(voltage, 4);
+//  Serial.println(" Volts");
   //--------------------------------------------------------------------------------------------------------------------
 
   // end the SPI communication
