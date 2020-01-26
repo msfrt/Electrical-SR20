@@ -63,9 +63,6 @@ void setup() {
   // Initialize serial communication
   Serial.begin(112500);
 
-  // initialize SPI communication
-  SPI.begin();
-
   //initialize the CAN Bus and set its baud rate to 1Mb
   cbus1.begin();
   cbus1.setBaudRate(1000000);
@@ -87,15 +84,22 @@ void setup() {
   // initialize the ADC sensors
   initialize_ADCs();
 
+  // initialize SPI communication
+  SPI.begin();
+
   // initialize the data circuit pin
   pinMode(GLO_data_circuit_teensy_pin, OUTPUT);
   // turn the data circuit on
   digitalWrite(GLO_data_circuit_teensy_pin, HIGH);
 
+  // EEPROM PINS
+  pinMode(9, INPUT);
+  digitalWrite(9, HIGH);
+
 }
 
 void loop() {
-  //sample_ADCs();
+  sample_ADCs();
 
   // read both can buses
   read_can1();
