@@ -118,5 +118,47 @@ void loop() {
   send_can2();
 
   if (debug.isup()){
+
+    Serial.print("PDM Volt: ");
+    Serial.println(pdm_volt_sens.avg());
+
+    Serial.print("Left Fan Volt: ");
+    Serial.println(fanl_volt_sens.avg());
+    
+    Serial.print("Right Fan Volt: ");
+    Serial.println(fanr_volt_sens.avg());
+    
+    Serial.print("Water Pump Volt: ");
+    Serial.println(wp_volt_sens.avg());
+    
+    Serial.print("Main Volt: ");
+    Serial.println(main_volt_sens.avg());
+    
+    Serial.print("Data Volt: ");
+    Serial.println(data_volt_sens.avg());
+    
+    Serial.print("Fuel Volt: ");
+    Serial.println(fuel_volt_sens.avg());
+    
+    Serial.print("Keepalive Volt: ");
+    Serial.println(keepalive_volt_sens.avg());
+    
+    Serial.print("PDM Current: ");
+    Serial.println(pdm_current_sens.avg());
+    
+    Serial.print("Left Fan Current: ");
+    Serial.println(fanl_current_sens.avg());
+    
+    Serial.print("Right Fan Current: ");
+    Serial.println(fanr_current_sens.avg());
+    
+    Serial.print("WP Current: ");
+    Serial.println(wp_current_sens.avg());
+
+    Serial.print("Fuel Current: ");
+    Serial.println(fuel_current_sens.avg());
+
+    Serial.println("------------------------------");
+ 
   }
 }
