@@ -40,6 +40,7 @@ int led_pwm(int &total_pwm){
 bool rpm_bar(Adafruit_NeoPixel &top, const int &numtop, StateSignal &rpm, StateSignal &gear){
 
   static const int idle_rpm = 2000;
+  static const int idle_rev_limit_rpm = 8000;
   static const int rev_limit_rpm = 14000;
 
   static int bar_percentage;
@@ -71,11 +72,11 @@ bool rpm_bar(Adafruit_NeoPixel &top, const int &numtop, StateSignal &rpm, StateS
 
   // downshift
   if (bar_mode == 1){
-    // set first third to be purple
-    for (int i = 0; i <= numtop / 3; ++i){
-      top.setPixelColor(i, 100, 0, 255);
+    // set half to be purple
+    for (int i = 0; i <= numtop / 2; ++i){
+      top.setPixelColor(i, 255 / (3 * (i + 0.05)) , 0, 255 / (3 * (i + 0.05)));
     }
-    for (int i = numtop / 3; i <= numtop; ++i){
+    for (int i = numtop / 2; i <= numtop; ++i){
       top.setPixelColor(i, 0, 0, 0);
     }
 
@@ -94,7 +95,7 @@ bool rpm_bar(Adafruit_NeoPixel &top, const int &numtop, StateSignal &rpm, StateS
       // turn the last half of lights on
       } else {
         rpm_flash_on = true;
-        for (int i = numtop / 2; i <= numPixelsTop; ++i){
+        for (int i = numtop / 2; i <= numtop; ++i){
           top.setPixelColor(i, 255, 0, 0);
         }
       }
@@ -106,7 +107,7 @@ bool rpm_bar(Adafruit_NeoPixel &top, const int &numtop, StateSignal &rpm, StateS
 
     // determine bar percentage * 10 (variable depending on gear). It's out of 1000 for more precision (map is int math)
     if (gear.value() < 1){ // neutral
-      bar_percentage = map(rpm.value(), idle_rpm, rev_limit_rpm, 0, 1000);
+      bar_percentage = map(rpm.value(), idle_rpm, idle_rev_limit_rpm, 0, 1000);
     } else if (gear.value() > 0.9 && gear.value() < 1.1){ // gear 1
       bar_percentage = map(rpm.value(), idle_rpm, upshift12_rpm, 0, 1000);
     } else if (gear.value() > 1.9 && gear.value() < 2.1){ // gear 2
@@ -131,7 +132,7 @@ bool rpm_bar(Adafruit_NeoPixel &top, const int &numtop, StateSignal &rpm, StateS
     for (int i = 0; i <= numtop; i++){
       pwm_current_led = led_pwm(bar_pwms);
       // the divisors take care of the gradients
-      top.setPixelColor(i, pwm_current_led / (numtop - i), pwm_current_led / ((i + 0.01) * 2), 0);
+      top.setPixelColor(i, pwm_current_led / (numtop - i), pwm_current_led / (i + 1), 0);
     }
 
   }

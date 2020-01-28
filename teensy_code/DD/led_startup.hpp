@@ -1,11 +1,11 @@
 #include <Adafruit_NeoPixel.h>
 
-void led_startup(Adafruit_NeoPixel &left, int numleft,
-                 Adafruit_NeoPixel &right, int numright,
-                 Adafruit_NeoPixel &top, int numtop, int delay_mult){
+void led_startup(Adafruit_NeoPixel &top, const int &numtop,
+                 Adafruit_NeoPixel &left, const int &numleft,
+                 Adafruit_NeoPixel &right, const int &numright, const int delay_mult){
 
   // light up side-bars white
-  for (int i = 0; i <= numleft; i++){
+  for (int i = numleft - 1; i >= 0; i--){
     for (int pwm = 0; pwm <= 255; pwm += 8){
       left.setPixelColor(i, pwm, pwm, pwm);
       left.show();
@@ -64,7 +64,7 @@ void led_startup(Adafruit_NeoPixel &left, int numleft,
   delay(delay_mult * 200);
 
   // cascade the sides down
-  for (int i = numleft; i >= 0; i--){
+  for (int i = 0; i <= numleft; i++){
     for (int pwm = 255; pwm >=0; pwm--){
       left.setPixelColor(i, pwm, 0, 0);
       left.show();

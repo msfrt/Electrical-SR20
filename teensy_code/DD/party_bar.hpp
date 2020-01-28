@@ -8,12 +8,11 @@ bool party_bar(Adafruit_NeoPixel &top, const int &numtop,
                Adafruit_NeoPixel &left, const int &numleft,
                Adafruit_NeoPixel &right, const int &numright){
 
+  // static variable definitions. The only thing to change here is the frequency in the rgb_update_timer
   static EasyTimer rgb_update_timer(10);
-
   static int red = 255;
   static int green = 0;
   static int blue = 0;
-
   static int current_step = 0;
 
   if (rgb_update_timer.isup()){
@@ -69,11 +68,6 @@ bool party_bar(Adafruit_NeoPixel &top, const int &numtop,
 
     // increment the step counter
     current_step++;
-
-    Serial.println();
-    Serial.print("R: "); Serial.println(red);
-    Serial.print("G: "); Serial.println(blue);
-    Serial.print("B: "); Serial.println(green);
 
   } // end update timer
 }
