@@ -4,7 +4,7 @@
 
 
 // RGB LEDs are siiiccckkkkkkk bro
-bool party_bar(Adafruit_NeoPixel &top, const int &numtop,
+void party_bar(Adafruit_NeoPixel &top, const int &numtop,
                Adafruit_NeoPixel &left, const int &numleft,
                Adafruit_NeoPixel &right, const int &numright){
 

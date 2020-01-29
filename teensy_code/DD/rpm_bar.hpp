@@ -74,7 +74,7 @@ bool rpm_bar(Adafruit_NeoPixel &top, const int &numtop, StateSignal &rpm, StateS
   if (bar_mode == 1){
     // set half to be purple
     for (int i = 0; i <= numtop / 2; ++i){
-      top.setPixelColor(i, 255 / (3 * (i + 0.05)) , 0, 255 / (3 * (i + 0.05)));
+      top.setPixelColor(i, 0, 255 / (3 * (i + 0.05)), 255 / (3 * (i + 0.05)));
     }
     for (int i = numtop / 2; i <= numtop; ++i){
       top.setPixelColor(i, 0, 0, 0);
