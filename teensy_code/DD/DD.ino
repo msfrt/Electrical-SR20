@@ -3,6 +3,11 @@
 #include <Adafruit_NeoPixel.h>
 #include <StateCAN.h>
 #include <EasyTimer.h>
+#include "SPI.h"
+//#include "Adafruit_GFX.h"
+//#include "Adafruit_ILI9341.h"
+#include "ILI9341_t3.h"
+#include "font_Arial.h"
 
 // NeoPixel parameters
 const int pixels_top_pin = 3; // teensy pin #
@@ -16,6 +21,32 @@ const int pixels_right_cnt = 4;
 Adafruit_NeoPixel pixels_top =   Adafruit_NeoPixel(pixels_top_cnt,   pixels_top_pin,   NEO_GRB + NEO_KHZ800);
 Adafruit_NeoPixel pixels_left =  Adafruit_NeoPixel(pixels_left_cnt,  pixels_left_pin,  NEO_GRB + NEO_KHZ800);
 Adafruit_NeoPixel pixels_right = Adafruit_NeoPixel(pixels_right_cnt, pixels_right_pin, NEO_GRB + NEO_KHZ800);
+
+// TFT display paramters
+#define TFTL_DC 18
+#define TFTL_CS 10
+#define TFTL_MOSI 11
+#define TFTL_MISO 12
+#define TFTL_CLK 13
+#define TFTL_RST 19
+#define TFTL_BL 6
+      int display_left_brightness_percent = 100;
+
+
+#define TFTR_DC 5
+#define TFTR_CS 9
+#define TFTR_MOSI 11
+#define TFTR_MISO 12
+#define TFTR_CLK 13
+#define TFTR_RST 17
+#define TFTR_BL 7
+    int display_right_brightness_percent = 100;
+
+const int DISPLAY_HEIGHT = 240;
+const int DISPLAY_WIDTH = 320;
+
+ILI9341_t3 display_left  = ILI9341_t3(TFTL_CS, TFTL_DC, TFTL_RST, TFTL_MOSI, TFTL_CLK, TFTL_MISO);
+ILI9341_t3 display_right = ILI9341_t3(TFTR_CS, TFTR_DC, TFTR_RST, TFTR_MOSI, TFTR_CLK, TFTR_MISO);
 
 // pins for the steering wheel buttons
 const int button1_pin = 14;
@@ -41,11 +72,16 @@ int screen_mode = 0;
 // signal definitions
 #include "sigs_inside.hpp"
 
+// state_racing_bitmap
+#include "sr_bitmap.hpp"
+
 // debugging timer
 EasyTimer debug(50);
 
 
 void setup() {
+  SPI.begin();
+
   // initialze serial coms
   Serial.begin(115200);
 
@@ -62,6 +98,22 @@ void setup() {
   pixels_left.begin();
   pixels_left.show();
 
+  // initialize screens
+  display_left.begin();
+  display_right.begin();
+  display_left.setRotation(3);
+  display_right.setRotation(1);
+  // draw SR logo
+  display_left.fillScreen(ILI9341_BLACK);
+  display_right.fillScreen(ILI9341_BLACK);
+  //display_left.drawBitmap(0, 0, state_racing_bitmap, DISPLAY_WIDTH, DISPLAY_HEIGHT, ILI9341_WHITE);
+  //display_right.drawBitmap(0, 0, state_racing_bitmap, DISPLAY_WIDTH, DISPLAY_HEIGHT, ILI9341_WHITE);
+  // set screen brightness
+  //pinMode(TFTL_BL, OUTPUT);
+  //pinMode(TFTR_BL, OUTPUT);
+  //analogWrite(TFTL_BL, map(display_left_brightness_percent, 0, 100, 0, 255));
+  //analogWrite(TFTR_BL, map(display_right_brightness_percent, 0, 100, 0, 255));
+
   // initialize buttons
   pinMode(button1_pin, INPUT_PULLUP);
   pinMode(button2_pin, INPUT_PULLUP);
@@ -70,7 +122,12 @@ void setup() {
   // if you set it higher than 5, I have respect for your patience
   led_startup(pixels_top, pixels_top_cnt, pixels_left, pixels_left_cnt, pixels_right, pixels_right_cnt, 1);
 
-  M400_rpm = 5000;
+  // clear the screens
+  //display_left.fillScreen(ILI9341_BLACK);
+  //display_right.fillScreen(ILI9341_BLACK);
+
+  delay(2000);
+  M400_rpm = 11800;
   M400_gear = 2;
 
 }
@@ -112,11 +169,6 @@ void loop() {
   }
 
   if (debug.isup()){
-
-    if (M400_rpm.value() < 11800){
-      M400_rpm = M400_rpm.value() + 15;
-    }
-    Serial.println(M400_rpm.value());
   }
 
 }
