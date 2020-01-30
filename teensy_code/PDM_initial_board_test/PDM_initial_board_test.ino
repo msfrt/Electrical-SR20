@@ -106,7 +106,7 @@ void loop() {
 //      //delay(20);
 //      
 //      }
-  anaRead(adc1_cs,1);
+  anaRead(adc2_cs,1);
 
 //  for(auto i = 0; i < 8; i++){
 //    
@@ -179,10 +179,12 @@ int anaRead(int adcCS, uint16_t channelNo) {
   uint16_t readValue3 = 0;
   uint16_t readValue4 = 0;
   uint16_t readValue5 = 0;
+  uint16_t readValue6 = 0;
+  uint16_t readValue7 = 0;
 
   // Start the SPI communication
   // SPISettings(clk frequency, bit order, SPI Mode (google arduino SPI modes for details))
-  SPI.beginTransaction(SPISettings(3200000, MSBFIRST, SPI_MODE0));
+  SPI.beginTransaction(SPISettings(800000, MSBFIRST, SPI_MODE0));
 
   // take the CS pin low to enable the chip:
   digitalWrite(adcCS,LOW);
@@ -208,6 +210,8 @@ int anaRead(int adcCS, uint16_t channelNo) {
   readValue3 = SPI.transfer16(channelNo+3 << 11);
   readValue4 = SPI.transfer16(channelNo+4 << 11);
   readValue5 = SPI.transfer16(channelNo+5 << 11);
+  readValue6 = SPI.transfer16(channelNo+6 << 11);
+  readValue7 = SPI.transfer16(channelNo+7 << 11);
 
   Serial.println(readValue);
   Serial.println(readValue1);
@@ -215,6 +219,8 @@ int anaRead(int adcCS, uint16_t channelNo) {
   Serial.println(readValue3);
   Serial.println(readValue4);
   Serial.println(readValue5);
+  Serial.println(readValue6);
+  Serial.println(readValue7);
 
   //--------------------------------------------------------------------------------------------------------------------
   // the following is for debugging the bitshifting process
