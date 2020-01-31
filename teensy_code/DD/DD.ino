@@ -11,6 +11,8 @@
 
 // fonts :)
 #include "ili9341_t3n_font_ArialBold.h"
+#include "font_LiberationMonoBold.h"
+#include "font_LiberationMonoBoldItalic.h"
 
 // photos :) - converted with http://www.rinkydinkelectronics.com/t_imageconverter565.php
 #include "lana1.c"
@@ -151,14 +153,29 @@ void setup() {
   M400_rpm = 11800;
   M400_gear = 2;
 
-  display_left.setCursor(0, 10);
-  display_left.setTextColor(ILI9341_WHITE);
-  display_left.setFont();
-  display_left.setTextSize(6);
+  int gap_y_px = 12;
+  int gap_x_px = 1;
+
+  display_left.setTextColor(ILI9341_WHITE, ILI9341_BLACK);
   display_left.setTextWrap(false);
-  display_left.println("TESTING");
-  display_left.setFont(Arial_40_Bold);
-  display_left.println("TESTING");
+  display_left.setFont(LiberationMono_40_Bold);
+  display_left.setCursor(gap_x_px, gap_y_px);
+  display_left.println("OIL: 87.4");
+  display_left.setCursor(gap_x_px, DISPLAY_HEIGHT / 4 + gap_y_px);
+  display_left.println("WTR: 69.4");
+  display_left.setCursor(gap_x_px, (DISPLAY_HEIGHT / 4) * 2 + gap_y_px);
+  display_left.println("RPM:  9.4");
+  display_left.setCursor(gap_x_px, (DISPLAY_HEIGHT / 4) * 3 + gap_y_px);
+  display_left.println("OILT:  69");
+
+  display_left.drawFastHLine(0, (DISPLAY_HEIGHT / 4) * 0, DISPLAY_WIDTH, ILI9341_GREEN);
+  display_left.drawFastHLine(0, (DISPLAY_HEIGHT / 4) * 1, DISPLAY_WIDTH, ILI9341_GREEN);
+  display_left.drawFastHLine(0, (DISPLAY_HEIGHT / 4) * 2, DISPLAY_WIDTH, ILI9341_GREEN);
+  display_left.drawFastHLine(0, (DISPLAY_HEIGHT / 4) * 3, DISPLAY_WIDTH, ILI9341_GREEN);
+  display_left.drawFastHLine(0, (DISPLAY_HEIGHT / 4) * 4 - 1, DISPLAY_WIDTH, ILI9341_GREEN);
+
+  display_left.drawFastVLine(36, 0, DISPLAY_HEIGHT, ILI9341_RED);
+  display_left.drawFastVLine(73, 0, DISPLAY_HEIGHT, ILI9341_RED);
 
 
   // display lana del rey
@@ -166,6 +183,21 @@ void setup() {
   //display_right.writeRect(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, (uint16_t*)lana2);
 
 
+}
+
+// can have MAX 9 digits on a line, including ':'
+void info_screen_right(ILI9341_t3n &screen, StateSignal &signal1, string &label1, int &num_digits1){
+  static int x_buff_px = 1; // pixels between left border and first letter
+  static int y_buff_px = 12; // pixels between top border and first letter
+
+  static float last_val_sig1;
+  static float last_val_sig2;
+  static float last_val_sig3;
+  static float last_val_sig4;
+
+
+
+  
 }
 
 
