@@ -37,7 +37,7 @@ Adafruit_NeoPixel pixels_right = Adafruit_NeoPixel(pixels_right_cnt, pixels_righ
 #define TFTL_CLK 13
 #define TFTL_RST 19
 #define TFTL_BL 6
-    int display_left_brightness_percent = 10;
+    int display_left_brightness_percent = 100;
 
 
 #define TFTR_DC 5
@@ -47,7 +47,7 @@ Adafruit_NeoPixel pixels_right = Adafruit_NeoPixel(pixels_right_cnt, pixels_righ
 #define TFTR_CLK 13
 #define TFTR_RST 17
 #define TFTR_BL 7
-    int display_right_brightness_percent = 10;
+    int display_right_brightness_percent = 100;
 
 const int DISPLAY_HEIGHT = 240;
 const int DISPLAY_WIDTH = 320;
@@ -187,7 +187,7 @@ void setup() {
   M400_groundSpeed = 10.34;
 
   info_test.set_labels("BAT:", "ENGT:", "OILT:", "SPD:");
-  info_test.set_numdigits(4, 3, 3, 4);
+  info_test.set_numdigits(5, 4, 4, 5);
   info_test.set_precisions(4, 4, 4, 4);
   info_test.print_labels();
   info_test.print_lines();
@@ -198,9 +198,9 @@ void setup() {
   M400_oilTemp = 12.26305;
   M400_groundSpeed = 11.234;
 
+  Serial.println("line1");
   info_test.update_signals();
-
-
+  Serial.println("line2");
 }
 
 
@@ -211,13 +211,14 @@ void loop() {
 
   if (millis() < 4000){
 
-  } else if (millis() < 5000){
+  } else if (millis() < 10000){
     M400_batteryVoltage = 12.69;
     M400_engineTemp = 105;
     info_test.sig2_warning = true;
     M400_oilTemp = 65.2;
     M400_groundSpeed = 35.54;
   }
+
 
   // if button 1 was double pressed
   button1_value = check_button(button1_pin, button1_state, button1_time);

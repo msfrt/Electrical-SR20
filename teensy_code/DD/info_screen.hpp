@@ -16,9 +16,10 @@ struct InfoScreen {
   int y_buff_px = 12;
   int char_width_px = 35; // pixel width of one character in the font
 
-  // color definitions
+  // default color definitions
   uint16_t line_color = ILI9341_GREEN;
-  uint16_t text_background = ILI9341_BLACK;
+  uint16_t text_background_default = ILI9341_BLACK;
+  uint16_t text_background_warning = ILI9341_BLACK;
   uint16_t text_color_default = ILI9341_WHITE;
   uint16_t text_color_warning = ILI9341_RED;
 
@@ -115,7 +116,7 @@ void InfoScreen::print_lines(){
 }
 
 void InfoScreen::print_labels(){
-  screen.setTextColor(this->text_color_default, this->text_background);
+  screen.setTextColor(this->text_color_default, this->text_background_default);
   screen.setTextWrap(false);
   screen.setFont(LiberationMono_40_Bold);
 
@@ -143,7 +144,6 @@ bool InfoScreen::update_signals(){
 
   screen.setTextColor(this->text_color_default);
   screen.setTextWrap(false);
-  screen.setFont(LiberationMono_40_Bold);
 
   b1 = this->update_sig1();
   b2 = this->update_sig2();
@@ -176,7 +176,11 @@ bool InfoScreen::update_sig1(bool override){
     }
 
     // overwrite the old pixels on the screen with the background color
-    screen.fillRect(x_loc, 1, DISPLAY_WIDTH - x_loc, (DISPLAY_HEIGHT - 4) / 4, this->text_background);
+    if (!this->sig1_warning){
+      screen.fillRect(x_loc, 1, DISPLAY_WIDTH - x_loc, (DISPLAY_HEIGHT - 4) / 4, this->text_background_default);
+    } else {
+      screen.fillRect(x_loc, 1, DISPLAY_WIDTH - x_loc, (DISPLAY_HEIGHT - 4) / 4, this->text_background_warning);
+    }
 
     // write the text
     screen.print(this->last_val_sig1, this->dec_prec_sig1);
@@ -202,15 +206,19 @@ bool InfoScreen::update_sig2(bool override){
       screen.setTextColor(this->text_color_warning);
     }
 
-    screen.fillRect(x_loc, (DISPLAY_HEIGHT / 4) + 1, DISPLAY_WIDTH - x_loc,
-                   (DISPLAY_HEIGHT - 4) / 4, this->text_background);
+    if (!this->sig2_warning){
+      screen.fillRect(x_loc, (DISPLAY_HEIGHT / 4) + 1, DISPLAY_WIDTH - x_loc,
+                     (DISPLAY_HEIGHT - 4) / 4, this->text_background_default);
+    } else {
+      screen.fillRect(x_loc, (DISPLAY_HEIGHT / 4) + 1, DISPLAY_WIDTH - x_loc,
+                     (DISPLAY_HEIGHT - 4) / 4, this->text_background_warning);
+    }
 
     screen.print(this->last_val_sig2, this->dec_prec_sig2);
 
-    this->update_sig3(true);
     return true;
   }
-  return this->update_sig2(false);
+  return false;
 }
 
 
@@ -229,15 +237,19 @@ bool InfoScreen::update_sig3(bool override){
       screen.setTextColor(this->text_color_warning);
     }
 
-    screen.fillRect(x_loc, (DISPLAY_HEIGHT / 4) * 2 + 1, DISPLAY_WIDTH - x_loc,
-                   (DISPLAY_HEIGHT - 4) / 4, this->text_background);
+    if (!this->sig3_warning){
+      screen.fillRect(x_loc, (DISPLAY_HEIGHT / 4) * 2 + 1, DISPLAY_WIDTH - x_loc,
+                     (DISPLAY_HEIGHT - 4) / 4, this->text_background_default);
+    } else {
+      screen.fillRect(x_loc, (DISPLAY_HEIGHT / 4) * 2 + 1, DISPLAY_WIDTH - x_loc,
+                     (DISPLAY_HEIGHT - 4) / 4, this->text_background_warning);
+    }
 
     screen.print(this->last_val_sig3, this->dec_prec_sig3);
 
-    this->update_sig4(true);
     return true;
   }
-  return this->update_sig4(false);
+  return false;
 }
 
 
@@ -257,8 +269,13 @@ bool InfoScreen::update_sig4(bool override){
       screen.setTextColor(this->text_color_warning);
     }
 
-    screen.fillRect(x_loc, (DISPLAY_HEIGHT / 4) * 3 + 1, DISPLAY_WIDTH - x_loc,
-                   (DISPLAY_HEIGHT - 4) / 4 - 1, this->text_background);
+    if (!this->sig4_warning){
+      screen.fillRect(x_loc, (DISPLAY_HEIGHT / 4) * 3 + 1, DISPLAY_WIDTH - x_loc,
+                     (DISPLAY_HEIGHT - 4) / 4 - 1, this->text_background_default);
+    } else {
+      screen.fillRect(x_loc, (DISPLAY_HEIGHT / 4) * 3 + 1, DISPLAY_WIDTH - x_loc,
+                     (DISPLAY_HEIGHT - 4) / 4 - 1, this->text_background_warning);
+    }
 
     screen.print(this->last_val_sig4, this->dec_prec_sig4);
 
