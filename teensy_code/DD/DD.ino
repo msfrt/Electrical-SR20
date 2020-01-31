@@ -4,10 +4,17 @@
 #include <StateCAN.h>
 #include <EasyTimer.h>
 #include "SPI.h"
-//#include "Adafruit_GFX.h"
+#include "Adafruit_GFX.h"
 //#include "Adafruit_ILI9341.h"
-#include "ILI9341_t3.h"
-#include "font_Arial.h"
+#include "ILI9341_t3n.h"
+#define SPI0_DISP1
+
+// fonts :)
+#include "ili9341_t3n_font_ArialBold.h"
+
+// photos :) - converted with http://www.rinkydinkelectronics.com/t_imageconverter565.php
+#include "lana1.c"
+#include "lana2.c"
 
 // NeoPixel parameters
 const int pixels_top_pin = 3; // teensy pin #
@@ -16,7 +23,7 @@ const int pixels_right_pin = 4;
 const int pixels_top_cnt = 16; // number of LEDs
 const int pixels_left_cnt = 4;
 const int pixels_right_cnt = 4;
-      int pixel_brightness_percent = 10; // 0 - 100; 100 is blinding...
+      int pixel_brightness_percent = 5; // 0 - 100; 100 is blinding...
 
 Adafruit_NeoPixel pixels_top =   Adafruit_NeoPixel(pixels_top_cnt,   pixels_top_pin,   NEO_GRB + NEO_KHZ800);
 Adafruit_NeoPixel pixels_left =  Adafruit_NeoPixel(pixels_left_cnt,  pixels_left_pin,  NEO_GRB + NEO_KHZ800);
@@ -45,8 +52,11 @@ Adafruit_NeoPixel pixels_right = Adafruit_NeoPixel(pixels_right_cnt, pixels_righ
 const int DISPLAY_HEIGHT = 240;
 const int DISPLAY_WIDTH = 320;
 
-ILI9341_t3 display_left  = ILI9341_t3(TFTL_CS, TFTL_DC, TFTL_RST, TFTL_MOSI, TFTL_CLK, TFTL_MISO);
-ILI9341_t3 display_right = ILI9341_t3(TFTR_CS, TFTR_DC, TFTR_RST, TFTR_MOSI, TFTR_CLK, TFTR_MISO);
+
+// Adafruit_ILI9341 display_left  = Adafruit_ILI9341(TFTL_CS, TFTL_DC, TFTL_MOSI, TFTL_CLK, TFTL_RST, TFTL_MISO);
+// Adafruit_ILI9341 display_right = Adafruit_ILI9341(TFTR_CS, TFTR_DC, TFTR_MOSI, TFTR_CLK, TFTR_RST, TFTR_MISO);
+ILI9341_t3n display_left = ILI9341_t3n(TFTL_CS, TFTL_DC, TFTL_RST);
+ILI9341_t3n display_right = ILI9341_t3n(TFTR_CS, TFTR_DC, TFTR_RST);
 
 // pins for the steering wheel buttons
 const int button1_pin = 14;
@@ -78,9 +88,19 @@ int screen_mode = 0;
 // debugging timer
 EasyTimer debug(50);
 
+// used for dynamically changing clock speed
+// #if defined(__IMXRT1062__)
+// extern "C" uint32_t set_arm_clock(uint32_t frequency);
+// #endif
 
 void setup() {
-  SPI.begin();
+
+  // dynamically change clock speed
+  // #if defined(__IMXRT1062__)
+  //   set_arm_clock(45000000);
+  //   Serial.print("F_CPU_ACTUAL=");
+  //   Serial.println(F_CPU_ACTUAL);
+  // #endif
 
   // initialze serial coms
   Serial.begin(115200);
@@ -106,13 +126,15 @@ void setup() {
   // draw SR logo
   display_left.fillScreen(ILI9341_BLACK);
   display_right.fillScreen(ILI9341_BLACK);
-  //display_left.drawBitmap(0, 0, state_racing_bitmap, DISPLAY_WIDTH, DISPLAY_HEIGHT, ILI9341_WHITE);
-  //display_right.drawBitmap(0, 0, state_racing_bitmap, DISPLAY_WIDTH, DISPLAY_HEIGHT, ILI9341_WHITE);
   // set screen brightness
-  //pinMode(TFTL_BL, OUTPUT);
-  //pinMode(TFTR_BL, OUTPUT);
-  //analogWrite(TFTL_BL, map(display_left_brightness_percent, 0, 100, 0, 255));
-  //analogWrite(TFTR_BL, map(display_right_brightness_percent, 0, 100, 0, 255));
+  pinMode(TFTL_BL, OUTPUT);
+  pinMode(TFTR_BL, OUTPUT);
+  analogWrite(TFTL_BL, map(display_left_brightness_percent, 0, 100, 0, 255));
+  analogWrite(TFTR_BL, map(display_right_brightness_percent, 0, 100, 0, 255));
+  // draw the OG state racing logo in white
+  display_left.drawBitmap(0, 0, state_racing_bitmap, DISPLAY_WIDTH, DISPLAY_HEIGHT, ILI9341_WHITE);
+  display_right.drawBitmap(0, 0, state_racing_bitmap, DISPLAY_WIDTH, DISPLAY_HEIGHT, ILI9341_WHITE);
+
 
   // initialize buttons
   pinMode(button1_pin, INPUT_PULLUP);
@@ -123,12 +145,26 @@ void setup() {
   led_startup(pixels_top, pixels_top_cnt, pixels_left, pixels_left_cnt, pixels_right, pixels_right_cnt, 1);
 
   // clear the screens
-  //display_left.fillScreen(ILI9341_BLACK);
-  //display_right.fillScreen(ILI9341_BLACK);
+  display_left.fillScreen(ILI9341_BLACK);
+  display_right.fillScreen(ILI9341_BLACK);
 
-  delay(2000);
   M400_rpm = 11800;
   M400_gear = 2;
+
+  display_left.setCursor(0, 10);
+  display_left.setTextColor(ILI9341_WHITE);
+  display_left.setFont();
+  display_left.setTextSize(6);
+  display_left.setTextWrap(false);
+  display_left.println("TESTING");
+  display_left.setFont(Arial_40_Bold);
+  display_left.println("TESTING");
+
+
+  // display lana del rey
+  //display_left.writeRect(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, (uint16_t*)lana1);
+  //display_right.writeRect(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, (uint16_t*)lana2);
+
 
 }
 
