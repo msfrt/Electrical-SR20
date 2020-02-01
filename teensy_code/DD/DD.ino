@@ -79,11 +79,14 @@ int screen_mode = 0;
 
 // bitmaps - generated here: http://javl.github.io/image2cpp/
 #include "sr_bitmap.hpp"
-#include "big_num_neg10.hpp"
+#include "big_numbers.hpp"
 
 // info screen struct and functions
 #include "info_screen.hpp"
 EasyTimer info_screen_update_timer(10);
+
+// big number display struct and functions
+#include "big_number_display.hpp"
 
 // debugging timer
 EasyTimer debug(50);
@@ -188,11 +191,28 @@ void setup() {
   display_left.fillRect((DISPLAY_WIDTH / 10), 3 * (DISPLAY_HEIGHT / 10), 8 * (DISPLAY_WIDTH / 10),
                          4 * (DISPLAY_HEIGHT / 10), ILI9341_BLACK);
 
-  display_left.drawBitmap(0, 0, big_num_neg10, DISPLAY_WIDTH, DISPLAY_HEIGHT, ILI9341_WHITE);
+  display_left.setCursor(2, 5);
+  display_left.setFont(LiberationMono_32_Bold_Italic);
+  display_left.print("GEAR");
+
+  display_left.drawBitmap(0, 0, big_num_10, DISPLAY_WIDTH, DISPLAY_HEIGHT, ILI9341_WHITE);
+
+  delay(2000);
+  display_left.fillScreen(ILI9341_BLACK);
+  delay(2000);
+
+  NumberDisplay gear_display(display_left, M400_gear, "TC");
+  gear_display.begin();
+
+
+
   //display_left.drawFastVLine(240, 0,     DISPLAY_HEIGHT, ILI9341_GREEN);
 
 
 }
+
+
+
 
 
 
