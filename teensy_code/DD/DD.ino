@@ -38,7 +38,7 @@ Adafruit_NeoPixel pixels_right = Adafruit_NeoPixel(pixels_right_cnt, pixels_righ
 #define TFTL_CLK 13
 #define TFTL_RST 19
 #define TFTL_BL 6
-    int display_left_brightness_percent = 10;
+    int display_left_brightness_percent = 100;
 
 
 #define TFTR_DC 5
@@ -48,7 +48,7 @@ Adafruit_NeoPixel pixels_right = Adafruit_NeoPixel(pixels_right_cnt, pixels_righ
 #define TFTR_CLK 13
 #define TFTR_RST 17
 #define TFTR_BL 7
-    int display_right_brightness_percent = 10;
+    int display_right_brightness_percent = 100;
 
 const int DISPLAY_HEIGHT = 240;
 const int DISPLAY_WIDTH = 320;
@@ -65,8 +65,8 @@ unsigned long button2_time =0 ;
 const unsigned long button_delay = 300; // @GLOBAL_PARAM - milliseconds - used in check_button to avoid double-presses
 
 // modes for the screen and leds
-int led_mode = 0;
-int screen_mode = 0;
+int led_mode = 1;
+int screen_mode = 1;
 
 // include externally-written functions
 #include "led_startup.hpp"
@@ -103,6 +103,11 @@ InfoScreen engine_vitals_right_screen(display_right, M400_rpm, M400_oilPressure,
 InfoScreen auxilary_info_left_screen(display_left, M400_groundSpeed, M400_gear, M400_fuelUsed, PDM_fanLeftPWM,
                                       /* label */  "SPD:",           "GEAR:  ", "FUEL:",         "FAN:",
                       /* max decimal precision */  2,                0,         4,               4);
+
+
+NumberDisplay gear_display_left(display_left, M400_gear, "GEAR");
+NumberDisplay tc_display_left(display_left, M400_gear, "TC"); // change signal when C50 signals are set up
+
 
 void setup() {
 
@@ -155,13 +160,14 @@ void setup() {
   // if you set it higher than 5, I have respect for your patience
   led_startup(pixels_top, pixels_top_cnt, pixels_left, pixels_left_cnt, pixels_right, pixels_right_cnt, 1);
 
+  // non-zero signals for testing purposes only
   M400_rpm = 420;
   M400_oilPressure = 0;
   M400_engineTemp = 0;
   M400_fuelUsed = 100;
   M400_batteryVoltage = 12.653;
   M400_groundSpeed = 0;
-  M400_gear = 0;
+  M400_gear = 5;
   M400_engineTemp = 19.32;
   PDM_fanLeftPWM = 0.1;
 
@@ -179,36 +185,6 @@ void setup() {
   //display_left.writeRect(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, (uint16_t*)fuck_kyle_busch);
   //display_right.writeRect(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, (uint16_t*)fuck_kyle_busch);
 
-
-  display_left.fillScreen(ILI9341_BLACK);
-  display_left.drawFastHLine(0,                  0, DISPLAY_WIDTH, ILI9341_GREEN);
-  display_left.drawFastHLine(0, DISPLAY_HEIGHT - 1, DISPLAY_WIDTH, ILI9341_GREEN);
-  display_left.setFont(LiberationMono_72_Bold_Italic); // each char is 60 px wide
-  display_left.setCursor((DISPLAY_WIDTH - (4 * 60)) / 2 - 5, (DISPLAY_HEIGHT - 72) / 2); // 60px wide 72px tall chars
-  //display_left.drawFastVLine(240, 0,     DISPLAY_HEIGHT, ILI9341_GREEN);
-  display_left.print("GEAR");
-  delay(2000);
-  display_left.fillRect((DISPLAY_WIDTH / 10), 3 * (DISPLAY_HEIGHT / 10), 8 * (DISPLAY_WIDTH / 10),
-                         4 * (DISPLAY_HEIGHT / 10), ILI9341_BLACK);
-
-  display_left.setCursor(2, 5);
-  display_left.setFont(LiberationMono_32_Bold_Italic);
-  display_left.print("GEAR");
-
-  display_left.drawBitmap(0, 0, big_num_10, DISPLAY_WIDTH, DISPLAY_HEIGHT, ILI9341_WHITE);
-
-  delay(2000);
-  display_left.fillScreen(ILI9341_BLACK);
-  delay(2000);
-
-  NumberDisplay gear_display(display_left, M400_gear, "TC");
-  gear_display.begin();
-
-
-
-  //display_left.drawFastVLine(240, 0,     DISPLAY_HEIGHT, ILI9341_GREEN);
-
-
 }
 
 
@@ -219,31 +195,42 @@ void setup() {
 void loop() {
 
 
-  // if button 1 was pressed changed the led mode
-  if (check_button(button1_pin, button1_time)){
-    if (led_mode == 0){
-      led_mode = 1;
+  // buttons and mode initialization ----------------------------------------
 
-    } else if (led_mode == 1){
-      led_mode = 0;
+  // if button 1 was pressed changed the led mode
+  if (check_button(button2_pin, button2_time)){
+    if (++led_mode > 2){ // upper bound
+      led_mode = 1;
     }
   }
 
-  // if button 2 was pressed change the screen mode
-  if (check_button(button2_pin, button2_time)){
-    if (screen_mode == 0){
+  // if button 2 was pressed change the screen mode and run the required initilizations
+  if (check_button(button1_pin, button1_time)){
+    if (++screen_mode > 3){ // upper bound
       screen_mode = 1;
+    }
 
-
-    } else if (screen_mode == 1){
-      screen_mode = 0;
+    // auxilarry info screen and engine vitals screen
+    if (screen_mode == 1){
       auxilary_info_left_screen.begin();
       engine_vitals_right_screen.begin();
+
+
+    // gear screen and carry-over of engine vitals
+    } else if (screen_mode == 2){
+      gear_display_left.begin();
+
+
+    } else if (screen_mode == 3){
+      tc_display_left.begin();
+
     }
   }
 
-  // LED mode selection
-  if (led_mode == 0){
+
+  // LED updates ----------------------------------------
+
+  if (led_mode == 1){
     rpm_bar(pixels_top, pixels_top_cnt, M400_rpm, M400_gear);
 
     lockup_indicator(pixels_left, 0, M400_groundSpeedLeft, MM5_Ax, ATCCF_brakePressureF, ATCCF_brakePressureR);
@@ -261,22 +248,29 @@ void loop() {
     pixels_left.show();
     pixels_right.show();
 
-  } else if (led_mode == 1){
+  } else if (led_mode == 2){
     party_bar(pixels_top, pixels_top_cnt, pixels_left, pixels_left_cnt, pixels_right, pixels_right_cnt);
   }
 
 
-  // screen pages/modes
-  if (screen_mode == 0){
-    if (info_screen_update_timer.isup()){
-      auxilary_info_left_screen.update_signals();
-      engine_vitals_right_screen.update_signals();
-    }
 
-  } else if (screen_mode == 1){
-    if (info_screen_update_timer.isup()){
-      display_right.fillScreen(ILI9341_GREEN);
-      display_left.fillScreen(ILI9341_GREEN);
+  // display updates --------------------------------------------------
+
+  if (info_screen_update_timer.isup()){
+
+    // Mode 1 - aux and engine info
+    if (screen_mode == 1){
+        auxilary_info_left_screen.update_signals();
+        engine_vitals_right_screen.update_signals();
+
+    // Mode 2 - gear display and engine info
+    } else if (screen_mode == 2){
+      gear_display_left.update();
+      engine_vitals_right_screen.update_signals();
+
+    } else if (screen_mode == 3){
+      tc_display_left.update();
+      engine_vitals_right_screen.update_signals();
     }
   }
 
@@ -303,3 +297,6 @@ bool check_button(const int &pin, unsigned long &time){
 
   return false;
 }
+
+
+bool flash_driver(Adafruit_NeoPixel left,uint16_t)
