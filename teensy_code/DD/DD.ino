@@ -15,6 +15,7 @@
 // photos :) - converted with http://www.rinkydinkelectronics.com/t_imageconverter565.php
 #include "lana1.c"
 #include "lana2.c"
+#include "fuck_kyle_busch.c"
 
 // NeoPixel parameters
 const int pixels_top_pin = 3; // teensy pin #
@@ -23,7 +24,7 @@ const int pixels_right_pin = 4;
 const int pixels_top_cnt = 16; // number of LEDs
 const int pixels_left_cnt = 4;
 const int pixels_right_cnt = 4;
-      int pixel_brightness_percent = 5; // 0 - 100; 100 is blinding...
+      int pixel_brightness_percent = 4; // 0 - 100; 100 is blinding... 4 is the minimum for all LED bar colors to work
 
 Adafruit_NeoPixel pixels_top =   Adafruit_NeoPixel(pixels_top_cnt,   pixels_top_pin,   NEO_GRB + NEO_KHZ800);
 Adafruit_NeoPixel pixels_left =  Adafruit_NeoPixel(pixels_left_cnt,  pixels_left_pin,  NEO_GRB + NEO_KHZ800);
@@ -37,7 +38,7 @@ Adafruit_NeoPixel pixels_right = Adafruit_NeoPixel(pixels_right_cnt, pixels_righ
 #define TFTL_CLK 13
 #define TFTL_RST 19
 #define TFTL_BL 6
-    int display_left_brightness_percent = 100;
+    int display_left_brightness_percent = 10;
 
 
 #define TFTR_DC 5
@@ -47,7 +48,7 @@ Adafruit_NeoPixel pixels_right = Adafruit_NeoPixel(pixels_right_cnt, pixels_righ
 #define TFTR_CLK 13
 #define TFTR_RST 17
 #define TFTR_BL 7
-    int display_right_brightness_percent = 100;
+    int display_right_brightness_percent = 10;
 
 const int DISPLAY_HEIGHT = 240;
 const int DISPLAY_WIDTH = 320;
@@ -59,12 +60,8 @@ ILI9341_t3n display_right = ILI9341_t3n(TFTR_CS, TFTR_DC, TFTR_RST);
 // pins for the steering wheel buttons
 const int button1_pin = 14;
 const int button2_pin = 15;
-      int button1_value = 0; // use these (button values) to store the return from button check function
-      int button2_value = 0;
-      int button1_state = 0; // states to keep track of button presses (internal usage to button check function.
-      int button2_state = 0; // 0 does not necessarily mean off, and 1 does not necessarily mean on.
-unsigned long button1_time=0;
-unsigned long button2_time=0;
+unsigned long button1_time = 0;
+unsigned long button2_time =0 ;
 const unsigned long button_delay = 300; // @GLOBAL_PARAM - milliseconds - used in check_button to avoid double-presses
 
 // modes for the screen and leds
@@ -80,11 +77,13 @@ int screen_mode = 0;
 // signal definitions
 #include "sigs_inside.hpp"
 
-// state_racing_bitmap
+// bitmaps - generated here: http://javl.github.io/image2cpp/
 #include "sr_bitmap.hpp"
+#include "big_num_neg10.hpp"
 
 // info screen struct and functions
 #include "info_screen.hpp"
+EasyTimer info_screen_update_timer(10);
 
 // debugging timer
 EasyTimer debug(50);
@@ -94,7 +93,13 @@ EasyTimer debug(50);
 // extern "C" uint32_t set_arm_clock(uint32_t frequency);
 // #endif
 
-InfoScreen info_test(display_right, M400_batteryVoltage, M400_engineTemp, M400_oilTemp, M400_groundSpeed);
+InfoScreen engine_vitals_right_screen(display_right, M400_rpm, M400_oilPressure, M400_engineTemp, M400_batteryVoltage,
+                                        /* label */  "RPM:",   "OILP:",          "ENG:",          "BAT:",
+                        /* max decimal precision */  4,        4,                4,               4);
+
+InfoScreen auxilary_info_left_screen(display_left, M400_groundSpeed, M400_gear, M400_fuelUsed, PDM_fanLeftPWM,
+                                      /* label */  "SPD:",           "GEAR:  ", "FUEL:",         "FAN:",
+                      /* max decimal precision */  2,                0,         4,               4);
 
 void setup() {
 
@@ -147,90 +152,77 @@ void setup() {
   // if you set it higher than 5, I have respect for your patience
   led_startup(pixels_top, pixels_top_cnt, pixels_left, pixels_left_cnt, pixels_right, pixels_right_cnt, 1);
 
-  // clear the screens
-  display_left.fillScreen(ILI9341_BLACK);
-  display_right.fillScreen(ILI9341_BLACK);
+  M400_rpm = 420;
+  M400_oilPressure = 0;
+  M400_engineTemp = 0;
+  M400_fuelUsed = 100;
+  M400_batteryVoltage = 12.653;
+  M400_groundSpeed = 0;
+  M400_gear = 0;
+  M400_engineTemp = 19.32;
+  PDM_fanLeftPWM = 0.1;
 
-  M400_rpm = 11800;
-  M400_gear = 2;
+  auxilary_info_left_screen.begin();
+  engine_vitals_right_screen.inv_factor_sig1 = 1000; // scale rpm down by 1000
+  engine_vitals_right_screen.begin();
 
-  int gap_y_px = 12;
-  int gap_x_px = 1;
-
-  display_left.setTextColor(ILI9341_WHITE, ILI9341_BLACK);
-  display_left.setTextWrap(false);
-  display_left.setFont(LiberationMono_40_Bold);
-  display_left.setCursor(gap_x_px, gap_y_px);
-  display_left.println("OIL: 87.4");
-  display_left.setCursor(gap_x_px, DISPLAY_HEIGHT / 4 + gap_y_px);
-  display_left.println("WTR: 69.4");
-  display_left.setCursor(gap_x_px, (DISPLAY_HEIGHT / 4) * 2 + gap_y_px);
-  display_left.println("RPM:  9.4");
-  display_left.setCursor(gap_x_px, (DISPLAY_HEIGHT / 4) * 3 + gap_y_px);
-  display_left.println("OILT:  69");
-
-  display_left.drawFastHLine(0, (DISPLAY_HEIGHT / 4) * 0, DISPLAY_WIDTH, ILI9341_GREEN);
-  display_left.drawFastHLine(0, (DISPLAY_HEIGHT / 4) * 1, DISPLAY_WIDTH, ILI9341_GREEN);
-  display_left.drawFastHLine(0, (DISPLAY_HEIGHT / 4) * 2, DISPLAY_WIDTH, ILI9341_GREEN);
-  display_left.drawFastHLine(0, (DISPLAY_HEIGHT / 4) * 3, DISPLAY_WIDTH, ILI9341_GREEN);
-  display_left.drawFastHLine(0, (DISPLAY_HEIGHT / 4) * 4 - 1, DISPLAY_WIDTH, ILI9341_GREEN);
 
 
   // display lana del rey
   //display_left.writeRect(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, (uint16_t*)lana1);
   //display_right.writeRect(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, (uint16_t*)lana2);
 
-  // info screen struct testing
-  M400_batteryVoltage = 12.692;
-  M400_engineTemp = 45.7832;
-  M400_oilTemp = 98.2354;
-  M400_groundSpeed = 10.34;
+  // fuck kyle busch
+  //display_left.writeRect(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, (uint16_t*)fuck_kyle_busch);
+  //display_right.writeRect(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, (uint16_t*)fuck_kyle_busch);
 
-  info_test.set_labels("BAT:", "ENGT:", "OILT:", "SPD:");
-  info_test.set_numdigits(5, 4, 4, 5);
-  info_test.set_precisions(4, 4, 4, 4);
-  info_test.print_labels();
-  info_test.print_lines();
-  info_test.update_signals();
 
-  M400_batteryVoltage = 14.2345;
-  M400_engineTemp = 98.34;
-  M400_oilTemp = 12.26305;
-  M400_groundSpeed = 11.234;
+  display_left.fillScreen(ILI9341_BLACK);
+  display_left.drawFastHLine(0,                  0, DISPLAY_WIDTH, ILI9341_GREEN);
+  display_left.drawFastHLine(0, DISPLAY_HEIGHT - 1, DISPLAY_WIDTH, ILI9341_GREEN);
+  display_left.setFont(LiberationMono_72_Bold_Italic); // each char is 60 px wide
+  display_left.setCursor((DISPLAY_WIDTH - (4 * 60)) / 2 - 5, (DISPLAY_HEIGHT - 72) / 2); // 60px wide 72px tall chars
+  //display_left.drawFastVLine(240, 0,     DISPLAY_HEIGHT, ILI9341_GREEN);
+  display_left.print("GEAR");
+  delay(2000);
+  display_left.fillRect((DISPLAY_WIDTH / 10), 3 * (DISPLAY_HEIGHT / 10), 8 * (DISPLAY_WIDTH / 10),
+                         4 * (DISPLAY_HEIGHT / 10), ILI9341_BLACK);
 
-  Serial.println("line1");
-  info_test.update_signals();
-  Serial.println("line2");
+  display_left.drawBitmap(0, 0, big_num_neg10, DISPLAY_WIDTH, DISPLAY_HEIGHT, ILI9341_WHITE);
+  //display_left.drawFastVLine(240, 0,     DISPLAY_HEIGHT, ILI9341_GREEN);
+
+
 }
 
 
 
 void loop() {
 
-  info_test.update_signals();
 
-  if (millis() < 4000){
+  // if button 1 was pressed changed the led mode
+  if (check_button(button1_pin, button1_time)){
+    if (led_mode == 0){
+      led_mode = 1;
 
-  } else if (millis() < 10000){
-    M400_batteryVoltage = 12.69;
-    M400_engineTemp = 105;
-    info_test.sig2_warning = true;
-    M400_oilTemp = 65.2;
-    M400_groundSpeed = 35.54;
+    } else if (led_mode == 1){
+      led_mode = 0;
+    }
   }
 
+  // if button 2 was pressed change the screen mode
+  if (check_button(button2_pin, button2_time)){
+    if (screen_mode == 0){
+      screen_mode = 1;
 
-  // if button 1 was double pressed
-  button1_value = check_button(button1_pin, button1_state, button1_time);
-  if (button1_value == 2){
-    led_mode = 69;
-    button1_value = 0;
-  } else if (button1_value == 1) {
-    led_mode = 0;
-    button1_value = 0;
+
+    } else if (screen_mode == 1){
+      screen_mode = 0;
+      auxilary_info_left_screen.begin();
+      engine_vitals_right_screen.begin();
+    }
   }
 
-  // normal functioning mode
+  // LED mode selection
   if (led_mode == 0){
     rpm_bar(pixels_top, pixels_top_cnt, M400_rpm, M400_gear);
 
@@ -249,9 +241,26 @@ void loop() {
     pixels_left.show();
     pixels_right.show();
 
-  } else if (led_mode == 69){
+  } else if (led_mode == 1){
     party_bar(pixels_top, pixels_top_cnt, pixels_left, pixels_left_cnt, pixels_right, pixels_right_cnt);
   }
+
+
+  // screen pages/modes
+  if (screen_mode == 0){
+    if (info_screen_update_timer.isup()){
+      auxilary_info_left_screen.update_signals();
+      engine_vitals_right_screen.update_signals();
+    }
+
+  } else if (screen_mode == 1){
+    if (info_screen_update_timer.isup()){
+      display_right.fillScreen(ILI9341_GREEN);
+      display_left.fillScreen(ILI9341_GREEN);
+    }
+  }
+
+
 
   if (debug.isup()){
     M400_engineTemp = M400_engineTemp.value();
@@ -264,24 +273,13 @@ void loop() {
 
 // takes a button pin and a reference to the state. First, updates state. Returns an int according to the number of
 // times the button was pressed (up to 2). returns 0 if nothing.
-int check_button(const int &pin, int &state, unsigned long &time){
+bool check_button(const int &pin, unsigned long &time){
 
   // single press
-  if ((digitalRead(pin) == LOW) && (millis() - time >= button_delay) && (state < 1)){
-    state = 1;
+  if ((digitalRead(pin) == LOW) && (millis() - time >= button_delay)){
     time = millis();
-    return 1;
-
-  // double press
-  } else if ((digitalRead(pin) == LOW) && (millis() - time >= (button_delay / 2) && (state < 2))){
-    state = 2;
-    time = millis();
-    return 2;
-
-  // reset the state if timeout
-  } else if ((state >= 1) && (millis() - time >= button_delay)){
-    state = 0;
+    return true;
   }
 
-  return 0;
+  return false;
 }

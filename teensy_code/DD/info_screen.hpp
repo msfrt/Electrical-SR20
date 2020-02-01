@@ -41,25 +41,48 @@ struct InfoScreen {
   int num_digits_sig3 = 4;
   int num_digits_sig4 = 4;
 
-  // the number of digits past the decimal point to display
+  // the number of places past the decimal point to display
   int dec_prec_sig1 = 0;
   int dec_prec_sig2 = 0;
   int dec_prec_sig3 = 0;
   int dec_prec_sig4 = 0;
+
+  // additional scaling that you may want to do. For example, instead of display 5 digits of RPM, we can set one of
+  // these scalers to 1000 to get rpm / 1000
+  int inv_factor_sig1 = 1;
+  int inv_factor_sig2 = 1;
+  int inv_factor_sig3 = 1;
+  int inv_factor_sig4 = 1;
 
   String label1;
   String label2;
   String label3;
   String label4;
 
-  float last_val_sig1;
-  float last_val_sig2;
-  float last_val_sig3;
-  float last_val_sig4;
+  float last_val_sig1 = -99999999; // set these values so that signals are updated upon begin()
+  float last_val_sig2 = -99999999;
+  float last_val_sig3 = -99999999;
+  float last_val_sig4 = -99999999;
 
   InfoScreen() = delete;
   InfoScreen(ILI9341_t3n &scr, StateSignal &s1, StateSignal &s2, StateSignal &s3, StateSignal &s4) :
   screen(scr), sig1(s1), sig2(s2), sig3(s3), sig4(s4) {};
+
+  InfoScreen(ILI9341_t3n &scr, StateSignal &s1, StateSignal &s2, StateSignal &s3, StateSignal &s4,
+                                   String lab1,     String lab2,     String lab3,     String lab4,
+                                   //int digits1,     int digits2,     int digits3,     int digits4,
+                                int precision1,  int precision2,   int precision3, int precision4) : screen(scr),
+                                sig1(s1), sig2(s2), sig3(s3), sig4(s4),
+                                dec_prec_sig1(precision1), dec_prec_sig2(precision2), dec_prec_sig3(precision3),
+                                dec_prec_sig4(precision4), label1(lab1), label2(lab2), label3(lab3), label4(lab4) {
+                                  num_digits_sig1 = 8 - lab1.length();
+                                  num_digits_sig2 = 8 - lab2.length();
+                                  num_digits_sig3 = 8 - lab3.length();
+                                  num_digits_sig4 = 8 - lab4.length();
+                                };
+
+  // prints all of the labels, lines, and good stuff every time that this is called.
+  void begin();
 
   // set variables for all of the signals. This should be done sometime after you initialize the info screen.
   void set_labels(String lab1, String lab2, String lab3, String lab4); // lables including ':'
@@ -79,9 +102,18 @@ struct InfoScreen {
   bool update_sig4(bool override = false);
 
   // update the dignals if necessary
-  bool update_signals();
+  bool update_signals(bool override = false);
 
 };
+
+
+void InfoScreen::begin(){
+  display_left.setFont(LiberationMono_40_Bold);
+  this->screen.fillScreen(ILI9341_BLACK);
+  this->print_labels();
+  this->print_lines();
+  this->update_signals(true);
+}
 
 
 void InfoScreen::set_labels(String lab1, String lab2, String lab3, String lab4){
@@ -116,7 +148,7 @@ void InfoScreen::print_lines(){
 }
 
 void InfoScreen::print_labels(){
-  screen.setTextColor(this->text_color_default, this->text_background_default);
+  screen.setTextColor(this->text_color_default);
   screen.setTextWrap(false);
   screen.setFont(LiberationMono_40_Bold);
 
@@ -136,7 +168,7 @@ void InfoScreen::print_labels(){
 
 
 // runs each update function and returns true if at l
-bool InfoScreen::update_signals(){
+bool InfoScreen::update_signals(bool override){
   static bool b1;
   static bool b2;
   static bool b3;
@@ -145,10 +177,10 @@ bool InfoScreen::update_signals(){
   screen.setTextColor(this->text_color_default);
   screen.setTextWrap(false);
 
-  b1 = this->update_sig1();
-  b2 = this->update_sig2();
-  b3 = this->update_sig3();
-  b4 = this->update_sig4();
+  b1 = this->update_sig1(override);
+  b2 = this->update_sig2(override);
+  b3 = this->update_sig3(override);
+  b4 = this->update_sig4(override);
 
   if (b1 || b2 || b3 || b4)
     return true;
@@ -183,7 +215,7 @@ bool InfoScreen::update_sig1(bool override){
     }
 
     // write the text
-    screen.print(this->last_val_sig1, this->dec_prec_sig1);
+    screen.print(this->last_val_sig1 / this->inv_factor_sig1, this->dec_prec_sig1);
 
     return true;
   }
@@ -214,7 +246,7 @@ bool InfoScreen::update_sig2(bool override){
                      (DISPLAY_HEIGHT - 4) / 4, this->text_background_warning);
     }
 
-    screen.print(this->last_val_sig2, this->dec_prec_sig2);
+    screen.print(this->last_val_sig2 / this->inv_factor_sig2, this->dec_prec_sig2);
 
     return true;
   }
@@ -245,7 +277,7 @@ bool InfoScreen::update_sig3(bool override){
                      (DISPLAY_HEIGHT - 4) / 4, this->text_background_warning);
     }
 
-    screen.print(this->last_val_sig3, this->dec_prec_sig3);
+    screen.print(this->last_val_sig3 / this->inv_factor_sig3, this->dec_prec_sig3);
 
     return true;
   }
@@ -277,7 +309,7 @@ bool InfoScreen::update_sig4(bool override){
                      (DISPLAY_HEIGHT - 4) / 4 - 1, this->text_background_warning);
     }
 
-    screen.print(this->last_val_sig4, this->dec_prec_sig4);
+    screen.print(this->last_val_sig4 / this->inv_factor_sig4, this->dec_prec_sig4);
 
     return true;
   }
