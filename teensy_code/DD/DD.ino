@@ -24,7 +24,7 @@ const int pixels_right_pin = 4;
 const int pixels_top_cnt = 16; // number of LEDs
 const int pixels_left_cnt = 4;
 const int pixels_right_cnt = 4;
-      int pixel_brightness_percent = 4; // 0 - 100; 100 is blinding... 4 is the minimum for all LED bar colors to work
+      int pixel_brightness_percent = 10; // 0 - 100; 100 is blinding... 4 is the minimum for all LED bar colors to work
 
 Adafruit_NeoPixel pixels_top =   Adafruit_NeoPixel(pixels_top_cnt,   pixels_top_pin,   NEO_GRB + NEO_KHZ800);
 Adafruit_NeoPixel pixels_left =  Adafruit_NeoPixel(pixels_left_cnt,  pixels_left_pin,  NEO_GRB + NEO_KHZ800);
@@ -72,6 +72,7 @@ int screen_mode = 1;
 #include "led_startup.hpp"
 #include "rpm_bar.hpp"
 #include "party_bar.hpp"
+#include "warning_lights.hpp"
 #include "lockup_indicator.hpp"
 
 // signal definitions
@@ -83,7 +84,6 @@ int screen_mode = 1;
 
 // info screen struct and functions
 #include "info_screen.hpp"
-EasyTimer info_screen_update_timer(10);
 
 // big number display struct and functions
 #include "big_number_display.hpp"
@@ -107,6 +107,8 @@ InfoScreen auxilary_info_left_screen(display_left, M400_groundSpeed, M400_gear, 
 
 NumberDisplay gear_display_left(display_left, M400_gear, "GEAR");
 NumberDisplay tc_display_left(display_left, M400_gear, "TC"); // change signal when C50 signals are set up
+
+EasyTimer info_screen_update_timer(10); // rate at which the screens will check their variables for updates
 
 
 void setup() {
@@ -250,6 +252,19 @@ void loop() {
 
   } else if (led_mode == 2){
     party_bar(pixels_top, pixels_top_cnt, pixels_left, pixels_left_cnt, pixels_right, pixels_right_cnt);
+
+  // tell the driver to come in
+  } else if (led_mode == 10){
+    full_warning_lights(pixels_top, pixels_left, pixels_right, "WHITE");
+
+  // tell the driver to stop
+  } else if (led_mode == 11){
+    full_warning_lights(pixels_top, pixels_left, pixels_right, "YELLOW");
+
+  // tell the driver to stop and shut off the car
+  } else if (led_mode == 12){
+    full_warning_lights(pixels_top, pixels_left, pixels_right, "RED");
+
   }
 
 
@@ -297,6 +312,3 @@ bool check_button(const int &pin, unsigned long &time){
 
   return false;
 }
-
-
-bool flash_driver(Adafruit_NeoPixel left,uint16_t)
