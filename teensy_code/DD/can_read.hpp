@@ -1,9 +1,10 @@
 #ifndef CAN_READ_HPP
 #define CAN_READ_HPP
 
-#include "can_send.hpp"
 #include "sigs_inside.hpp"
+#include <FlexCAN_T4.h>
 
+static CAN_message_t msg, rxmsg;
 
 // ID 411 on bus 2
 void read_ATCCF_11(CAN_message_t &imsg){
@@ -18,6 +19,12 @@ void read_USER_10(CAN_message_t &imsg){
   USER_fanRightOverride.set_can_value(imsg.buf[1]);
   USER_wpOverride.set_can_value(imsg.buf[2]);
   USER_brakeLightOverride.set_can_value(imsg.buf[3]);
+}
+
+
+// ID 711 on bus 2
+void read_USER_11(CAN_message_t &imsg){
+  USER_driverSignal.set_can_value(imsg.buf[0]);
 }
 
 
@@ -49,9 +56,6 @@ void read_M400_101(CAN_message_t &imsg){
 
 
 
-
-
-
 // function that reads the msg and then directs that data elsewhere
 void read_can1(){
   if (cbus1.read(rxmsg)){
@@ -80,10 +84,12 @@ void read_can2(){
       case 710:
         read_USER_10(rxmsg);
         break;
+      case 711:
+        read_USER_11(rxmsg);
+        break;
     } // end switch statement
 
   }
 }
-
 
 #endif

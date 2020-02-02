@@ -37,7 +37,7 @@ int led_pwm(int &total_pwm){
 }
 
 // sets the rpm bar to the desired output. Returns a boolean true if the driver should shift
-bool rpm_bar(Adafruit_NeoPixel &top, const int &numtop, StateSignal &rpm, StateSignal &gear){
+bool rpm_bar(Adafruit_NeoPixel &top, StateSignal &rpm, StateSignal &gear){
 
   static const int idle_rpm = 2000;
   static const int idle_rev_limit_rpm = 8000;
@@ -48,7 +48,7 @@ bool rpm_bar(Adafruit_NeoPixel &top, const int &numtop, StateSignal &rpm, StateS
   static int bar_mode;
   static EasyTimer rpm_flash_timer(20);
   static bool rpm_flash_on;
-  static const int max_bar_pwm_posns = numtop * 256;
+  static const int max_bar_pwm_posns = top.numPixels() * 256;
   static int pwm_current_led;
 
   // determine if downshift mode
@@ -72,11 +72,11 @@ bool rpm_bar(Adafruit_NeoPixel &top, const int &numtop, StateSignal &rpm, StateS
 
   // downshift
   if (bar_mode == 1){
-    // set half to be purple
-    for (int i = 0; i <= numtop / 2; ++i){
-      top.setPixelColor(i, 0, 255 / (3 * (i + 0.05)), 255 / (3 * (i + 0.05)));
+    // set half to be aqua
+    for (int i = 0; i <= top.numPixels() / 2; ++i){
+      top.setPixelColor(i, 0, 255 / (i + 1), 255 / (i + 1));
     }
-    for (int i = numtop / 2; i <= numtop; ++i){
+    for (int i = top.numPixels() / 2; i <= top.numPixels(); ++i){
       top.setPixelColor(i, 0, 0, 0);
     }
 
@@ -85,7 +85,7 @@ bool rpm_bar(Adafruit_NeoPixel &top, const int &numtop, StateSignal &rpm, StateS
     if (rpm_flash_timer.isup()){
 
       // set the LEDs off
-      for (int i = 0; i <= numtop; ++i){
+      for (int i = 0; i <= top.numPixels(); ++i){
         top.setPixelColor(i, 0, 0, 0);
       }
 
@@ -95,7 +95,7 @@ bool rpm_bar(Adafruit_NeoPixel &top, const int &numtop, StateSignal &rpm, StateS
       // turn the last half of lights on
       } else {
         rpm_flash_on = true;
-        for (int i = numtop / 2; i <= numtop; ++i){
+        for (int i = top.numPixels() / 2; i <= top.numPixels(); ++i){
           top.setPixelColor(i, 255, 0, 0);
         }
       }
@@ -121,7 +121,7 @@ bool rpm_bar(Adafruit_NeoPixel &top, const int &numtop, StateSignal &rpm, StateS
     }
 
     // turn them all off so we can set the ones that we want to be on
-    for (int i = 0; i <= numtop; i++){
+    for (int i = 0; i <= top.numPixels(); i++){
       top.setPixelColor(i, 0, 0, 0);
     }
 
@@ -129,10 +129,10 @@ bool rpm_bar(Adafruit_NeoPixel &top, const int &numtop, StateSignal &rpm, StateS
     bar_pwms = (bar_percentage * max_bar_pwm_posns) / 1000;
 
     // set the LEDs to be on
-    for (int i = 0; i <= numtop; i++){
+    for (int i = 0; i <= top.numPixels(); i++){
       pwm_current_led = led_pwm(bar_pwms);
       // the divisors take care of the gradients
-      top.setPixelColor(i, pwm_current_led / (numtop - i), pwm_current_led / (i + 1), 0);
+      top.setPixelColor(i, pwm_current_led / (top.numPixels() - i), pwm_current_led / (i + 1), 0);
     }
 
   }

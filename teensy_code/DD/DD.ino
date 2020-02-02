@@ -2,11 +2,17 @@
 
 #include <Adafruit_NeoPixel.h>
 #include <StateCAN.h>
+#include <FlexCAN_T4.h>
 #include <EasyTimer.h>
 #include "SPI.h"
 #include "Adafruit_GFX.h"
 #include "ILI9341_t3n.h"
 #define SPI0_DISP1
+
+// can bus decleration
+FlexCAN_T4<CAN1, RX_SIZE_256, TX_SIZE_16> cbus1;
+FlexCAN_T4<CAN2, RX_SIZE_256, TX_SIZE_16> cbus2;
+
 
 // fonts :)
 #include "font_LiberationMonoBold.h"
@@ -24,7 +30,7 @@ const int pixels_right_pin = 4;
 const int pixels_top_cnt = 16; // number of LEDs
 const int pixels_left_cnt = 4;
 const int pixels_right_cnt = 4;
-      int pixel_brightness_percent = 10; // 0 - 100; 100 is blinding... 4 is the minimum for all LED bar colors to work
+      int pixel_brightness_percent = 100; // 0 - 100; 100 is blinding... 4 is the minimum for all LED bar colors to work
 
 Adafruit_NeoPixel pixels_top =   Adafruit_NeoPixel(pixels_top_cnt,   pixels_top_pin,   NEO_GRB + NEO_KHZ800);
 Adafruit_NeoPixel pixels_left =  Adafruit_NeoPixel(pixels_left_cnt,  pixels_left_pin,  NEO_GRB + NEO_KHZ800);
@@ -61,7 +67,7 @@ ILI9341_t3n display_right = ILI9341_t3n(TFTR_CS, TFTR_DC, TFTR_RST);
 const int button1_pin = 14;
 const int button2_pin = 15;
 unsigned long button1_time = 0;
-unsigned long button2_time =0 ;
+unsigned long button2_time = 0 ;
 const unsigned long button_delay = 300; // @GLOBAL_PARAM - milliseconds - used in check_button to avoid double-presses
 
 // modes for the screen and leds
@@ -78,6 +84,9 @@ int screen_mode = 1;
 // signal definitions
 #include "sigs_inside.hpp"
 
+// CAN message definitions
+#include "can_read.hpp"
+
 // bitmaps - generated here: http://javl.github.io/image2cpp/
 #include "sr_bitmap.hpp"
 #include "big_numbers.hpp"
@@ -87,6 +96,7 @@ int screen_mode = 1;
 
 // big number display struct and functions
 #include "big_number_display.hpp"
+
 
 // debugging timer
 EasyTimer debug(50);
@@ -112,6 +122,12 @@ EasyTimer info_screen_update_timer(10); // rate at which the screens will check 
 
 
 void setup() {
+
+  // initilize CAN busses
+  cbus1.begin();
+  cbus1.setBaudRate(1000000);
+  cbus2.begin();
+  cbus2.setBaudRate(1000000);
 
   // dynamically change clock speed
   // #if defined(__IMXRT1062__)
@@ -160,28 +176,15 @@ void setup() {
 
   // fun LED startup sequence. Last parameter is time multiplier. 0 is fastest, 5 is pretty darn slow.
   // if you set it higher than 5, I have respect for your patience
-  led_startup(pixels_top, pixels_top_cnt, pixels_left, pixels_left_cnt, pixels_right, pixels_right_cnt, 1);
+  led_startup(pixels_top, pixels_left, pixels_right, 1);
 
-  // non-zero signals for testing purposes only
-  M400_rpm = 420;
-  M400_oilPressure = 0;
-  M400_engineTemp = 0;
-  M400_fuelUsed = 100;
-  M400_batteryVoltage = 12.653;
-  M400_groundSpeed = 0;
-  M400_gear = 5;
-  M400_engineTemp = 19.32;
-  PDM_fanLeftPWM = 0.1;
+  M400_rpm = 14000;
 
   auxilary_info_left_screen.begin();
   engine_vitals_right_screen.inv_factor_sig1 = 1000; // scale rpm down by 1000
   engine_vitals_right_screen.begin();
 
 
-
-  // display lana del rey
-  //display_left.writeRect(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, (uint16_t*)lana1);
-  //display_right.writeRect(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, (uint16_t*)lana2);
 
   // fuck kyle busch
   //display_left.writeRect(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, (uint16_t*)fuck_kyle_busch);
@@ -196,6 +199,10 @@ void setup() {
 
 void loop() {
 
+  // read CAN buses
+  read_can1();
+  read_can2();
+
 
   // buttons and mode initialization ----------------------------------------
 
@@ -208,7 +215,7 @@ void loop() {
 
   // if button 2 was pressed change the screen mode and run the required initilizations
   if (check_button(button1_pin, button1_time)){
-    if (++screen_mode > 3){ // upper bound
+    if (++screen_mode > 4){ // upper bound
       screen_mode = 1;
     }
 
@@ -226,6 +233,10 @@ void loop() {
     } else if (screen_mode == 3){
       tc_display_left.begin();
 
+    } else if (screen_mode == 4) {
+      // display lana del rey
+      display_left.writeRect(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, (uint16_t*)lana1);
+      display_right.writeRect(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, (uint16_t*)lana2);
     }
   }
 
@@ -233,7 +244,7 @@ void loop() {
   // LED updates ----------------------------------------
 
   if (led_mode == 1){
-    rpm_bar(pixels_top, pixels_top_cnt, M400_rpm, M400_gear);
+    rpm_bar(pixels_top, M400_rpm, M400_gear);
 
     lockup_indicator(pixels_left, 0, M400_groundSpeedLeft, MM5_Ax, ATCCF_brakePressureF, ATCCF_brakePressureR);
     lockup_indicator(pixels_left, 3, M400_driveSpeedLeft, MM5_Ax, ATCCF_brakePressureF, ATCCF_brakePressureR);
@@ -251,7 +262,7 @@ void loop() {
     pixels_right.show();
 
   } else if (led_mode == 2){
-    party_bar(pixels_top, pixels_top_cnt, pixels_left, pixels_left_cnt, pixels_right, pixels_right_cnt);
+    party_bar(pixels_top, pixels_left, pixels_right);
 
   // tell the driver to come in
   } else if (led_mode == 10){

@@ -4,9 +4,7 @@
 
 
 // RGB LEDs are siiiccckkkkkkk bro
-void party_bar(Adafruit_NeoPixel &top, const int &numtop,
-               Adafruit_NeoPixel &left, const int &numleft,
-               Adafruit_NeoPixel &right, const int &numright){
+void party_bar(Adafruit_NeoPixel &top, Adafruit_NeoPixel &left, Adafruit_NeoPixel &right){
 
   // static variable definitions. The only thing to change here is the frequency in the rgb_update_timer
   static EasyTimer rgb_update_timer(10);
@@ -18,17 +16,17 @@ void party_bar(Adafruit_NeoPixel &top, const int &numtop,
   if (rgb_update_timer.isup()){
 
     // set the top pixels
-    for (int i = 0; i <= numtop; i++){
+    for (int i = 0; i <= top.numPixels(); i++){
       top.setPixelColor(i, red, green, blue);
     }
 
     // set the left pixels
-    for (int i = 0; i <= numleft; i++){
+    for (int i = 0; i <= left.numPixels(); i++){
       left.setPixelColor(i, red, green, blue);
     }
 
     // set the right pixels
-    for (int i = 0; i <= numright; i++){
+    for (int i = 0; i <= right.numPixels(); i++){
       right.setPixelColor(i, red, green, blue);
     }
 

@@ -1,11 +1,12 @@
+#ifndef LED_STARTUP_HPP
+#define LED_STARTUP_HPP
+
 #include <Adafruit_NeoPixel.h>
 
-void led_startup(Adafruit_NeoPixel &top, const int &numtop,
-                 Adafruit_NeoPixel &left, const int &numleft,
-                 Adafruit_NeoPixel &right, const int &numright, const int delay_mult){
+void led_startup(Adafruit_NeoPixel &top, Adafruit_NeoPixel &left, Adafruit_NeoPixel &right, const int delay_mult){
 
   // light up side-bars white
-  for (int i = numleft - 1; i >= 0; i--){
+  for (int i = left.numPixels() - 1; i >= 0; i--){
     for (int pwm = 0; pwm <= 255; pwm += 8){
       left.setPixelColor(i, pwm, pwm, pwm);
       left.show();
@@ -16,7 +17,7 @@ void led_startup(Adafruit_NeoPixel &top, const int &numtop,
   }
 
   // light top bar up white
-  int current_left = 0; int current_right = numtop - 1;
+  int current_left = 0; int current_right = top.numPixels() - 1;
   while (current_left < current_right){
     for (int pwm = 0; pwm <= 255; pwm += 8){
       top.setPixelColor(current_left, pwm, pwm, pwm);
@@ -33,7 +34,7 @@ void led_startup(Adafruit_NeoPixel &top, const int &numtop,
 
   // turn the whites into greens
   for (int pwm = 255; pwm >= 0; pwm -= 2){
-    for (int i = 0; i <= numtop; i++){
+    for (int i = 0; i <= top.numPixels(); i++){
       top.setPixelColor(i, pwm, 255, pwm);
       left.setPixelColor(i, pwm, 255, pwm);
       right.setPixelColor(i, pwm, 255, pwm);
@@ -49,7 +50,7 @@ void led_startup(Adafruit_NeoPixel &top, const int &numtop,
 
   // turn the top greens into nothing and the sides to red
   for (int pwm = 255; pwm >= 0; pwm--){
-    for (int i = 0; i <= numtop; i++){
+    for (int i = 0; i <= top.numPixels(); i++){
       top.setPixelColor(i, 0, pwm, 0);
       left.setPixelColor(i, 255 - pwm, pwm, 0);
       right.setPixelColor(i, 255 - pwm, pwm, 0);
@@ -64,7 +65,7 @@ void led_startup(Adafruit_NeoPixel &top, const int &numtop,
   delay(delay_mult * 200);
 
   // cascade the sides down
-  for (int i = 0; i <= numleft; i++){
+  for (int i = 0; i <= left.numPixels(); i++){
     for (int pwm = 255; pwm >=0; pwm--){
       left.setPixelColor(i, pwm, 0, 0);
       left.show();
@@ -74,3 +75,6 @@ void led_startup(Adafruit_NeoPixel &top, const int &numtop,
     }
   }
 }
+
+
+#endif

@@ -4,6 +4,8 @@
 
 // Sensor definitions
 
+// ADCSensor my_sensor(int chip_select, int adc_channel, int sensor_zero_mV, int mV_per_sensor_unit);
+
 // ADC1
 ADCSensor keepalive_volt_sens(3, 0, 0, 313);
 ADCSensor       pdm_volt_sens(3, 1, 0, 313);
