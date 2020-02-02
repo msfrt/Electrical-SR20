@@ -75,14 +75,15 @@ int led_mode = 1;
 int screen_mode = 1;
 
 // include externally-written functions
-#include "led_startup.hpp"
+//#include "led_startup.hpp"
+#include "../led_startup.hpp"
 #include "rpm_bar.hpp"
 #include "party_bar.hpp"
 #include "warning_lights.hpp"
 #include "lockup_indicator.hpp"
 
 // signal definitions
-#include "sigs_inside.hpp"
+#include "sigs_inside.hpp" // eventually move signal and can message definitions to shared folder, then link using the full file path
 
 // CAN message definitions
 #include "can_read.hpp"
