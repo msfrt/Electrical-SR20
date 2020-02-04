@@ -30,7 +30,7 @@ const int pixels_right_pin = 4;
 const int pixels_top_cnt = 16; // number of LEDs
 const int pixels_left_cnt = 4;
 const int pixels_right_cnt = 4;
-      int pixel_brightness_percent = 100; // 0 - 100; 100 is blinding... 4 is the minimum for all LED bar colors to work
+      int pixel_brightness_percent = 10; // 0 - 100; 100 is blinding... 4 is the minimum for all LED bar colors to work
 
 Adafruit_NeoPixel pixels_top =   Adafruit_NeoPixel(pixels_top_cnt,   pixels_top_pin,   NEO_GRB + NEO_KHZ800);
 Adafruit_NeoPixel pixels_left =  Adafruit_NeoPixel(pixels_left_cnt,  pixels_left_pin,  NEO_GRB + NEO_KHZ800);
@@ -75,8 +75,7 @@ int led_mode = 1;
 int screen_mode = 1;
 
 // include externally-written functions
-//#include "led_startup.hpp"
-#include "../led_startup.hpp"
+#include "led_startup.hpp"
 #include "rpm_bar.hpp"
 #include "party_bar.hpp"
 #include "warning_lights.hpp"
@@ -242,7 +241,28 @@ void loop() {
   }
 
 
-  // LED updates ----------------------------------------
+  // driver warning signals ---------------------------------------------
+
+  // if the signal is valid, there is probably a message that is waiting for the driver.
+  if (USER_driverSignal.timeout_check()){
+
+    // flash white lights to tell the driver to come in
+    if (static_cast<int>(USER_driverSignal.value()) == 1){
+      led_mode = 10;
+
+    // flash yellow lights to stop the car
+    } else if (static_cast<int>(USER_driverSignal.value()) == 2){
+      led_mode = 11;
+
+    // flash red lights to stop and shut off the car
+    } else if (static_cast<int>(USER_driverSignal.value()) == 3){
+      led_mode = 12;
+
+    }
+  }
+
+
+  // LED updates -------------------------------------------------------
 
   if (led_mode == 1){
     rpm_bar(pixels_top, M400_rpm, M400_gear);

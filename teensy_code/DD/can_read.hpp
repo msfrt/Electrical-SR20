@@ -25,6 +25,7 @@ void read_USER_10(CAN_message_t &imsg){
 // ID 711 on bus 2
 void read_USER_11(CAN_message_t &imsg){
   USER_driverSignal.set_can_value(imsg.buf[0]);
+  Serial.println("RED USER");
 }
 
 
