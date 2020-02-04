@@ -1,9 +1,10 @@
 #ifndef CAN_READ_HPP
 #define CAN_READ_HPP
 
-#include "can_send.hpp"
 #include "sigs_inside.hpp"
+#include <FlexCAN_T4.h>
 
+static CAN_message_t msg, rxmsg;
 
 // ID 411 on bus 2
 void read_ATCCF_11(CAN_message_t &imsg){
@@ -21,12 +22,23 @@ void read_USER_10(CAN_message_t &imsg){
 }
 
 
+// ID 711 on bus 2
+void read_USER_11(CAN_message_t &imsg){
+  USER_driverSignal.set_can_value(imsg.buf[0]);
+  Serial.println("RED USER");
+}
+
+
 // ID 100 on bus 1
 void read_M400_100(CAN_message_t &imsg){
   // multiplexer first-bit
   switch (imsg.buf[0]) {
     case 4:
       M400_rpm.set_can_value(imsg.buf[4] << 8 | imsg.buf[5]);
+      break;
+
+    case 5:
+      M400_gear.set_can_value(imsg.buf[2] << 8 | imsg.buf[3]);
       break;
   }
 }
@@ -46,9 +58,6 @@ void read_M400_101(CAN_message_t &imsg){
       break;
   }
 }
-
-
-
 
 
 
@@ -80,10 +89,12 @@ void read_can2(){
       case 710:
         read_USER_10(rxmsg);
         break;
+      case 711:
+        read_USER_11(rxmsg);
+        break;
     } // end switch statement
 
   }
 }
-
 
 #endif
