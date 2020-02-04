@@ -36,6 +36,10 @@ void read_M400_100(CAN_message_t &imsg){
     case 4:
       M400_rpm.set_can_value(imsg.buf[4] << 8 | imsg.buf[5]);
       break;
+
+    case 5:
+      M400_gear.set_can_value(imsg.buf[2] << 8 | imsg.buf[3]);
+      break;
   }
 }
 
