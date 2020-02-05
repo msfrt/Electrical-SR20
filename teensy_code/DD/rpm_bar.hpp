@@ -25,7 +25,7 @@ int led_pwm(int &total_pwm){
 
   // LED should be completely off
   } else if (total_pwm <= 0){
-    total_pwm -= 255;
+    total_pwm = 0;
     return 0;
 
   // LED should be dimmed
@@ -138,13 +138,41 @@ bool rpm_bar(Adafruit_NeoPixel &top, StateSignal &rpm, StateSignal &gear){
   }
 
 
-  // finally, send out the values that we just set
-  top.show();
-
   // if the driver should be shifting
   if (bar_mode == 2){
     return true;
   } else {
     return false;
   }
+}
+
+
+
+// lights up the light bar during ignition cut events. The motec ignition cut value is an integer 0-256
+bool engine_cut_bar(Adafruit_NeoPixel &leds, StateSignal &ign_cut_lvl){
+  static const int num_leds = 3; // currently, there are 3 LEDs on the light strip that are designated cut level lights
+  static const int max_bar_pwm_posns = num_leds * 256;
+
+  // variables used in every valculation. Static because there's no need to create and and delete them every time.
+  static int bar_pwms;
+  static int pwm_current_led;
+  static bool leds_on = false;
+
+  // calculations begin below ---------------
+
+  // the total number of pwms to be written this iteration
+  bar_pwms = map(ign_cut_lvl.value(), 0, 256, 0, max_bar_pwm_posns);
+
+  if (bar_pwms > 0){
+    leds_on = true;
+  } else {
+    leds_on = false;
+  }
+
+  // turn them on!
+  for (int i = leds.numPixels() - 1; i >= leds.numPixels() - num_leds; i--){
+    leds.setPixelColor(i, 0, 0, led_pwm(bar_pwms));
+  }
+
+  return leds_on;
 }

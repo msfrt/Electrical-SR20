@@ -266,17 +266,14 @@ void loop() {
 
   if (led_mode == 1){
     rpm_bar(pixels_top, M400_rpm, M400_gear);
+    engine_cut_bar(pixels_left,  M400_ignCutLevelTotal);
+    engine_cut_bar(pixels_right, M400_ignCutLevelTotal);
 
-    lockup_indicator(pixels_left, 0, M400_groundSpeedLeft, MM5_Ax, ATCCF_brakePressureF, ATCCF_brakePressureR);
-    lockup_indicator(pixels_left, 3, M400_driveSpeedLeft, MM5_Ax, ATCCF_brakePressureF, ATCCF_brakePressureR);
-    lockup_indicator(pixels_right, 0, M400_groundSpeedRight, MM5_Ax, ATCCF_brakePressureF, ATCCF_brakePressureR);
-    lockup_indicator(pixels_right, 3, M400_driveSpeedRight, MM5_Ax, ATCCF_brakePressureF, ATCCF_brakePressureR);
-
-    // these next four LEDs are currently unused, so set them to blank
-    pixels_left.setPixelColor(1, 0, 0, 0);
-    pixels_left.setPixelColor(2, 0, 0, 0);
-    pixels_right.setPixelColor(1, 0, 0, 0);
-    pixels_right.setPixelColor(2, 0, 0, 0);
+    // this will prolly be changed
+    //lockup_indicator(pixels_left, 0, M400_groundSpeedLeft, MM5_Ax, ATCCF_brakePressureF, ATCCF_brakePressureR);
+    //lockup_indicator(pixels_left, 3, M400_driveSpeedLeft, MM5_Ax, ATCCF_brakePressureF, ATCCF_brakePressureR);
+    //lockup_indicator(pixels_right, 0, M400_groundSpeedRight, MM5_Ax, ATCCF_brakePressureF, ATCCF_brakePressureR);
+    //lockup_indicator(pixels_right, 3, M400_driveSpeedRight, MM5_Ax, ATCCF_brakePressureF, ATCCF_brakePressureR);
 
     pixels_top.show();
     pixels_left.show();
