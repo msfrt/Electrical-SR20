@@ -34,6 +34,7 @@ void read_M400_100(CAN_message_t &imsg){
   // multiplexer first-bit
   switch (imsg.buf[0]) {
     case 4:
+      M400_ignCutLevelTotal.set_can_value(imsg.buf[2] << 8 | imsg.buf[3]);
       M400_rpm.set_can_value(imsg.buf[4] << 8 | imsg.buf[5]);
       break;
 

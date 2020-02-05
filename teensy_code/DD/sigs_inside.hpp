@@ -20,6 +20,7 @@ StateSignal M400_groundSpeedRight(16, true, 10, 0, -3276, 3276, 0, 1000);
 StateSignal M400_driveSpeedLeft(16, true, 10, 0, -3276, 3276, 0, 1000);
 StateSignal M400_driveSpeedRight(16, true, 10, 0, -3276, 3276, 0, 1000);
 StateSignal M400_fuelUsed(16, true, 1, 0, -3276.8, 3276.7, 0, 1000);
+StateSignal M400_ignCutLevelTotal(16, true, 1, 0, 0, 256, 0, 50);
 
 StateSignal MM5_Ax(16, true, -7849, 4.2, -5, 5, 0, 0);
 
