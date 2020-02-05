@@ -155,7 +155,7 @@ bool engine_cut_bar(Adafruit_NeoPixel &leds, StateSignal &ign_cut_lvl){
 
   // variables used in every valculation. Static because there's no need to create and and delete them every time.
   static int bar_pwms;
-  static int pwm_current_led;
+  static int current_led_pwm;
   static bool leds_on = false;
 
   // calculations begin below ---------------
@@ -171,7 +171,8 @@ bool engine_cut_bar(Adafruit_NeoPixel &leds, StateSignal &ign_cut_lvl){
 
   // turn them on!
   for (int i = leds.numPixels() - 1; i >= leds.numPixels() - num_leds; i--){
-    leds.setPixelColor(i, 0, 0, led_pwm(bar_pwms));
+    current_led_pwm = led_pwm(bar_pwms);
+    leds.setPixelColor(i, 0, 0, current_led_pwm);
   }
 
   return leds_on;

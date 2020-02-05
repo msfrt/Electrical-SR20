@@ -97,6 +97,12 @@ int screen_mode = 1;
 // big number display struct and functions
 #include "big_number_display.hpp"
 
+// lap timer screen
+#include "lap_timer.hpp"
+float prev_lap_times[4]; // arrays to hold the last 4 lap time details
+float prev_lap_times_diff[4];
+int prev_lap_numbers[4];
+
 
 // debugging timer
 EasyTimer debug(50);
@@ -117,6 +123,10 @@ InfoScreen auxilary_info_left_screen(display_left, M400_groundSpeed, M400_gear, 
 
 NumberDisplay gear_display_left(display_left, M400_gear, "GEAR");
 NumberDisplay tc_display_left(display_left, M400_gear, "TC"); // change signal when C50 signals are set up
+
+LapTimeDisplay lap_time_display_left(display_left, prev_lap_numbers, prev_lap_times, "LAP-T", false);
+LapTimeDisplay lap_time_display_right(display_right, prev_lap_numbers, prev_lap_times_diff, "LAP-D", true);
+
 
 EasyTimer info_screen_update_timer(10); // rate at which the screens will check their variables for updates
 
@@ -215,29 +225,10 @@ void loop() {
 
   // if button 2 was pressed change the screen mode and run the required initilizations
   if (check_button(button1_pin, button1_time)){
-    if (++screen_mode > 4){ // upper bound
+    if (++screen_mode > 5){ // upper bound
       screen_mode = 1;
     }
-
-    // auxilarry info screen and engine vitals screen
-    if (screen_mode == 1){
-      auxilary_info_left_screen.begin();
-      engine_vitals_right_screen.begin();
-
-
-    // gear screen and carry-over of engine vitals
-    } else if (screen_mode == 2){
-      gear_display_left.begin();
-
-
-    } else if (screen_mode == 3){
-      tc_display_left.begin();
-
-    } else if (screen_mode == 4) {
-      // display lana del rey
-      display_left.writeRect(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, (uint16_t*)lana1);
-      display_right.writeRect(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, (uint16_t*)lana2);
-    }
+    screen_mode_begins(screen_mode);
   }
 
 
@@ -275,6 +266,10 @@ void loop() {
     //lockup_indicator(pixels_right, 0, M400_groundSpeedRight, MM5_Ax, ATCCF_brakePressureF, ATCCF_brakePressureR);
     //lockup_indicator(pixels_right, 3, M400_driveSpeedRight, MM5_Ax, ATCCF_brakePressureF, ATCCF_brakePressureR);
 
+    // these two are unused
+    pixels_left.setPixelColor(0, 0, 0, 0);
+    pixels_right.setPixelColor(0, 0, 0, 0);
+
     pixels_top.show();
     pixels_left.show();
     pixels_right.show();
@@ -301,21 +296,62 @@ void loop() {
   // display updates --------------------------------------------------
 
   if (info_screen_update_timer.isup()){
+    static bool lap_timer_on = false; // used to determine if we need to run initilizations after lap screen turns off
+
+    if (lap_timer_screen(display_left, display_right, M400_gear, prev_lap_times, prev_lap_times_diff, prev_lap_numbers)){
+      lap_timer_on = true;
 
     // Mode 1 - aux and engine info
-    if (screen_mode == 1){
-        auxilary_info_left_screen.update_signals();
-        engine_vitals_right_screen.update_signals();
+    } else if (screen_mode == 1){
+
+        // run the initializations again
+        if (lap_timer_on == true){
+          lap_timer_on = false;
+          screen_mode_begins(screen_mode);
+        } else {
+          auxilary_info_left_screen.update_signals();
+          engine_vitals_right_screen.update_signals();
+        }
+
 
     // Mode 2 - gear display and engine info
     } else if (screen_mode == 2){
-      gear_display_left.update();
-      engine_vitals_right_screen.update_signals();
 
+      // run the initializations again
+      if (lap_timer_on == true){
+        lap_timer_on = false;
+        screen_mode_begins(screen_mode);
+      } else {
+        gear_display_left.update();
+        engine_vitals_right_screen.update_signals();
+      }
+
+    // Mode 3 - tc display and engine info
     } else if (screen_mode == 3){
-      tc_display_left.update();
-      engine_vitals_right_screen.update_signals();
+
+      // run the initializations again
+      if (lap_timer_on == true){
+        lap_timer_on = false;
+        screen_mode_begins(screen_mode);
+      } else {
+        tc_display_left.update();
+        engine_vitals_right_screen.update_signals();
+      }
+
+    // Mode 4 - lap times
+    } else if (screen_mode == 4){
+
+      // run the initializations again
+      if (lap_timer_on == true){
+        lap_timer_on = false;
+        screen_mode_begins(screen_mode);
+      } else {
+        lap_time_display_left.update();
+        lap_time_display_right.update();
+      }
+
     }
+
   }
 
 
@@ -329,8 +365,8 @@ void loop() {
 
 
 
-// takes a button pin and a reference to the state. First, updates state. Returns an int according to the number of
-// times the button was pressed (up to 2). returns 0 if nothing.
+// returns true if a button was pressed. Parameters are the button pin and a reference to the last time
+// that the button was pressed.
 bool check_button(const int &pin, unsigned long &time){
 
   // single press
@@ -340,4 +376,35 @@ bool check_button(const int &pin, unsigned long &time){
   }
 
   return false;
+}
+
+
+// relocated function that's called when the screen mode changes. This runs the required initializations for
+// every screen mode, except for lap trigger, which is timed by itself.
+void screen_mode_begins(int &screen_mode){
+  // auxilarry info screen and engine vitals screen
+  if (screen_mode == 1){
+    auxilary_info_left_screen.begin();
+    engine_vitals_right_screen.begin();
+
+
+  // gear screen and carry-over of engine vitals
+  } else if (screen_mode == 2){
+    gear_display_left.begin();
+    engine_vitals_right_screen.begin();
+
+
+  } else if (screen_mode == 3){
+    tc_display_left.begin();
+    engine_vitals_right_screen.begin();
+
+  } else if (screen_mode == 4) {
+    lap_time_display_left.begin();
+    lap_time_display_right.begin();
+
+  } else if (screen_mode == 5) {
+    // display lana del rey
+    display_left.writeRect(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, (uint16_t*)lana1);
+    display_right.writeRect(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, (uint16_t*)lana2);
+  }
 }

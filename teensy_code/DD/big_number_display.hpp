@@ -22,8 +22,8 @@ struct NumberDisplay{
 
   // check if the display needs to be updated, and update if necessary
   bool update(bool override = false);
-
 };
+
 
 void NumberDisplay::begin(){
   // clear the screen and draw two borders
