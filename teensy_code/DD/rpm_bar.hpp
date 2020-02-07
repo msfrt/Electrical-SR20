@@ -149,7 +149,7 @@ bool rpm_bar(Adafruit_NeoPixel &top, StateSignal &rpm, StateSignal &gear){
 
 
 // lights up the light bar during ignition cut events. The motec ignition cut value is an integer 0-256
-bool engine_cut_bar(Adafruit_NeoPixel &leds, StateSignal &ign_cut_lvl){
+bool engine_cut_bar(Adafruit_NeoPixel &leds, StateSignal &tc_sig){
   static const int num_leds = 3; // currently, there are 3 LEDs on the light strip that are designated cut level lights
   static const int max_bar_pwm_posns = num_leds * 256;
 
@@ -161,7 +161,7 @@ bool engine_cut_bar(Adafruit_NeoPixel &leds, StateSignal &ign_cut_lvl){
   // calculations begin below ---------------
 
   // the total number of pwms to be written this iteration
-  bar_pwms = map(ign_cut_lvl.value(), 0, 256, 0, max_bar_pwm_posns);
+  bar_pwms = map(tc_sig.value(), tc_sig.lower_bound(), tc_sig.upper_bound(), 0, max_bar_pwm_posns);
 
   if (bar_pwms > 0){
     leds_on = true;
