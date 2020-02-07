@@ -167,7 +167,7 @@ struct LapTimeDisplay{
                  screen(display), lap_nums_ary(nums_ary), lap_times_ary(times_ary), colorful(colors) {};
 
   // begin the display and write startup message
-  void begin();
+  void begin(bool startup_screen = true);
 
   // check if the display needs to be updated, and update if necessary
   bool update(bool override = false);
@@ -177,21 +177,27 @@ struct LapTimeDisplay{
 };
 
 
-void LapTimeDisplay::begin(){
+void LapTimeDisplay::begin(bool startup_screen){
   // clear the screen and draw two borders
   screen.fillScreen(ILI9341_BLACK);
   screen.drawFastHLine(0,                  0, DISPLAY_WIDTH, ILI9341_GREEN);
   screen.drawFastHLine(0, DISPLAY_HEIGHT - 1, DISPLAY_WIDTH, ILI9341_GREEN);
-
-  this->startup_until = millis() + this->startup_message_millis;
-  this->startup = true;
-
-  screen.setTextColor(ILI9341_WHITE);
-  screen.setFont(LiberationMono_72_Bold_Italic); // each char is 60 px wide
-  screen.setCursor((DISPLAY_WIDTH - (this->label.length() * 60)) / 2 - 5, (DISPLAY_HEIGHT - 72) / 2);
-  screen.print(this->label);
-
+  
   this->last_lap = -1;
+
+  if (startup_screen){
+    this->startup_until = millis() + this->startup_message_millis;
+    this->startup = true;
+
+    screen.setTextColor(ILI9341_WHITE);
+    screen.setFont(LiberationMono_72_Bold_Italic); // each char is 60 px wide
+    screen.setCursor((DISPLAY_WIDTH - (this->label.length() * 60)) / 2 - 5, (DISPLAY_HEIGHT - 72) / 2);
+    screen.print(this->label);
+
+} else {
+  this->update(true); // print the screen right now!
+}
+
 }
 
 

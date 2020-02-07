@@ -18,27 +18,29 @@ struct NumberDisplay{
   NumberDisplay(ILI9341_t3n &display, StateSignal &sig, String lab) : label(lab), screen(display), signal(sig) {};
 
   // begin the display and write startup message
-  void begin();
+  void begin(bool startup_screen = true);
 
   // check if the display needs to be updated, and update if necessary
   bool update(bool override = false);
 };
 
 
-void NumberDisplay::begin(){
+void NumberDisplay::begin(bool startup_screen){
   // clear the screen and draw two borders
   screen.fillScreen(ILI9341_BLACK);
   screen.drawFastHLine(0,                  0, DISPLAY_WIDTH, ILI9341_GREEN);
   screen.drawFastHLine(0, DISPLAY_HEIGHT - 1, DISPLAY_WIDTH, ILI9341_GREEN);
 
-  this->startup_until = millis() + startup_message_millis;
   this->startup = true;
 
   this->last_val = 9999; // reset last val so it will automatically update upon the first invocation of update();
 
-  screen.setFont(LiberationMono_72_Bold_Italic); // each char is 60 px wide
-  screen.setCursor((DISPLAY_WIDTH - (this->label.length() * 60)) / 2 - 5, (DISPLAY_HEIGHT - 72) / 2);
-  screen.print(this->label);
+  if (startup_screen){
+    this->startup_until = millis() + startup_message_millis; // set the delay for the startup screen
+    screen.setFont(LiberationMono_72_Bold_Italic); // each char is 60 px wide
+    screen.setCursor((DISPLAY_WIDTH - (this->label.length() * 60)) / 2 - 5, (DISPLAY_HEIGHT - 72) / 2);
+    screen.print(this->label);
+  }
 }
 
 

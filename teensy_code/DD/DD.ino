@@ -228,7 +228,7 @@ void loop() {
     if (++screen_mode > 5){ // upper bound
       screen_mode = 1;
     }
-    screen_mode_begins(screen_mode);
+    screen_mode_begins(screen_mode, true);
   }
 
 
@@ -307,7 +307,7 @@ void loop() {
         // run the initializations again
         if (lap_timer_on == true){
           lap_timer_on = false;
-          screen_mode_begins(screen_mode);
+          screen_mode_begins(screen_mode, false); // skip startup screens
         } else {
           auxilary_info_left_screen.update_signals();
           engine_vitals_right_screen.update_signals();
@@ -320,7 +320,7 @@ void loop() {
       // run the initializations again
       if (lap_timer_on == true){
         lap_timer_on = false;
-        screen_mode_begins(screen_mode);
+        screen_mode_begins(screen_mode, false);
       } else {
         gear_display_left.update();
         engine_vitals_right_screen.update_signals();
@@ -332,7 +332,7 @@ void loop() {
       // run the initializations again
       if (lap_timer_on == true){
         lap_timer_on = false;
-        screen_mode_begins(screen_mode);
+        screen_mode_begins(screen_mode, false);
       } else {
         tc_display_left.update();
         engine_vitals_right_screen.update_signals();
@@ -344,7 +344,7 @@ void loop() {
       // run the initializations again
       if (lap_timer_on == true){
         lap_timer_on = false;
-        screen_mode_begins(screen_mode);
+        screen_mode_begins(screen_mode, false);
       } else {
         lap_time_display_left.update();
         lap_time_display_right.update();
@@ -381,7 +381,7 @@ bool check_button(const int &pin, unsigned long &time){
 
 // relocated function that's called when the screen mode changes. This runs the required initializations for
 // every screen mode, except for lap trigger, which is timed by itself.
-void screen_mode_begins(int &screen_mode){
+void screen_mode_begins(int &screen_mode, bool startup_screen){
   // auxilarry info screen and engine vitals screen
   if (screen_mode == 1){
     auxilary_info_left_screen.begin();
@@ -390,17 +390,17 @@ void screen_mode_begins(int &screen_mode){
 
   // gear screen and carry-over of engine vitals
   } else if (screen_mode == 2){
-    gear_display_left.begin();
+    gear_display_left.begin(startup_screen);
     engine_vitals_right_screen.begin();
 
 
   } else if (screen_mode == 3){
-    tc_display_left.begin();
+    tc_display_left.begin(startup_screen);
     engine_vitals_right_screen.begin();
 
   } else if (screen_mode == 4) {
-    lap_time_display_left.begin();
-    lap_time_display_right.begin();
+    lap_time_display_left.begin(startup_screen);
+    lap_time_display_right.begin(startup_screen);
 
   } else if (screen_mode == 5) {
     // display lana del rey
