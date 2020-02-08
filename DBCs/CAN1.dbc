@@ -115,7 +115,7 @@ BO_ 100 M400_dataSet1: 8 M400
  SG_ M400_wheelSlip m3 : 55|16@0- (0.1,0) [-3276.8|3276.7] "%" Vector__XXX
  SG_ M400_tcSlipAimValue m3 : 39|16@0- (0.1,0) [-3276.8|3276.7] "" Vector__XXX
  SG_ M400_tcSlipAimError m3 : 23|16@0- (0.1,0) [-3276.8|3276.7] "" Vector__XXX
- SG_ M400_tcPowerReduction m2 : 55|16@0- (0.1,0) [-3276.8|3276.7] "%" Vector__XXX
+ SG_ M400_tcPowerReduction m2 : 55|16@0- (0.1,0) [0|75] "%" Vector__XXX
  SG_ M400_tcLaunchAimRPM m2 : 39|16@0- (1,0) [-32768|32767] "RPM" Vector__XXX
  SG_ M400_tcIgnretard m2 : 23|16@0- (1,0) [-32768|32767] "deg" Vector__XXX
  SG_ M400_groundSpeedRight m1 : 55|16@0- (0.1,0) [-3276.8|3276.7] "MPH" Vector__XXX
