@@ -3,8 +3,10 @@
 
 #include "sigs_inside.hpp"
 #include <FlexCAN_T4.h>
+#include "user_message_display.hpp"
 
 static CAN_message_t msg, rxmsg;
+extern UserMessageDisplay warning_message_display;
 
 // ID 411 on bus 2
 void read_ATCCF_11(CAN_message_t &imsg){
@@ -25,7 +27,18 @@ void read_USER_10(CAN_message_t &imsg){
 // ID 711 on bus 2
 void read_USER_11(CAN_message_t &imsg){
   USER_driverSignal.set_can_value(imsg.buf[0]);
-  Serial.println("RED USER");
+}
+
+
+// ID 712 on bus 2 - the 64-bit message
+char obd_message[9] = "OIL L"; // <= 8 characters!!! One extra char in defintiion for the null-terminator.
+void read_USER_12(CAN_message_t &imsg){
+  for (int i = 0; i < 8; i++){
+    obd_message[i] = imsg.buf[i];
+  }
+  obd_message[8] = '\0'; // just for safety
+
+  warning_message_display.begin();
 }
 
 
@@ -96,6 +109,9 @@ void read_can2(){
         break;
       case 711:
         read_USER_11(rxmsg);
+        break;
+      case 712:
+        read_USER_12(rxmsg);
         break;
     } // end switch statement
 

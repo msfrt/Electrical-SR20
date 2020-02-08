@@ -30,7 +30,7 @@ const int pixels_right_pin = 4;
 const int pixels_top_cnt = 16; // number of LEDs
 const int pixels_left_cnt = 4;
 const int pixels_right_cnt = 4;
-      int pixel_brightness_percent = 2; // 0 - 100; 100 is blinding... 4 is the minimum for all LED bar colors to work
+      int pixel_brightness_percent = 5; // 0 - 100; 100 is blinding... 4 is the minimum for all LED bar colors to work
 
 Adafruit_NeoPixel pixels_top =   Adafruit_NeoPixel(pixels_top_cnt,   pixels_top_pin,   NEO_GRB + NEO_KHZ800);
 Adafruit_NeoPixel pixels_left =  Adafruit_NeoPixel(pixels_left_cnt,  pixels_left_pin,  NEO_GRB + NEO_KHZ800);
@@ -44,7 +44,7 @@ Adafruit_NeoPixel pixels_right = Adafruit_NeoPixel(pixels_right_cnt, pixels_righ
 #define TFTL_CLK 13
 #define TFTL_RST 19
 #define TFTL_BL 6
-    int display_left_brightness_percent = 10;
+    int display_left_brightness_percent = 100;
 
 
 #define TFTR_DC 5
@@ -54,7 +54,7 @@ Adafruit_NeoPixel pixels_right = Adafruit_NeoPixel(pixels_right_cnt, pixels_righ
 #define TFTR_CLK 13
 #define TFTR_RST 17
 #define TFTR_BL 7
-    int display_right_brightness_percent = 10;
+    int display_right_brightness_percent = 100;
 
 const int DISPLAY_HEIGHT = 240;
 const int DISPLAY_WIDTH = 320;
@@ -97,6 +97,9 @@ int screen_mode = 1;
 // big number display struct and functions
 #include "big_number_display.hpp"
 
+// includes warning messages display
+#include "user_message_display.hpp"
+
 // lap timer screen
 #include "lap_timer.hpp"
 float prev_lap_times[4]; // arrays to hold the last 4 lap time details
@@ -105,7 +108,7 @@ int prev_lap_numbers[4];
 
 
 // debugging timer
-EasyTimer debug(50);
+EasyTimer debug(1);
 
 // used for dynamically changing clock speed :-)))
 // #if defined(__IMXRT1062__)
@@ -134,6 +137,10 @@ NumberDisplay tc_display_left(display_left, M400_gear, "TC"); // change signal w
 
 LapTimeDisplay lap_time_display_left(display_left, prev_lap_numbers, prev_lap_times, "LAP-T", false);
 LapTimeDisplay lap_time_display_right(display_right, prev_lap_numbers, prev_lap_times_diff, "LAP-D", true);
+
+
+// obd_message is a 9-byte char array defined in the can_read file
+UserMessageDisplay warning_message_display(display_left, obd_message, "MESSAGE:", ILI9341_WHITE);
 
 
 EasyTimer info_screen_update_timer(10); // rate at which the screens will check their variables for updates
@@ -209,6 +216,8 @@ void setup() {
   //display_left.writeRect(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, (uint16_t*)fuck_kyle_busch);
   //display_right.writeRect(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, (uint16_t*)fuck_kyle_busch);
 
+
+
 }
 
 
@@ -234,10 +243,19 @@ void loop() {
 
   // if button 2 was pressed change the screen mode and run the required initilizations
   if (check_button(button1_pin, button1_time)){
-    if (++screen_mode > 5){ // upper bound
-      screen_mode = 1;
+
+    // check to see if there's a message displayed. If so, simply turn it off. Otherwise, increment the screen
+    if (warning_message_display.show()){
+      warning_message_display.show(false);
+
+    // increment the screen
+    } else {
+      if (++screen_mode > 5){ // upper bound
+        screen_mode = 1;
+      }
+      screen_mode_begins(screen_mode, true);
     }
-    screen_mode_begins(screen_mode, true);
+
   }
 
 
@@ -322,11 +340,12 @@ void loop() {
   if (info_screen_update_timer.isup()){
     static bool lap_timer_on = false; // used to determine if we need to run initilizations after lap screen turns off
 
-    if (lap_timer_screen(display_left, display_right, M400_gear, prev_lap_times, prev_lap_times_diff, prev_lap_numbers)){
+    if (lap_timer_screen(display_left, display_right, M400_gear, prev_lap_times, prev_lap_times_diff, prev_lap_numbers)
+        || warning_message_display.show()){
       lap_timer_on = true;
 
     // Mode 1 - aux and engine info
-    } else if (screen_mode == 1){
+    } else if (screen_mode == 1){ // add && !user_message
 
         // run the initializations again
         if (lap_timer_on == true){
@@ -381,7 +400,7 @@ void loop() {
 
 
   if (debug.isup()){
-    M400_engineTemp = M400_engineTemp.value();
+
   }
 
 }
