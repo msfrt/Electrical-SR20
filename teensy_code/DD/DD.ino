@@ -30,7 +30,7 @@ const int pixels_right_pin = 4;
 const int pixels_top_cnt = 16; // number of LEDs
 const int pixels_left_cnt = 4;
 const int pixels_right_cnt = 4;
-      int pixel_brightness_percent = 10; // 0 - 100; 100 is blinding... 4 is the minimum for all LED bar colors to work
+      int pixel_brightness_percent = 2; // 0 - 100; 100 is blinding... 4 is the minimum for all LED bar colors to work
 
 Adafruit_NeoPixel pixels_top =   Adafruit_NeoPixel(pixels_top_cnt,   pixels_top_pin,   NEO_GRB + NEO_KHZ800);
 Adafruit_NeoPixel pixels_left =  Adafruit_NeoPixel(pixels_left_cnt,  pixels_left_pin,  NEO_GRB + NEO_KHZ800);
@@ -44,7 +44,7 @@ Adafruit_NeoPixel pixels_right = Adafruit_NeoPixel(pixels_right_cnt, pixels_righ
 #define TFTL_CLK 13
 #define TFTL_RST 19
 #define TFTL_BL 6
-    int display_left_brightness_percent = 100;
+    int display_left_brightness_percent = 10;
 
 
 #define TFTR_DC 5
@@ -54,7 +54,7 @@ Adafruit_NeoPixel pixels_right = Adafruit_NeoPixel(pixels_right_cnt, pixels_righ
 #define TFTR_CLK 13
 #define TFTR_RST 17
 #define TFTR_BL 7
-    int display_right_brightness_percent = 100;
+    int display_right_brightness_percent = 10;
 
 const int DISPLAY_HEIGHT = 240;
 const int DISPLAY_WIDTH = 320;
@@ -112,13 +112,21 @@ EasyTimer debug(50);
 // extern "C" uint32_t set_arm_clock(uint32_t frequency);
 // #endif
 
+char rpm_form[] = "%-4.2f";
+char oilp_form[] = "%-3.1f";
+char engt_form[] = "%-4.2f";
+char battv_form[] = "%-4.2f";
 InfoScreen engine_vitals_right_screen(display_right, M400_rpm, M400_oilPressure, M400_engineTemp, M400_batteryVoltage,
                                         /* label */  "RPM:",   "OILP:",          "ENG:",          "BAT:",
-                        /* max decimal precision */  4,        4,                4,               4);
+                            /* string formatting */  rpm_form, oilp_form ,       engt_form,       battv_form );
 
+char speed_form[] = "%-4.2f";
+char gear_form[] = "%-1.0f";
+char fuel_form[] = "%-3.1f";
+char fanl_form[] = "%-4.2f";
 InfoScreen auxilary_info_left_screen(display_left, M400_groundSpeed, M400_gear, M400_fuelUsed, PDM_fanLeftPWM,
-                                      /* label */  "SPD:",           "GEAR:  ", "FUEL:",         "FAN:",
-                      /* max decimal precision */  2,                0,         4,               4);
+                                      /* label */  "SPD:",           "GEAR:  ", "FUEL:",       "FAN:",
+                          /* string formatting */  speed_form,       gear_form, fuel_form,     fanl_form);
 
 
 NumberDisplay gear_display_left(display_left, M400_gear, "GEAR");
@@ -189,6 +197,7 @@ void setup() {
   led_startup(pixels_top, pixels_left, pixels_right, 1);
 
   M400_rpm = 14000;
+  M400_engineTemp = 69.0;
 
   auxilary_info_left_screen.begin();
   engine_vitals_right_screen.inv_factor_sig1 = 1000; // scale rpm down by 1000
@@ -218,7 +227,7 @@ void loop() {
 
   // if button 1 was pressed changed the led mode
   if (check_button(button2_pin, button2_time)){
-    if (++led_mode > 2){ // upper bound
+    if (++led_mode > 3){ // upper bound
       led_mode = 1;
     }
   }
@@ -274,7 +283,22 @@ void loop() {
     pixels_left.show();
     pixels_right.show();
 
+  // gradient RPM bar
   } else if (led_mode == 2){
+
+    rpm_bar_gradient(pixels_top, M400_rpm, M400_gear);
+    engine_cut_bar(pixels_left,  M400_tcPowerReduction);
+    engine_cut_bar(pixels_right, M400_tcPowerReduction);
+
+    // these two are unused
+    pixels_left.setPixelColor(0, 0, 0, 0);
+    pixels_right.setPixelColor(0, 0, 0, 0);
+
+    pixels_top.show();
+    pixels_left.show();
+    pixels_right.show();
+
+  } else if (led_mode == 3){
     party_bar(pixels_top, pixels_left, pixels_right);
 
   // tell the driver to come in
@@ -309,8 +333,8 @@ void loop() {
           lap_timer_on = false;
           screen_mode_begins(screen_mode, false); // skip startup screens
         } else {
-          auxilary_info_left_screen.update_signals();
-          engine_vitals_right_screen.update_signals();
+          auxilary_info_left_screen.update();
+          engine_vitals_right_screen.update();
         }
 
 
@@ -323,7 +347,7 @@ void loop() {
         screen_mode_begins(screen_mode, false);
       } else {
         gear_display_left.update();
-        engine_vitals_right_screen.update_signals();
+        engine_vitals_right_screen.update();
       }
 
     // Mode 3 - tc display and engine info
@@ -335,7 +359,7 @@ void loop() {
         screen_mode_begins(screen_mode, false);
       } else {
         tc_display_left.update();
-        engine_vitals_right_screen.update_signals();
+        engine_vitals_right_screen.update();
       }
 
     // Mode 4 - lap times

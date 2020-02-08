@@ -43,7 +43,7 @@ bool rpm_bar(Adafruit_NeoPixel &top, StateSignal &rpm, StateSignal &gear){
   static const int idle_rev_limit_rpm = 8000;
   static const int rev_limit_rpm = 14000;
 
-  static const int num_yellow_leds = 5;
+  static const int num_yellow_leds = 6;
   static const int num_red_leds = 5;
 
   static int bar_pwms;
@@ -107,25 +107,20 @@ bool rpm_bar(Adafruit_NeoPixel &top, StateSignal &rpm, StateSignal &gear){
   // else, show rpm bar mode
   } else {
 
-    // determine bar percentage * 10 (variable depending on gear). It's out of 1000 for more precision (map is int math)
-    if (gear.value() < 1){ // neutral
+    // calculate the pwms to be set
+    if (static_cast<int>(gear.value()) < 1){ // neutral
       bar_pwms = map(rpm.value(), idle_rpm, idle_rev_limit_rpm, 0, max_bar_pwm_posns);
-    } else if (gear.value() > 0.9 && gear.value() < 1.1){ // gear 1
+    } else if (static_cast<int>(gear.value()) == 1){ // gear 1
       bar_pwms = map(rpm.value(), idle_rpm, upshift12_rpm, 0, max_bar_pwm_posns);
-    } else if (gear.value() > 1.9 && gear.value() < 2.1){ // gear 2
+    } else if (static_cast<int>(gear.value()) == 2){ // gear 2
       bar_pwms = map(rpm.value(), downshift12_rpm, upshift23_rpm, 0, max_bar_pwm_posns);
-    } else if (gear.value() > 2.9 && gear.value() < 3.1){ // gear 3
+    } else if (static_cast<int>(gear.value()) == 3){ // gear 3
       bar_pwms = map(rpm.value(), downshift23_rpm, upshift34_rpm, 0, max_bar_pwm_posns);
-    } else if (gear.value() > 3.9 && gear.value() < 4.1){ // gear 4
+    } else if (static_cast<int>(gear.value()) == 4){ // gear 4
       bar_pwms = map(rpm.value(), downshift34_rpm, upshift45_rpm, 0, max_bar_pwm_posns);
     } else { // gear 5
       bar_pwms = map(rpm.value(), downshift45_rpm, rev_limit_rpm, 0, max_bar_pwm_posns);
     }
-
-    // turn them all off so we can set the ones that we want to be on
-    // for (int i = 0; i <= top.numPixels(); i++){
-    //   top.setPixelColor(i, 0, 0, 0);
-    // }
 
 
     // set the LEDs to be on
@@ -138,7 +133,7 @@ bool rpm_bar(Adafruit_NeoPixel &top, StateSignal &rpm, StateSignal &gear){
 
       // turn the current LED yellow
       } else if (i < (top.numPixels() - num_red_leds)){
-        top.setPixelColor(i, pwm_current_led / 2, pwm_current_led / 2, 0);
+        top.setPixelColor(i, (2 * pwm_current_led) / 3, (2 * pwm_current_led) / 3, 0); // 2/3 brightness for each color
 
       // turn the rest red
       } else {
@@ -157,14 +152,13 @@ bool rpm_bar(Adafruit_NeoPixel &top, StateSignal &rpm, StateSignal &gear){
 }
 
 
-// copy of function above, but this has the OG rpmbar gradiant, which looks cool :)
-bool rpm_bar_gradiant(Adafruit_NeoPixel &top, StateSignal &rpm, StateSignal &gear){
+// copy of function above, but this has the OG rpmbar gradient, which looks cool :)
+bool rpm_bar_gradient(Adafruit_NeoPixel &top, StateSignal &rpm, StateSignal &gear){
 
   static const int idle_rpm = 2000;
   static const int idle_rev_limit_rpm = 8000;
   static const int rev_limit_rpm = 14000;
 
-  static int bar_percentage;
   static int bar_pwms;
   static int bar_mode;
   static EasyTimer rpm_flash_timer(20);
@@ -173,17 +167,17 @@ bool rpm_bar_gradiant(Adafruit_NeoPixel &top, StateSignal &rpm, StateSignal &gea
   static int pwm_current_led;
 
   // determine if downshift mode
-  if ((rpm.value() <= downshift12_rpm && (gear.value() > 1.9 && gear.value() < 2.1)) || // currently gear 2
-      (rpm.value() <= downshift23_rpm && (gear.value() > 2.9 && gear.value() < 3.1)) || // 3
-      (rpm.value() <= downshift34_rpm && (gear.value() > 3.9 && gear.value() < 4.1)) || // 4
-      (rpm.value() <= downshift45_rpm && (gear.value() > 4.9 && gear.value() < 5.1))){  // 5
+  if ((rpm.value() <= downshift12_rpm && (static_cast<int>(gear.value() == 2))) || // currently gear 2
+      (rpm.value() <= downshift23_rpm && (static_cast<int>(gear.value() == 3))) || // 3
+      (rpm.value() <= downshift34_rpm && (static_cast<int>(gear.value() == 4))) || // 4
+      (rpm.value() <= downshift45_rpm && (static_cast<int>(gear.value() == 5)))){  // 5
     bar_mode = 1;
 
   // determine if upshift mode
-  } else if ((rpm.value() >= upshift12_rpm && (gear.value() > 0.9 && gear.value() < 1.1)) ||
-             (rpm.value() >= upshift23_rpm && (gear.value() > 1.9 && gear.value() < 2.1)) ||
-             (rpm.value() >= upshift34_rpm && (gear.value() > 2.9 && gear.value() < 3.1)) ||
-             (rpm.value() >= upshift45_rpm && (gear.value() > 3.9 && gear.value() < 4.1))){
+  } else if ((rpm.value() >= upshift12_rpm && (static_cast<int>(gear.value() == 1))) ||
+             (rpm.value() >= upshift23_rpm && (static_cast<int>(gear.value() == 2))) ||
+             (rpm.value() >= upshift34_rpm && (static_cast<int>(gear.value() == 3))) ||
+             (rpm.value() >= upshift45_rpm && (static_cast<int>(gear.value() == 4)))){
     bar_mode = 2;
 
   // otherwise we are in rpmbar mode
@@ -226,28 +220,25 @@ bool rpm_bar_gradiant(Adafruit_NeoPixel &top, StateSignal &rpm, StateSignal &gea
   // else, show rpm bar mode
   } else {
 
-    // determine bar percentage * 10 (variable depending on gear). It's out of 1000 for more precision (map is int math)
-    if (gear.value() < 1){ // neutral
-      bar_percentage = map(rpm.value(), idle_rpm, idle_rev_limit_rpm, 0, 1000);
-    } else if (gear.value() > 0.9 && gear.value() < 1.1){ // gear 1
-      bar_percentage = map(rpm.value(), idle_rpm, upshift12_rpm, 0, 1000);
-    } else if (gear.value() > 1.9 && gear.value() < 2.1){ // gear 2
-      bar_percentage = map(rpm.value(), downshift12_rpm, upshift23_rpm, 0, 1000);
-    } else if (gear.value() > 2.9 && gear.value() < 3.1){ // gear 3
-      bar_percentage = map(rpm.value(), downshift23_rpm, upshift34_rpm, 0, 1000);
-    } else if (gear.value() > 3.9 && gear.value() < 4.1){ // gear 4
-      bar_percentage = map(rpm.value(), downshift34_rpm, upshift45_rpm, 0, 1000);
+    // calculate the pwms to be set
+    if (static_cast<int>(gear.value()) < 1){ // neutral
+      bar_pwms = map(rpm.value(), idle_rpm, idle_rev_limit_rpm, 0, max_bar_pwm_posns);
+    } else if (static_cast<int>(gear.value()) == 1){ // gear 1
+      bar_pwms = map(rpm.value(), idle_rpm, upshift12_rpm, 0, max_bar_pwm_posns);
+    } else if (static_cast<int>(gear.value()) == 2){ // gear 2
+      bar_pwms = map(rpm.value(), downshift12_rpm, upshift23_rpm, 0, max_bar_pwm_posns);
+    } else if (static_cast<int>(gear.value()) == 3){ // gear 3
+      bar_pwms = map(rpm.value(), downshift23_rpm, upshift34_rpm, 0, max_bar_pwm_posns);
+    } else if (static_cast<int>(gear.value()) == 4){ // gear 4
+      bar_pwms = map(rpm.value(), downshift34_rpm, upshift45_rpm, 0, max_bar_pwm_posns);
     } else { // gear 5
-      bar_percentage = map(rpm.value(), downshift45_rpm, rev_limit_rpm, 0, 1000);
+      bar_pwms = map(rpm.value(), downshift45_rpm, rev_limit_rpm, 0, max_bar_pwm_posns);
     }
 
     // turn them all off so we can set the ones that we want to be on
     for (int i = 0; i <= top.numPixels(); i++){
       top.setPixelColor(i, 0, 0, 0);
     }
-
-    // the total pwms that we need to set in the bar
-    bar_pwms = (bar_percentage * max_bar_pwm_posns) / 1000;
 
     // set the LEDs to be on
     for (int i = 0; i <= top.numPixels(); i++){
