@@ -8,10 +8,22 @@
 static CAN_message_t msg, rxmsg;
 extern UserMessageDisplay warning_message_display;
 
+
+// ID 410 on bus 2
+void read_ATCCF_10(CAN_message_t &imsg){
+  ATCCF_brakeBias.set_can_value(imsg.buf[2] | imsg.buf[3] << 8);
+}
+
 // ID 411 on bus 2
 void read_ATCCF_11(CAN_message_t &imsg){
   ATCCF_brakePressureF.set_can_value(imsg.buf[2] | imsg.buf[3] << 8);
   ATCCF_brakePressureR.set_can_value(imsg.buf[4] | imsg.buf[5] << 8);
+}
+
+
+// ID 274 on bus 2
+void read_PDM_24(CAN_message_t &imsg){
+  PDM_fanLeftPWM.set_can_value(imsg.buf[2]);
 }
 
 
@@ -31,7 +43,7 @@ void read_USER_11(CAN_message_t &imsg){
 
 
 // ID 712 on bus 2 - the 64-bit message
-char obd_message[9] = "OIL L"; // <= 8 characters!!! One extra char in defintiion for the null-terminator.
+char obd_message[9] = ""; // <= 8 characters!!! One extra char in defintiion for the null-terminator.
 void read_USER_12(CAN_message_t &imsg){
   for (int i = 0; i < 8; i++){
     obd_message[i] = imsg.buf[i];
@@ -42,13 +54,18 @@ void read_USER_12(CAN_message_t &imsg){
 }
 
 
-// ID 100 on bus 1
+// ID 100 on bus 1 - M400 dataset 1
 void read_M400_100(CAN_message_t &imsg){
   // multiplexer first-bit
   switch (imsg.buf[0]) {
 
+    case 1:
+      M400_groundSpeed.set_can_value(imsg.buf[2] << 8 | imsg.buf[3]);
+      break;
+
     case 2:
       M400_tcPowerReduction.set_can_value(imsg.buf[6] << 8 | imsg.buf[7]);
+      break;
 
     case 4:
       M400_ignCutLevelTotal.set_can_value(imsg.buf[2] << 8 | imsg.buf[3]);
@@ -58,11 +75,12 @@ void read_M400_100(CAN_message_t &imsg){
     case 5:
       M400_gear.set_can_value(imsg.buf[2] << 8 | imsg.buf[3]);
       break;
+
   }
 }
 
 
-// ID 101 on bus 1
+// ID 101 on bus 1 - M400 dataset 2
 void read_M400_101(CAN_message_t &imsg){
   // multiplexer first-bit
   switch (imsg.buf[0]) {
@@ -73,6 +91,10 @@ void read_M400_101(CAN_message_t &imsg){
 
     case 3:
       M400_engineTemp.set_can_value(imsg.buf[6] << 8 | imsg.buf[7]);
+      break;
+
+    case 15:
+      M400_oilPressure.set_can_value(imsg.buf[6] << 8 | imsg.buf[7]);
       break;
   }
 }
@@ -101,6 +123,12 @@ void read_can2(){
   if (cbus2.read(rxmsg)){
 
     switch (rxmsg.id) {
+      case 274:
+        read_PDM_24(rxmsg);
+        break;
+      case 410:
+        read_ATCCF_10(rxmsg);
+        break;
       case 411:
         read_ATCCF_11(rxmsg);
         break;

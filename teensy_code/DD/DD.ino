@@ -115,21 +115,21 @@ EasyTimer debug(1);
 // extern "C" uint32_t set_arm_clock(uint32_t frequency);
 // #endif
 
-char rpm_form[] = "%-4.2f";
-char oilp_form[] = "%-3.1f";
-char engt_form[] = "%-4.2f";
-char battv_form[] = "%-4.2f";
+char rpm_form[] = "%4.2f";
+char oilp_form[] = "%3.1f";
+char engt_form[] = "%4.1f";
+char battv_form[] = "%4.2f";
 InfoScreen engine_vitals_right_screen(display_right, M400_rpm, M400_oilPressure, M400_engineTemp, M400_batteryVoltage,
                                         /* label */  "RPM:",   "OILP:",          "ENG:",          "BAT:",
                             /* string formatting */  rpm_form, oilp_form ,       engt_form,       battv_form );
 
-char speed_form[] = "%-4.2f";
-char gear_form[] = "%-1.0f";
-char fuel_form[] = "%-3.1f";
-char fanl_form[] = "%-4.2f";
-InfoScreen auxilary_info_left_screen(display_left, M400_groundSpeed, M400_gear, M400_fuelUsed, PDM_fanLeftPWM,
-                                      /* label */  "SPD:",           "GEAR:  ", "FUEL:",       "FAN:",
-                          /* string formatting */  speed_form,       gear_form, fuel_form,     fanl_form);
+char speed_form[] = "%4.1f";
+char gear_form[] = "%1.0f";
+char bias_form[] = "%2.0f%%";
+char fanl_form[] = "%3.0f";
+InfoScreen auxilary_info_left_screen(display_left, M400_groundSpeed, M400_gear, ATCCF_brakeBias, PDM_fanLeftPWM,
+                                      /* label */  "SPD:",           "GEAR:  ", "BIAS:",         "FANS:",
+                          /* string formatting */  speed_form,       gear_form, bias_form,       fanl_form);
 
 
 NumberDisplay gear_display_left(display_left, M400_gear, "GEAR");
