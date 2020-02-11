@@ -1,11 +1,11 @@
-#ifndef CAN_READ_HPP
-#define CAN_READ_HPP
+#ifndef CAN_READ_DRIVERDISPLAY_HPP
+#define CAN_READ_DRIVERDISPLAY_HPP
 
 #include "sigs_inside.hpp"
 #include <FlexCAN_T4.h>
 #include "user_message_display.hpp"
 
-static CAN_message_t msg, rxmsg;
+static CAN_message_t rxmsg;
 extern UserMessageDisplay warning_message_display;
 
 

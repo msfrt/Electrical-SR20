@@ -9,6 +9,8 @@
 #include "ILI9341_t3n.h"
 #define SPI0_DISP1
 
+#define READ_RESOLUTION_BITS 12
+
 // can bus decleration
 FlexCAN_T4<CAN1, RX_SIZE_256, TX_SIZE_16> cbus1;
 FlexCAN_T4<CAN2, RX_SIZE_256, TX_SIZE_16> cbus2;
@@ -86,6 +88,7 @@ int screen_mode = 1;
 
 // CAN message definitions
 #include "can_read.hpp"
+#include "can_send.hpp"
 
 // bitmaps - generated here: http://javl.github.io/image2cpp/
 #include "sr_bitmap.hpp"
@@ -100,20 +103,17 @@ int screen_mode = 1;
 // includes warning messages display
 #include "user_message_display.hpp"
 
+// includes board temp
+#include "board_temp.hpp"
+//BoardTemp(int pin, int read_bits, int temp_cal, int mv_cal);
+BoardTemp board_temp(21, READ_RESOLUTION_BITS, 26.2, 598);
+EasyTimer board_temp_sample_timer(20);
+
 // lap timer screen
 #include "lap_timer.hpp"
 float prev_lap_times[4]; // arrays to hold the last 4 lap time details
 float prev_lap_times_diff[4];
 int prev_lap_numbers[4];
-
-
-// debugging timer
-EasyTimer debug(1);
-
-// used for dynamically changing clock speed :-)))
-// #if defined(__IMXRT1062__)
-// extern "C" uint32_t set_arm_clock(uint32_t frequency);
-// #endif
 
 char rpm_form[] = "%4.2f";
 char oilp_form[] = "%3.1f";
@@ -142,17 +142,17 @@ LapTimeDisplay lap_time_display_right(display_right, prev_lap_numbers, prev_lap_
 // obd_message is a 9-byte char array defined in the can_read file
 UserMessageDisplay warning_message_display(display_left, obd_message, "MESSAGE:", ILI9341_WHITE);
 
-
 EasyTimer info_screen_update_timer(10); // rate at which the screens will check their variables for updates
+
+EasyTimer debug(50); // debugging timer
+
+// used for dynamically changing clock speed :-)))
+// #if defined(__IMXRT1062__)
+// extern "C" uint32_t set_arm_clock(uint32_t frequency);
+// #endif
 
 
 void setup() {
-
-  // initilize CAN busses
-  cbus1.begin();
-  cbus1.setBaudRate(1000000);
-  cbus2.begin();
-  cbus2.setBaudRate(1000000);
 
   // dynamically change clock speed
   // #if defined(__IMXRT1062__)
@@ -160,6 +160,15 @@ void setup() {
   //   Serial.print("F_CPU_ACTUAL=");
   //   Serial.println(F_CPU_ACTUAL);
   // #endif
+
+  // set analog read resolution
+  analogReadResolution(READ_RESOLUTION_BITS);
+
+  // initilize CAN busses
+  cbus1.begin();
+  cbus1.setBaudRate(1000000);
+  cbus2.begin();
+  cbus2.setBaudRate(1000000);
 
   // initialze serial coms
   Serial.begin(115200);
@@ -203,24 +212,19 @@ void setup() {
   // if you set it higher than 5, I have respect for your patience
   led_startup(pixels_top, pixels_left, pixels_right, 1);
 
-  M400_rpm = 14000;
-  M400_engineTemp = 69.0;
 
   auxilary_info_left_screen.begin();
   engine_vitals_right_screen.inv_factor_sig1 = 1000; // scale rpm down by 1000
   engine_vitals_right_screen.begin();
 
-
+  // initilize board temp
+  board_temp.begin();
 
   // fuck kyle busch
   //display_left.writeRect(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, (uint16_t*)fuck_kyle_busch);
   //display_right.writeRect(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, (uint16_t*)fuck_kyle_busch);
 
-
-
 }
-
-
 
 
 
@@ -230,6 +234,10 @@ void loop() {
   // read CAN buses
   read_can1();
   read_can2();
+
+  // board temp sampling shenanigans
+  if (board_temp_sample_timer.isup())
+    board_temp.sample();
 
 
   // buttons and mode initialization ----------------------------------------
@@ -398,10 +406,9 @@ void loop() {
   }
 
 
-
-  if (debug.isup()){
-
-  }
+  // send can messages
+  send_can1();
+  send_can2();
 
 }
 

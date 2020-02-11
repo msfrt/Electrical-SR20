@@ -5,7 +5,12 @@
 #include <FlexCAN_T4.h>
 
 // format: (find parameter values in DBC)
-// StateSignal MOD_signName(bitl, signed, inv_factor, offset, min, max, secondary_val, timeout);
+// StateSignal MOD_sigName(bitl, signed, inv_factor, offset, min, max, secondary_val, timeout);
+
+// outgoing signals
+StateSignal DD_teensyTemp(16, true, 10, 0, -3276, 3276, 0);
+StateSignal DD_boardTemp(16, true, 10, 0, -3276, 3276, 0);
+StateSignal DD_requestDRS(16, true, 1, 0, 0, 5, 0);
 
 // incoming signals
 StateSignal M400_engineTemp(16, true, 10, 0, -3276, 3276, 0, 1000); // secondary val: 0, timeout: 1000ms
