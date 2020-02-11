@@ -9,6 +9,8 @@
 #include "ILI9341_t3n.h"
 #define SPI0_DISP1
 
+#define READ_RESOLUTION_BITS 12
+
 // can bus decleration
 FlexCAN_T4<CAN1, RX_SIZE_256, TX_SIZE_16> cbus1;
 FlexCAN_T4<CAN2, RX_SIZE_256, TX_SIZE_16> cbus2;
@@ -30,7 +32,7 @@ const int pixels_right_pin = 4;
 const int pixels_top_cnt = 16; // number of LEDs
 const int pixels_left_cnt = 4;
 const int pixels_right_cnt = 4;
-      int pixel_brightness_percent = 10; // 0 - 100; 100 is blinding... 4 is the minimum for all LED bar colors to work
+      int pixel_brightness_percent = 5; // 0 - 100; 100 is blinding... 4 is the minimum for all LED bar colors to work
 
 Adafruit_NeoPixel pixels_top =   Adafruit_NeoPixel(pixels_top_cnt,   pixels_top_pin,   NEO_GRB + NEO_KHZ800);
 Adafruit_NeoPixel pixels_left =  Adafruit_NeoPixel(pixels_left_cnt,  pixels_left_pin,  NEO_GRB + NEO_KHZ800);
@@ -86,6 +88,7 @@ int screen_mode = 1;
 
 // CAN message definitions
 #include "can_read.hpp"
+#include "can_send.hpp"
 
 // bitmaps - generated here: http://javl.github.io/image2cpp/
 #include "sr_bitmap.hpp"
@@ -97,37 +100,59 @@ int screen_mode = 1;
 // big number display struct and functions
 #include "big_number_display.hpp"
 
+// includes warning messages display
+#include "user_message_display.hpp"
 
-// debugging timer
-EasyTimer debug(50);
+// includes board temp
+#include "board_temp.hpp"
+//BoardTemp(int pin, int read_bits, int temp_cal, int mv_cal);
+BoardTemp board_temp(21, READ_RESOLUTION_BITS, 26.2, 598);
+EasyTimer board_temp_sample_timer(20);
+
+// lap timer screen
+#include "lap_timer.hpp"
+float prev_lap_times[4]; // arrays to hold the last 4 lap time details
+float prev_lap_times_diff[4];
+int prev_lap_numbers[4];
+
+char rpm_form[] = "%4.2f";
+char oilp_form[] = "%3.1f";
+char engt_form[] = "%4.1f";
+char battv_form[] = "%4.2f";
+InfoScreen engine_vitals_right_screen(display_right, M400_rpm, M400_oilPressure, M400_engineTemp, M400_batteryVoltage,
+                                        /* label */  "RPM:",   "OILP:",          "ENG:",          "BAT:",
+                            /* string formatting */  rpm_form, oilp_form ,       engt_form,       battv_form );
+
+char speed_form[] = "%4.1f";
+char gear_form[] = "%1.0f";
+char bias_form[] = "%2.0f%%";
+char fanl_form[] = "%3.0f";
+InfoScreen auxilary_info_left_screen(display_left, M400_groundSpeed, M400_gear, ATCCF_brakeBias, PDM_fanLeftPWM,
+                                      /* label */  "SPD:",           "GEAR:  ", "BIAS:",         "FANS:",
+                          /* string formatting */  speed_form,       gear_form, bias_form,       fanl_form);
+
+
+NumberDisplay gear_display_left(display_left, M400_gear, "GEAR");
+NumberDisplay tc_display_left(display_left, M400_gear, "TC"); // change signal when C50 signals are set up
+
+LapTimeDisplay lap_time_display_left(display_left, prev_lap_numbers, prev_lap_times, "LAP-T", false);
+LapTimeDisplay lap_time_display_right(display_right, prev_lap_numbers, prev_lap_times_diff, "LAP-D", true);
+
+
+// obd_message is a 9-byte char array defined in the can_read file
+UserMessageDisplay warning_message_display(display_left, obd_message, "MESSAGE:", ILI9341_WHITE);
+
+EasyTimer info_screen_update_timer(10); // rate at which the screens will check their variables for updates
+
+EasyTimer debug(50); // debugging timer
 
 // used for dynamically changing clock speed :-)))
 // #if defined(__IMXRT1062__)
 // extern "C" uint32_t set_arm_clock(uint32_t frequency);
 // #endif
 
-InfoScreen engine_vitals_right_screen(display_right, M400_rpm, M400_oilPressure, M400_engineTemp, M400_batteryVoltage,
-                                        /* label */  "RPM:",   "OILP:",          "ENG:",          "BAT:",
-                        /* max decimal precision */  4,        4,                4,               4);
-
-InfoScreen auxilary_info_left_screen(display_left, M400_groundSpeed, M400_gear, M400_fuelUsed, PDM_fanLeftPWM,
-                                      /* label */  "SPD:",           "GEAR:  ", "FUEL:",         "FAN:",
-                      /* max decimal precision */  2,                0,         4,               4);
-
-
-NumberDisplay gear_display_left(display_left, M400_gear, "GEAR");
-NumberDisplay tc_display_left(display_left, M400_gear, "TC"); // change signal when C50 signals are set up
-
-EasyTimer info_screen_update_timer(10); // rate at which the screens will check their variables for updates
-
 
 void setup() {
-
-  // initilize CAN busses
-  cbus1.begin();
-  cbus1.setBaudRate(1000000);
-  cbus2.begin();
-  cbus2.setBaudRate(1000000);
 
   // dynamically change clock speed
   // #if defined(__IMXRT1062__)
@@ -135,6 +160,15 @@ void setup() {
   //   Serial.print("F_CPU_ACTUAL=");
   //   Serial.println(F_CPU_ACTUAL);
   // #endif
+
+  // set analog read resolution
+  analogReadResolution(READ_RESOLUTION_BITS);
+
+  // initilize CAN busses
+  cbus1.begin();
+  cbus1.setBaudRate(1000000);
+  cbus2.begin();
+  cbus2.setBaudRate(1000000);
 
   // initialze serial coms
   Serial.begin(115200);
@@ -178,13 +212,13 @@ void setup() {
   // if you set it higher than 5, I have respect for your patience
   led_startup(pixels_top, pixels_left, pixels_right, 1);
 
-  M400_rpm = 14000;
 
   auxilary_info_left_screen.begin();
   engine_vitals_right_screen.inv_factor_sig1 = 1000; // scale rpm down by 1000
   engine_vitals_right_screen.begin();
 
-
+  // initilize board temp
+  board_temp.begin();
 
   // fuck kyle busch
   //display_left.writeRect(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, (uint16_t*)fuck_kyle_busch);
@@ -195,49 +229,41 @@ void setup() {
 
 
 
-
-
 void loop() {
 
   // read CAN buses
   read_can1();
   read_can2();
 
+  // board temp sampling shenanigans
+  if (board_temp_sample_timer.isup())
+    board_temp.sample();
+
 
   // buttons and mode initialization ----------------------------------------
 
   // if button 1 was pressed changed the led mode
   if (check_button(button2_pin, button2_time)){
-    if (++led_mode > 2){ // upper bound
+    if (++led_mode > 3){ // upper bound
       led_mode = 1;
     }
   }
 
   // if button 2 was pressed change the screen mode and run the required initilizations
   if (check_button(button1_pin, button1_time)){
-    if (++screen_mode > 4){ // upper bound
-      screen_mode = 1;
+
+    // check to see if there's a message displayed. If so, simply turn it off. Otherwise, increment the screen
+    if (warning_message_display.show()){
+      warning_message_display.show(false);
+
+    // increment the screen
+    } else {
+      if (++screen_mode > 5){ // upper bound
+        screen_mode = 1;
+      }
+      screen_mode_begins(screen_mode, true);
     }
 
-    // auxilarry info screen and engine vitals screen
-    if (screen_mode == 1){
-      auxilary_info_left_screen.begin();
-      engine_vitals_right_screen.begin();
-
-
-    // gear screen and carry-over of engine vitals
-    } else if (screen_mode == 2){
-      gear_display_left.begin();
-
-
-    } else if (screen_mode == 3){
-      tc_display_left.begin();
-
-    } else if (screen_mode == 4) {
-      // display lana del rey
-      display_left.writeRect(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, (uint16_t*)lana1);
-      display_right.writeRect(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, (uint16_t*)lana2);
-    }
   }
 
 
@@ -266,23 +292,39 @@ void loop() {
 
   if (led_mode == 1){
     rpm_bar(pixels_top, M400_rpm, M400_gear);
+    engine_cut_bar(pixels_left,  M400_tcPowerReduction);
+    engine_cut_bar(pixels_right, M400_tcPowerReduction);
 
-    lockup_indicator(pixels_left, 0, M400_groundSpeedLeft, MM5_Ax, ATCCF_brakePressureF, ATCCF_brakePressureR);
-    lockup_indicator(pixels_left, 3, M400_driveSpeedLeft, MM5_Ax, ATCCF_brakePressureF, ATCCF_brakePressureR);
-    lockup_indicator(pixels_right, 0, M400_groundSpeedRight, MM5_Ax, ATCCF_brakePressureF, ATCCF_brakePressureR);
-    lockup_indicator(pixels_right, 3, M400_driveSpeedRight, MM5_Ax, ATCCF_brakePressureF, ATCCF_brakePressureR);
+    // this will prolly be changed
+    //lockup_indicator(pixels_left, 0, M400_groundSpeedLeft, MM5_Ax, ATCCF_brakePressureF, ATCCF_brakePressureR);
+    //lockup_indicator(pixels_left, 3, M400_driveSpeedLeft, MM5_Ax, ATCCF_brakePressureF, ATCCF_brakePressureR);
+    //lockup_indicator(pixels_right, 0, M400_groundSpeedRight, MM5_Ax, ATCCF_brakePressureF, ATCCF_brakePressureR);
+    //lockup_indicator(pixels_right, 3, M400_driveSpeedRight, MM5_Ax, ATCCF_brakePressureF, ATCCF_brakePressureR);
 
-    // these next four LEDs are currently unused, so set them to blank
-    pixels_left.setPixelColor(1, 0, 0, 0);
-    pixels_left.setPixelColor(2, 0, 0, 0);
-    pixels_right.setPixelColor(1, 0, 0, 0);
-    pixels_right.setPixelColor(2, 0, 0, 0);
+    // these two are unused
+    pixels_left.setPixelColor(0, 0, 0, 0);
+    pixels_right.setPixelColor(0, 0, 0, 0);
 
     pixels_top.show();
     pixels_left.show();
     pixels_right.show();
 
+  // gradient RPM bar
   } else if (led_mode == 2){
+
+    rpm_bar_gradient(pixels_top, M400_rpm, M400_gear);
+    engine_cut_bar(pixels_left,  M400_tcPowerReduction);
+    engine_cut_bar(pixels_right, M400_tcPowerReduction);
+
+    // these two are unused
+    pixels_left.setPixelColor(0, 0, 0, 0);
+    pixels_right.setPixelColor(0, 0, 0, 0);
+
+    pixels_top.show();
+    pixels_left.show();
+    pixels_right.show();
+
+  } else if (led_mode == 3){
     party_bar(pixels_top, pixels_left, pixels_right);
 
   // tell the driver to come in
@@ -304,36 +346,77 @@ void loop() {
   // display updates --------------------------------------------------
 
   if (info_screen_update_timer.isup()){
+    static bool lap_timer_on = false; // used to determine if we need to run initilizations after lap screen turns off
+
+    if (lap_timer_screen(display_left, display_right, M400_gear, prev_lap_times, prev_lap_times_diff, prev_lap_numbers)
+        || warning_message_display.show()){
+      lap_timer_on = true;
 
     // Mode 1 - aux and engine info
-    if (screen_mode == 1){
-        auxilary_info_left_screen.update_signals();
-        engine_vitals_right_screen.update_signals();
+    } else if (screen_mode == 1){ // add && !user_message
+
+        // run the initializations again
+        if (lap_timer_on == true){
+          lap_timer_on = false;
+          screen_mode_begins(screen_mode, false); // skip startup screens
+        } else {
+          auxilary_info_left_screen.update();
+          engine_vitals_right_screen.update();
+        }
+
 
     // Mode 2 - gear display and engine info
     } else if (screen_mode == 2){
-      gear_display_left.update();
-      engine_vitals_right_screen.update_signals();
 
+      // run the initializations again
+      if (lap_timer_on == true){
+        lap_timer_on = false;
+        screen_mode_begins(screen_mode, false);
+      } else {
+        gear_display_left.update();
+        engine_vitals_right_screen.update();
+      }
+
+    // Mode 3 - tc display and engine info
     } else if (screen_mode == 3){
-      tc_display_left.update();
-      engine_vitals_right_screen.update_signals();
+
+      // run the initializations again
+      if (lap_timer_on == true){
+        lap_timer_on = false;
+        screen_mode_begins(screen_mode, false);
+      } else {
+        tc_display_left.update();
+        engine_vitals_right_screen.update();
+      }
+
+    // Mode 4 - lap times
+    } else if (screen_mode == 4){
+
+      // run the initializations again
+      if (lap_timer_on == true){
+        lap_timer_on = false;
+        screen_mode_begins(screen_mode, false);
+      } else {
+        lap_time_display_left.update();
+        lap_time_display_right.update();
+      }
+
     }
+
   }
 
 
-
-  if (debug.isup()){
-    M400_engineTemp = M400_engineTemp.value();
-  }
+  // send can messages
+  send_can1();
+  send_can2();
 
 }
 
 
 
 
-// takes a button pin and a reference to the state. First, updates state. Returns an int according to the number of
-// times the button was pressed (up to 2). returns 0 if nothing.
+// returns true if a button was pressed. Parameters are the button pin and a reference to the last time
+// that the button was pressed.
 bool check_button(const int &pin, unsigned long &time){
 
   // single press
@@ -343,4 +426,35 @@ bool check_button(const int &pin, unsigned long &time){
   }
 
   return false;
+}
+
+
+// relocated function that's called when the screen mode changes. This runs the required initializations for
+// every screen mode, except for lap trigger, which is timed by itself.
+void screen_mode_begins(int &screen_mode, bool startup_screen){
+  // auxilarry info screen and engine vitals screen
+  if (screen_mode == 1){
+    auxilary_info_left_screen.begin();
+    engine_vitals_right_screen.begin();
+
+
+  // gear screen and carry-over of engine vitals
+  } else if (screen_mode == 2){
+    gear_display_left.begin(startup_screen);
+    engine_vitals_right_screen.begin();
+
+
+  } else if (screen_mode == 3){
+    tc_display_left.begin(startup_screen);
+    engine_vitals_right_screen.begin();
+
+  } else if (screen_mode == 4) {
+    lap_time_display_left.begin(startup_screen);
+    lap_time_display_right.begin(startup_screen);
+
+  } else if (screen_mode == 5) {
+    // display lana del rey
+    display_left.writeRect(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, (uint16_t*)lana1);
+    display_right.writeRect(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, (uint16_t*)lana2);
+  }
 }
