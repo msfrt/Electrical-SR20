@@ -111,9 +111,7 @@ EasyTimer board_temp_sample_timer(20);
 
 // lap timer screen
 #include "lap_timer.hpp"
-float prev_lap_times[4]; // arrays to hold the last 4 lap time details
-float prev_lap_times_diff[4];
-int prev_lap_numbers[4];
+
 
 char rpm_form[] = "%4.2f";
 char oilp_form[] = "%3.1f";
@@ -135,9 +133,13 @@ InfoScreen auxilary_info_left_screen(display_left, M400_groundSpeed, M400_gear, 
 NumberDisplay gear_display_left(display_left, M400_gear, "GEAR");
 NumberDisplay tc_display_left(display_left, M400_gear, "TC"); // change signal when C50 signals are set up
 
+// lap-time array declaration
+float prev_lap_times[4]; // arrays to hold the last 4 lap time details
+float prev_lap_times_diff[4];
+int prev_lap_numbers[4];
+// lap-time display initialization
 LapTimeDisplay lap_time_display_left(display_left, prev_lap_numbers, prev_lap_times, "LAP-T", false);
 LapTimeDisplay lap_time_display_right(display_right, prev_lap_numbers, prev_lap_times_diff, "LAP-D", true);
-
 
 // obd_message is a 9-byte char array defined in the can_read file
 UserMessageDisplay warning_message_display(display_left, obd_message, "MESSAGE:", ILI9341_WHITE);
@@ -214,7 +216,7 @@ void setup() {
 
 
   auxilary_info_left_screen.begin();
-  engine_vitals_right_screen.inv_factor_sig1 = 1000; // scale rpm down by 1000
+   // scale rpm down by 1000
   engine_vitals_right_screen.begin();
 
   // initilize board temp
