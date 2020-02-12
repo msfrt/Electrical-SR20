@@ -41,12 +41,6 @@ struct InfoScreen {
   int num_digits_sig3 = 4;
   int num_digits_sig4 = 4;
 
-  // the number of places past the decimal point to display
-  int dec_prec_sig1 = 0;
-  int dec_prec_sig2 = 0;
-  int dec_prec_sig3 = 0;
-  int dec_prec_sig4 = 0;
-
   // additional scaling that you may want to do. For example, instead of display 5 digits of RPM, we can set one of
   // these scalers to 1000 to get rpm / 1000
   int inv_factor_sig1 = 1;
@@ -59,22 +53,34 @@ struct InfoScreen {
   String label3;
   String label4;
 
-  float last_val_sig1 = -99999999; // set these values so that signals are updated upon begin()
-  float last_val_sig2 = -99999999;
-  float last_val_sig3 = -99999999;
-  float last_val_sig4 = -99999999;
+  char formatting_sig1[10] = "%-4.2f"; // formatting for the sprintf function
+  char formatting_sig2[10] = "%-4.2f";
+  char formatting_sig3[10] = "%-4.2f";
+  char formatting_sig4[10] = "%-4.2f";
+
+  char current_val_sig1[10] = "\0\0\0\0\0\0\0\0\0";
+  char current_val_sig2[10] = "\0\0\0\0\0\0\0\0\0";
+  char current_val_sig3[10] = "\0\0\0\0\0\0\0\0\0";
+  char current_val_sig4[10] = "\0\0\0\0\0\0\0\0\0";
+
+  char last_val_sig1[10] = "\0\0\0\0\0\0\0\0\0";
+  char last_val_sig2[10] = "\0\0\0\0\0\0\0\0\0";
+  char last_val_sig3[10] = "\0\0\0\0\0\0\0\0\0";
+  char last_val_sig4[10] = "\0\0\0\0\0\0\0\0\0";
 
   InfoScreen() = delete;
   InfoScreen(ILI9341_t3n &scr, StateSignal &s1, StateSignal &s2, StateSignal &s3, StateSignal &s4) :
   screen(scr), sig1(s1), sig2(s2), sig3(s3), sig4(s4) {};
 
-  InfoScreen(ILI9341_t3n &scr, StateSignal &s1, StateSignal &s2, StateSignal &s3, StateSignal &s4,
-                                   String lab1,     String lab2,     String lab3,     String lab4,
-                                   //int digits1,     int digits2,     int digits3,     int digits4,
-                                int precision1,  int precision2,   int precision3, int precision4) : screen(scr),
+  InfoScreen(ILI9341_t3n &scr, StateSignal &s1,      StateSignal &s2,      StateSignal &s3,      StateSignal &s4,
+                                   String lab1,          String lab2,          String lab3,          String lab4,
+                          char formatting1[10], char formatting2[10], char formatting3[10], char formatting4[10]) : screen(scr),
                                 sig1(s1), sig2(s2), sig3(s3), sig4(s4),
-                                dec_prec_sig1(precision1), dec_prec_sig2(precision2), dec_prec_sig3(precision3),
-                                dec_prec_sig4(precision4), label1(lab1), label2(lab2), label3(lab3), label4(lab4) {
+                                label1(lab1), label2(lab2), label3(lab3), label4(lab4) {
+                                  strcpy(formatting_sig1, formatting1);
+                                  strcpy(formatting_sig2, formatting2);
+                                  strcpy(formatting_sig3, formatting3);
+                                  strcpy(formatting_sig4, formatting4);
                                   num_digits_sig1 = 8 - lab1.length();
                                   num_digits_sig2 = 8 - lab2.length();
                                   num_digits_sig3 = 8 - lab3.length();
@@ -102,7 +108,7 @@ struct InfoScreen {
   bool update_sig4(bool override = false);
 
   // update the dignals if necessary
-  bool update_signals(bool override = false);
+  bool update(bool override = false);
 
 };
 
@@ -112,7 +118,7 @@ void InfoScreen::begin(){
   this->screen.fillScreen(ILI9341_BLACK);
   this->print_labels();
   this->print_lines();
-  this->update_signals(true);
+  this->update(true);
 }
 
 
@@ -128,13 +134,6 @@ void InfoScreen::set_numdigits(int d1, int d2, int d3, int d4){
   this->num_digits_sig2 = d2;
   this->num_digits_sig3 = d3;
   this->num_digits_sig4 = d4;
-}
-
-void InfoScreen::set_precisions(int p1, int p2, int p3, int p4){
-  this->dec_prec_sig1 = p1;
-  this->dec_prec_sig2 = p2;
-  this->dec_prec_sig3 = p2;
-  this->dec_prec_sig4 = p2;
 }
 
 
@@ -168,7 +167,7 @@ void InfoScreen::print_labels(){
 
 
 // runs each update function and returns true if at l
-bool InfoScreen::update_signals(bool override){
+bool InfoScreen::update(bool override){
   static bool b1;
   static bool b2;
   static bool b3;
@@ -191,8 +190,13 @@ bool InfoScreen::update_signals(bool override){
 
 bool InfoScreen::update_sig1(bool override){
   // ensure that we only write to the screen if the value has changed
-  if (override || (this->last_val_sig1 != sig1.value())){
-    this->last_val_sig1 = sig1.value();
+  sprintf(current_val_sig1, formatting_sig1, sig1.value() / this->inv_factor_sig1);
+  if (override || (strcmp(current_val_sig1, last_val_sig1) != 0)){
+
+    // if you are someone looking at this code trying to learn, these c-string functions are BAD and you should NEVER
+    // use them. They are unsafe and should not be used in uncontrolled environments. However, here I am sure that
+    // the two strings in all of them will never exceed 10 chars, so I feel safe to use them.
+    strcpy(last_val_sig1, current_val_sig1);
 
     int x_loc = DISPLAY_WIDTH - (this->num_digits_sig1 * this->char_width_px);
     int y_loc = this->y_buff_px;
@@ -215,7 +219,7 @@ bool InfoScreen::update_sig1(bool override){
     }
 
     // write the text
-    screen.print(this->last_val_sig1 / this->inv_factor_sig1, this->dec_prec_sig1);
+    screen.print(last_val_sig1);
 
     return true;
   }
@@ -224,8 +228,10 @@ bool InfoScreen::update_sig1(bool override){
 
 
 bool InfoScreen::update_sig2(bool override){
-  if (override || (this->last_val_sig2 != sig2.value())){
-    this->last_val_sig2 = sig2.value();
+  sprintf(current_val_sig2, formatting_sig2, sig2.value() / this->inv_factor_sig2);
+  if (override || (strcmp(last_val_sig2, current_val_sig2) != 0)){
+
+    strcpy(last_val_sig2, current_val_sig2);
 
     int x_loc = DISPLAY_WIDTH - (this->num_digits_sig2 * this->char_width_px);
     int y_loc = (DISPLAY_HEIGHT / 4) * 1 + this->y_buff_px;
@@ -246,7 +252,7 @@ bool InfoScreen::update_sig2(bool override){
                      (DISPLAY_HEIGHT - 4) / 4, this->text_background_warning);
     }
 
-    screen.print(this->last_val_sig2 / this->inv_factor_sig2, this->dec_prec_sig2);
+    screen.print(last_val_sig2);
 
     return true;
   }
@@ -255,8 +261,10 @@ bool InfoScreen::update_sig2(bool override){
 
 
 bool InfoScreen::update_sig3(bool override){
-  if (override || (this->last_val_sig3 != sig3.value())){
-    this->last_val_sig3 = sig3.value();
+  sprintf(current_val_sig3, formatting_sig3, sig3.value() / this->inv_factor_sig3);
+  if (override || (strcmp(current_val_sig3, last_val_sig3) != 0)){
+
+    strcpy(last_val_sig3, current_val_sig3);
 
     int x_loc = DISPLAY_WIDTH - (this->num_digits_sig3 * this->char_width_px);
     int y_loc = (DISPLAY_HEIGHT / 4) * 2 + this->y_buff_px;
@@ -277,7 +285,7 @@ bool InfoScreen::update_sig3(bool override){
                      (DISPLAY_HEIGHT - 4) / 4, this->text_background_warning);
     }
 
-    screen.print(this->last_val_sig3 / this->inv_factor_sig3, this->dec_prec_sig3);
+    screen.print(last_val_sig3);
 
     return true;
   }
@@ -287,8 +295,11 @@ bool InfoScreen::update_sig3(bool override){
 
 
 bool InfoScreen::update_sig4(bool override){
-  if (override || (this->last_val_sig4 != sig4.value())){
-    this->last_val_sig4 = sig4.value();
+
+  sprintf(current_val_sig4, formatting_sig4, sig4.value() / this->inv_factor_sig4);
+  if (override || (strcmp(current_val_sig4, last_val_sig4) != 0)){
+
+    strcpy(last_val_sig4, current_val_sig4);
 
     int x_loc = DISPLAY_WIDTH - (this->num_digits_sig4 * this->char_width_px);
     int y_loc = (DISPLAY_HEIGHT / 4) * 3 + this->y_buff_px;
@@ -309,7 +320,7 @@ bool InfoScreen::update_sig4(bool override){
                      (DISPLAY_HEIGHT - 4) / 4 - 1, this->text_background_warning);
     }
 
-    screen.print(this->last_val_sig4 / this->inv_factor_sig4, this->dec_prec_sig4);
+    screen.print(last_val_sig4);
 
     return true;
   }

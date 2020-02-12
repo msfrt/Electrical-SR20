@@ -1,0 +1,98 @@
+* Talk about the harness! Dumb people can understand the harness
+
+* Also, show that we have failure modes. We have that mindset, and we also have good implementation.
+
+* most important diagrams are the architecture diagrams.
+
+* Box in architecture diagram and only do specifics in sub-boxes
+
+* color code everything. Color code your system's sections.
+
+* Architecture diagram should fit in a page, but the hard thing is how to put sensors, controllers, modules on there.
+
+* Design is looking for more of a process, rather than information. Everyone BSs information tables. Include the formulas
+  for the calculations or show how the information in the table was generated. Show the process. Then, only after
+  you have shown the process, should you show information tables.
+
+* for MOSFET frequency stuff, show a graph or something of frequency and temperature, and then how you mitigate temp
+  increases.
+
+* Include titles for slides with data.
+
+* "Why did you choose this datalogger?" They want to know how did you asses what you needed for the design and how
+  you picked the component. Have points to justify why you picked that logger.
+
+* slide for comparison of can bus signals. Why did you separate it? Show what is essential and what is for data,
+  and how we separate that per busses
+
+* On Gerber files, put a box around things and point to them with labels. EX: main connector, Vreg, ADC... etc
+
+* Show ADC problem, what you did to fix it, and what was the outcome. REAL ENGINEERING
+
+* For the DD lights, when you talk about them, include a picture. What lights do what? Can the driver tell the
+  difference or meaning between different lights?
+
+* How do you decide your precision? For each bit change, what's the resolution and what's the impact? Maybe not that
+  important, but be prepared to answer.
+
+* GPS accuracy and the size of the track. Generally it's pretty shitty unless you get a military GPS. Chose why
+  you have you GPS and what you use it for, and is it good enough for what you need? A higher frequency GPS is not
+  helpful if it has bad accuracy.
+
+* Cam position is only essential when you start. After that, it doesn't change.
+
+* What do coolant temp sensors read when there's no coolant? The ambient temperature. Can potentially use this
+  for sensor faults/OBD algorithm!
+
+* closed loop lambda could've saved us at 2019 MIS endurance
+
+* There is some SAE FMEA format, and apparently it's really complicated. We don't need it, but perhaps we can shift
+  our FMEA formatting to something similar-ish. Lankes or Scrappy might know. Take what you have and make it pretty
+
+* Prove that your extra electrical goodies make the car faster. If they don't why are you running them in endurance?
+  Sure the driver display looks cool, but does it serve a purpose? Or, is it just extra weight?
+
+* For fan curve lines, create different trends for 8V, 10V, 14V?
+
+* Ethernet for C50? "Ethernet is nice" -chris
+
+* Github version control is great. How do we show this to judges? We put in a lot of effort into the git, so
+  if we can find a good way to show it, we can maybe impress somebody
+
+* Slide on Github code process and what validation checks you do before you merge into main branch
+
+* GitHub documentation is awesome. Show this to judges. It might not get you too many design points, but
+  it will get you jobs.
+
+* More slides than you think you need on the harness. Show off BOM and rapid harness implementation.
+
+* IP rating of your system? IP rating of the connectors? What does IP69 mean?? IP67?
+
+* Screenshot cad of top view harness and draw over harness with what concentric twisting/mfg details
+
+* Know CAN bus utilization on both busses and how much you can do / what is your max?
+
+* How do you chose your wire lengths? Have the entire process on one slide.
+
+* One of SCL/ATUM is different waterproof rating. Do you know? Maybe it would be worth it to know.
+
+* How long can you run just off of the battery?
+
+* How many times can you start your car before the battery runs out?
+
+* Include CAD images electronics enclosure.
+
+* Might be good to have a data analysis book for all subsystems' data
+
+* How long it takes to build a harness?
+
+* WE DID <- say this. We did things. Many people don't do things electrically. We do.
+
+* Compensation for brake rotor temp? How much of the rotor are you reading vs how much of the cooling
+  ducts are you reading? Forum post in etron report thread 2012-2013 has calc from Chris
+
+* Include what language we program in, what softwares we use to program, and what the software flow is.
+
+* How do you change calibrations? Well right now we have to flash, but eventually EEPROM may make this easier
+
+* alternative algorithm for brakelight? There's no good answer.

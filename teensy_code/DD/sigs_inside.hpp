@@ -5,7 +5,12 @@
 #include <FlexCAN_T4.h>
 
 // format: (find parameter values in DBC)
-// StateSignal MOD_signName(bitl, signed, inv_factor, offset, min, max, secondary_val, timeout);
+// StateSignal MOD_sigName(bitl, signed, inv_factor, offset, min, max, secondary_val, timeout);
+
+// outgoing signals
+StateSignal DD_teensyTemp(16, true, 10, 0, -3276, 3276, 0);
+StateSignal DD_boardTemp(16, true, 10, 0, -3276, 3276, 0);
+StateSignal DD_requestDRS(16, true, 1, 0, 0, 5, 0);
 
 // incoming signals
 StateSignal M400_engineTemp(16, true, 10, 0, -3276, 3276, 0, 1000); // secondary val: 0, timeout: 1000ms
@@ -20,6 +25,8 @@ StateSignal M400_groundSpeedRight(16, true, 10, 0, -3276, 3276, 0, 1000);
 StateSignal M400_driveSpeedLeft(16, true, 10, 0, -3276, 3276, 0, 1000);
 StateSignal M400_driveSpeedRight(16, true, 10, 0, -3276, 3276, 0, 1000);
 StateSignal M400_fuelUsed(16, true, 1, 0, -3276.8, 3276.7, 0, 1000);
+StateSignal M400_ignCutLevelTotal(16, true, 1, 0, 0, 256, 0, 50);
+StateSignal M400_tcPowerReduction(16, true, 10, 0, 0, 75, 0, 50);
 
 StateSignal MM5_Ax(16, true, -7849, 4.2, -5, 5, 0, 0);
 
@@ -29,6 +36,7 @@ StateSignal USER_fanRightOverride(8, true, 1, 0, -5, 100, -1, 1000);
 StateSignal USER_wpOverride(8, true, 1, 0, -5, 100, -1, 1000);
 StateSignal USER_driverSignal(8, true, 1, 0, -5, 100, 0, 1000);
 
+StateSignal ATCCF_brakeBias(16, true, 10, 0, 0, 100, 0, 500);
 StateSignal ATCCF_brakePressureF(16, true, 10, 0, -3276.8, 3276.7, 0, 500);
 StateSignal ATCCF_brakePressureR(16, true, 10, 0, -3276.8, 3276.7, 0, 500);
 
