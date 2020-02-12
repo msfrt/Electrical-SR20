@@ -37,10 +37,10 @@ BU_: PDM ATCCR ATCCF
 
 
 BO_ 3221225472 VECTOR__INDEPENDENT_SIG_MSG: 0 Vector__XXX
- SG_ TCGPS_counterMsg160 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
  SG_ ATCCR_counterMsg465 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
 
 BO_ 160 TCGPS_10: 8 Vector__XXX
+ SG_ TCGPS_counterMsg160 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
  SG_ TCGPS_teensyTemp : 32|16@1- (0.1,0) [0|150] "C" Vector__XXX
  SG_ TCGPS_boardTemp : 16|16@1- (0.1,0) [0|150] "C" Vector__XXX
 
@@ -227,9 +227,9 @@ BO_ 410 ATCCF_10: 8 ATCCF
 
 
 CM_ BO_ 3221225472 "This is a message for not used signals, created by Vector CANdb++ DBC OLE DB Provider.";
-CM_ SG_ 3221225472 TCGPS_counterMsg160 "Counter for Message 410
-";
 CM_ SG_ 3221225472 ATCCR_counterMsg465 "Counter for Message 465";
+CM_ SG_ 160 TCGPS_counterMsg160 "Counter for Message 410
+";
 CM_ SG_ 160 TCGPS_teensyTemp "Teensy chip temp";
 CM_ SG_ 160 TCGPS_boardTemp "board temp";
 CM_ SG_ 210 DD_counterMsg210 "Counter for Message 410
