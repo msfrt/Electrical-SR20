@@ -77,7 +77,7 @@ void setup() {
   //digitalWrite(dataSig, HIGH);
 
   // initialize serial communication
-  Serial.begin(112500);
+  Serial.begin(256000);
 
   delay(5000);
 
@@ -99,7 +99,7 @@ void loop() {
 //  delay(200);
 
   // call anaRead() every 5uS which is 200000 Hz or 200000 Sps, the max rate for the ADC128S022
-  if ((micros() - timer) > 100000){
+  if ((micros() - timer) > 100){
 
 //    for(auto i = 1; i <= 8; i++){
 //      buff[i-1] = anaRead(adc1_cs,i);
@@ -132,7 +132,7 @@ void loop() {
 //    anaRead(adc2_cs,8);
     timer = micros();
 
-    Serial.println("-------------------");
+    //Serial.println("-------------------");
   }
 
 //
@@ -184,7 +184,7 @@ int anaRead(int adcCS, uint16_t channelNo) {
 
   // Start the SPI communication
   // SPISettings(clk frequency, bit order, SPI Mode (google arduino SPI modes for details))
-  SPI.beginTransaction(SPISettings(800000, MSBFIRST, SPI_MODE0));
+  SPI.beginTransaction(SPISettings(3200000, MSBFIRST, SPI_MODE0));
 
   // take the CS pin low to enable the chip:
   digitalWrite(adcCS,LOW);
@@ -205,14 +205,57 @@ int anaRead(int adcCS, uint16_t channelNo) {
 
   // send the channelNo for the ADC to read
   readValue = SPI.transfer16(channelNo << 11);
+  //readValue = SPI.transfer16(channelNo << 11);
+  //digitalWrite(adcCS,HIGH);
+  //delayMicroseconds(20);
+  //digitalWrite(adcCS,LOW);
   readValue1 = SPI.transfer16(channelNo+1 << 11);
+  //readValue1 = SPI.transfer16(channelNo+1 << 11);
+  //readValue2 = SPI.transfer16(channelNo+2 << 11);
   readValue2 = SPI.transfer16(channelNo+2 << 11);
   readValue3 = SPI.transfer16(channelNo+3 << 11);
+  //readValue3 = SPI.transfer16(channelNo+3 << 11);
   readValue4 = SPI.transfer16(channelNo+4 << 11);
   readValue5 = SPI.transfer16(channelNo+5 << 11);
   readValue6 = SPI.transfer16(channelNo+6 << 11);
   readValue7 = SPI.transfer16(channelNo+7 << 11);
 
+  
+  //Serial.print("A0:");
+  //Serial.print(readValue);
+  //Serial.print("  ");
+  Serial.print("Max:");
+  Serial.print(4095);
+  Serial.print("  ");
+  Serial.print("Min:");
+  Serial.print(0);
+  Serial.print("  ");
+  Serial.print("A0:");
+  Serial.print(readValue);
+  Serial.print("  ");
+  Serial.print("A1:");
+  Serial.print(readValue1);
+  Serial.print("  ");
+  Serial.print("A2:");
+  Serial.print(readValue2);
+  Serial.print("  ");
+  Serial.print("A3:");
+  Serial.print(readValue3);
+  Serial.print("  ");
+  Serial.print("A4:");
+  Serial.print(readValue4);
+  Serial.print("  ");
+  Serial.print("A5:");
+  Serial.print(readValue5);
+  Serial.print("  ");
+  Serial.print("A6:");
+  Serial.print(readValue6);
+  Serial.print("  ");
+  Serial.print("A7:");
+  Serial.println(readValue7);
+  
+
+/*
   Serial.println(readValue);
   Serial.println(readValue1);
   Serial.println(readValue2);
@@ -221,6 +264,7 @@ int anaRead(int adcCS, uint16_t channelNo) {
   Serial.println(readValue5);
   Serial.println(readValue6);
   Serial.println(readValue7);
+  */
 
   //--------------------------------------------------------------------------------------------------------------------
   // the following is for debugging the bitshifting process
