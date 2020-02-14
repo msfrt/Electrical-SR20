@@ -24,7 +24,7 @@ EasyTimer board_temp_sample_timer(50);
 // NeoPixel parameters & initialization
 const int pixel_pin = 9;  // teensy pin #
 const int pixel_cnt = 1;  // number of LEDs
-      int pixel_brightness_percent = 5;  // 0 - 100%
+const int pixel_brightness_percent = 5;  // 0 - 100%
 Adafruit_NeoPixel pixel = Adafruit_NeoPixel(pixel_cnt, pixel_pin, NEO_GRB + NEO_KHZ800);
 
 
