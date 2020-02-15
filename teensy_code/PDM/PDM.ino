@@ -6,6 +6,7 @@
 #include <StateCAN.h>
 #include <FlexCAN_T4.h>
 #include <SPI.h>
+#include <Adafruit_NeoPixel.h>
 
 /* TODOS:
  *  -
@@ -29,6 +30,11 @@ const int GLO_brakelight_min_pressure_R = 60;
 const int GLO_brakelight_teensy_pin = 4;
 
 const int GLO_data_circuit_teensy_pin = 5;
+
+const int GLO_NeoPixel_teensy_pin = 2;
+      int GLO_NeoPixel_brightness_percent = 10; // 0 - 100 %
+
+Adafruit_NeoPixel GLO_obd_neopixel(1, GLO_NeoPixel_teensy_pin, NEO_GRB + NEO_KHZ800);
 
 // useful sensor sampling definitions can be found here
 #include "sensors.hpp"
@@ -59,6 +65,12 @@ EasyTimer debug(3);
 
 
 void setup() {
+
+  // begin OBD Neopixel
+  GLO_obd_neopixel.begin();
+  GLO_obd_neopixel.setBrightness(map(GLO_NeoPixel_brightness_percent, 0, 100, 0, 255));
+  GLO_obd_neopixel.setPixelColor(0, 255, 0, 0); // red
+  GLO_obd_neopixel.show();
 
   // Initialize serial communication
   Serial.begin(112500);
@@ -96,6 +108,9 @@ void setup() {
   pinMode(9, INPUT);
   digitalWrite(9, HIGH);
 
+  GLO_obd_neopixel.setPixelColor(0, 0, 255, 0); // green
+  GLO_obd_neopixel.show();
+
 }
 
 void loop() {
@@ -115,7 +130,7 @@ void loop() {
   water_pump.set_pwm(GLO_engine_state);
 
   // continously run OBD (individual timers are included)
-  obd();
+  obd_main();
 
   // send all of the things
   send_can1();

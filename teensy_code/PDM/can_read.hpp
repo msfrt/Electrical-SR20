@@ -21,18 +21,33 @@ void read_USER_10(CAN_message_t &imsg){
 }
 
 
-// ID 100 on bus 1
+// ID 100 on bus 1 - M400 dataset 1
 void read_M400_100(CAN_message_t &imsg){
   // multiplexer first-bit
   switch (imsg.buf[0]) {
+
+    case 1:
+      M400_groundSpeed.set_can_value(imsg.buf[2] << 8 | imsg.buf[3]);
+      break;
+
+    case 2:
+      M400_tcPowerReduction.set_can_value(imsg.buf[6] << 8 | imsg.buf[7]);
+      break;
+
     case 4:
+      M400_ignCutLevelTotal.set_can_value(imsg.buf[2] << 8 | imsg.buf[3]);
       M400_rpm.set_can_value(imsg.buf[4] << 8 | imsg.buf[5]);
       break;
+
+    case 5:
+      M400_gear.set_can_value(imsg.buf[2] << 8 | imsg.buf[3]);
+      break;
+
   }
 }
 
 
-// ID 101 on bus 1
+// ID 101 on bus 1 - M400 dataset 2
 void read_M400_101(CAN_message_t &imsg){
   // multiplexer first-bit
   switch (imsg.buf[0]) {
@@ -43,6 +58,10 @@ void read_M400_101(CAN_message_t &imsg){
 
     case 3:
       M400_engineTemp.set_can_value(imsg.buf[6] << 8 | imsg.buf[7]);
+      break;
+
+    case 15:
+      M400_oilPressure.set_can_value(imsg.buf[6] << 8 | imsg.buf[7]);
       break;
   }
 }
