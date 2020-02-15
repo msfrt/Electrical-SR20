@@ -40,7 +40,7 @@ BO_ 3221225472 VECTOR__INDEPENDENT_SIG_MSG: 0 Vector__XXX
  SG_ ATCCR_counterMsg465 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
 
 BO_ 281 PDM_31: 8 Vector__XXX
- SG_ PDM_driverDisplayLEDs : 0|8@1+ (1,0) [0|255] "int" Vector__XXX
+ SG_ PDM_driverDisplayLEDs : 0|8@1- (1,0) [-128|127] "int" Vector__XXX
 
 BO_ 274 PDM_24: 8 Vector__XXX
  SG_ PDM_teensyTemp : 48|16@1- (0.1,0) [-3276.8|3276.7] "C" Vector__XXX
