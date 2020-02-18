@@ -7,14 +7,16 @@
 #include <FlexCAN_T4.h>
 #include <SPI.h>
 #include <Adafruit_NeoPixel.h>
+#include <BoardTemp.h>
 
 /* TODOS:
  *  -
 */
 
+
 // global variable definition
 int GLO_engine_state = 0; // engine state (no need to change this variable)
-const int GLO_read_resolution_bits = 10; // bits for Teensy-based read resolution
+const int GLO_read_resolution_bits = 12; // bits for Teensy-based read resolution
 
 // minimum voltage for the engine to be in "cranking" mode
 const int GLO_cranking_starter_volt_threshold = 5;
@@ -36,6 +38,10 @@ const int GLO_NeoPixel_teensy_pin = 2;
 
 Adafruit_NeoPixel GLO_obd_neopixel(1, GLO_NeoPixel_teensy_pin, NEO_GRB + NEO_KHZ800);
 
+//BoardTemp(int pin, int read_bits, int temp_cal, int mv_cal);
+BoardTempDiode board_temp(21, GLO_read_resolution_bits, 28.1, 594);
+EasyTimer board_temp_sample_timer(50);
+
 // useful sensor sampling definitions can be found here
 #include "sensors.hpp"
 
@@ -51,9 +57,6 @@ Adafruit_NeoPixel GLO_obd_neopixel(1, GLO_NeoPixel_teensy_pin, NEO_GRB + NEO_KHZ
 // CAN read functions are inside
 #include "can_read.hpp"
 
-// support class for diode-based board temp
-#include "board_temp.hpp"
-
 // odds and ends functions
 #include "misc_fcns.hpp"
 
@@ -64,7 +67,9 @@ Adafruit_NeoPixel GLO_obd_neopixel(1, GLO_NeoPixel_teensy_pin, NEO_GRB + NEO_KHZ
 EasyTimer debug(3);
 
 
-void setup() {
+void setup() { //high 18 low 26
+
+  analogReadResolution(GLO_read_resolution_bits);
 
   // begin OBD Neopixel
   GLO_obd_neopixel.begin();
@@ -80,6 +85,7 @@ void setup() {
   cbus1.setBaudRate(1000000);
   cbus2.begin();
   cbus2.setBaudRate(1000000);
+  cbus2.setMB(MB17,TX);
 
   // populate left fan table
   int *fanl_table_ptr = fan_left_table[0]; // create a temp ptr to populate PWM device
@@ -111,10 +117,18 @@ void setup() {
   GLO_obd_neopixel.setPixelColor(0, 0, 255, 0); // green
   GLO_obd_neopixel.show();
 
+  // board temp initialization
+  board_temp.begin();
+
 }
 
 void loop() {
+
+  // sensor sampling
   sample_ADCs();
+  if (board_temp_sample_timer.isup()){
+    board_temp.sample();
+  }
 
   // read both can buses
   read_can1();
@@ -137,5 +151,7 @@ void loop() {
   send_can2();
 
   if (debug.isup()){
+
+    cbus2.mailboxStatus();
   }
 }

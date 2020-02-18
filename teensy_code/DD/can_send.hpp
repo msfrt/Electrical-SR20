@@ -3,12 +3,11 @@
 
 #include <FlexCAN_T4.h>
 #include <EasyTimer.h>
+#include <BoardTemp.h>
 #include "sigs_inside.hpp"
-#include "board_temp.hpp"
 
 
 static CAN_message_t msg;
-extern BoardTemp board_temp;
 
 
 void send_DD_10(){
@@ -49,7 +48,7 @@ void send_can1(){
 
 void send_can2(){
 
-  static EasyTimer DD_10_timer(50); // 100Hz
+  static EasyTimer DD_10_timer(50);
   if (DD_10_timer.isup()){
     send_DD_10();
   }

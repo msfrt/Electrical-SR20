@@ -4,6 +4,7 @@
 #include <StateCAN.h>
 #include <FlexCAN_T4.h>
 #include <EasyTimer.h>
+#include <BoardTemp.h>
 #include "SPI.h"
 #include "Adafruit_GFX.h"
 #include "ILI9341_t3n.h"
@@ -14,6 +15,10 @@
 // can bus decleration
 FlexCAN_T4<CAN1, RX_SIZE_256, TX_SIZE_16> cbus1;
 FlexCAN_T4<CAN2, RX_SIZE_256, TX_SIZE_16> cbus2;
+
+//BoardTemp(int pin, int read_bits, int temp_cal, int mv_cal);
+BoardTempDiode board_temp(21, READ_RESOLUTION_BITS, 26.2, 598);
+EasyTimer board_temp_sample_timer(100);
 
 
 // fonts :)
@@ -102,12 +107,6 @@ int screen_mode = 1;
 
 // includes warning messages display
 #include "user_message_display.hpp"
-
-// includes board temp
-#include "board_temp.hpp"
-//BoardTemp(int pin, int read_bits, int temp_cal, int mv_cal);
-BoardTemp board_temp(21, READ_RESOLUTION_BITS, 26.2, 598);
-EasyTimer board_temp_sample_timer(20);
 
 // lap timer screen
 #include "lap_timer.hpp"
@@ -272,19 +271,22 @@ void loop() {
   // driver warning signals ---------------------------------------------
 
   // if the signal is valid, there is probably a message that is waiting for the driver.
-  if (USER_driverSignal.timeout_check()){
-
-    // flash white lights to tell the driver to come in
-    if (static_cast<int>(USER_driverSignal.value()) == 1){
-      led_mode = 10;
-
-    // flash yellow lights to stop the car
-    } else if (static_cast<int>(USER_driverSignal.value()) == 2){
-      led_mode = 11;
+  if (USER_driverSignal.timeout_check() || PDM_driverDisplayLEDs.timeout_check()){
 
     // flash red lights to stop and shut off the car
-    } else if (static_cast<int>(USER_driverSignal.value()) == 3){
+    if (static_cast<int>(PDM_driverDisplayLEDs.value()) == 3 ||
+        static_cast<int>(USER_driverSignal.value()) == 3){
       led_mode = 12;
+
+    // flash yellow lights to stop the car
+    } else if (static_cast<int>(PDM_driverDisplayLEDs.value()) == 2 ||
+               static_cast<int>(USER_driverSignal.value()) == 2){
+      led_mode = 11;
+
+    // flash white lights to tell the driver to come in
+    } else if (static_cast<int>(PDM_driverDisplayLEDs.value()) == 1 ||
+               static_cast<int>(USER_driverSignal.value()) == 1){
+      led_mode = 10;
 
     }
   }

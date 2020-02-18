@@ -40,6 +40,8 @@ StateSignal ATCCF_brakeBias(16, true, 10, 0, 0, 100, 0, 500);
 StateSignal ATCCF_brakePressureF(16, true, 10, 0, -3276.8, 3276.7, 0, 500);
 StateSignal ATCCF_brakePressureR(16, true, 10, 0, -3276.8, 3276.7, 0, 500);
 
+StateSignal PDM_driverDisplayLEDs(8, true, 1, 0, -5, 100, 0, 1000);
+
 StateSignal PDM_brakelightVoltAvg(16, true, 1000, 0, -32, 32, 0);
 
 StateSignal PDM_boardTemp(16, true, 10, 0, -3276, 3276, 0);

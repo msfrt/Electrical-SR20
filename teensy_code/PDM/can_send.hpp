@@ -3,6 +3,7 @@
 
 #include <FlexCAN_T4.h>
 #include <EasyTimer.h>
+#include <BoardTemp.h>
 #include "sigs_inside.hpp"
 
 FlexCAN_T4<CAN1, RX_SIZE_256, TX_SIZE_16> cbus1;
@@ -286,6 +287,7 @@ void send_PDM_21(){
 }
 
 
+
 void send_PDM_22(){
   static StateCounter ctr;
   msg.id = 272;
@@ -313,7 +315,7 @@ void send_PDM_23(){
   msg.id = 273;
   msg.len = 8;
 
-  PDM_boardTemp = pdm_board_temp_sens.value();
+  PDM_boardTemp = board_temp.value();
   PDM_brakelightVoltAvg = brakelight_volt_sens.avg();
   PDM_starterRelayVoltAvg = starter_volt_sens.avg();
 
@@ -359,67 +361,67 @@ void send_can1(){
 
 void send_can2(){
 
-  static EasyTimer PDM_10_timer(100); // 100Hz
+  static EasyTimer PDM_10_timer(10); // 100Hz
   if (PDM_10_timer.isup()){
     send_PDM_10();
   }
 
-  static EasyTimer PDM_11_timer(100); // 100Hz
+  static EasyTimer PDM_11_timer(10); // 100Hz
   if (PDM_11_timer.isup()){
     send_PDM_11();
   }
 
-  static EasyTimer PDM_12_timer(100); // 100Hz
+  static EasyTimer PDM_12_timer(10); // 100Hz
   if (PDM_12_timer.isup()){
     send_PDM_12();
   }
 
-  static EasyTimer PDM_13_timer(100); // 100Hz
+  static EasyTimer PDM_13_timer(10); // 100Hz
   if (PDM_13_timer.isup()){
     send_PDM_13();
   }
 
-  static EasyTimer PDM_14_timer(100); // 100Hz
+  static EasyTimer PDM_14_timer(10); // 100Hz
   if (PDM_14_timer.isup()){
     send_PDM_14();
   }
 
-  static EasyTimer PDM_15_timer(100); // 100Hz
+  static EasyTimer PDM_15_timer(10); // 100Hz
   if (PDM_15_timer.isup()){
     send_PDM_15();
   }
 
-  static EasyTimer PDM_16_timer(100); // 100Hz
+  static EasyTimer PDM_16_timer(10); // 100Hz
   if (PDM_16_timer.isup()){
     send_PDM_16();
   }
 
-  static EasyTimer PDM_17_timer(100); // 100Hz
+  static EasyTimer PDM_17_timer(10); // 100Hz
   if (PDM_17_timer.isup()){
     send_PDM_17();
   }
 
-  static EasyTimer PDM_18_timer(100); // 100Hz
+  static EasyTimer PDM_18_timer(10); // 100Hz
   if (PDM_18_timer.isup()){
     send_PDM_18();
   }
 
-  static EasyTimer PDM_19_timer(100); // 100Hz
+  static EasyTimer PDM_19_timer(10); // 100Hz
   if (PDM_19_timer.isup()){
     send_PDM_19();
   }
 
-  static EasyTimer PDM_20_timer(100); // 100Hz
+  static EasyTimer PDM_20_timer(10); // 100Hz
   if (PDM_20_timer.isup()){
     send_PDM_20();
   }
 
-  static EasyTimer PDM_21_timer(100); // 100Hz
+  static EasyTimer PDM_21_timer(10); // 100Hz
   if (PDM_21_timer.isup()){
     send_PDM_21();
   }
 
-  static EasyTimer PDM_22_timer(100); // 100Hz
+  static EasyTimer PDM_22_timer(10); // 100Hz
   if (PDM_22_timer.isup()){
     send_PDM_22();
   }

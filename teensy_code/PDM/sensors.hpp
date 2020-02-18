@@ -1,6 +1,5 @@
 #include <ReadADC.h>
 #include <EasyTimer.h>
-#include "board_temp.hpp"
 
 // Sensor definitions
 
@@ -16,15 +15,13 @@ ADCSensor      fanr_volt_sens(3, 5, 0, 313);
 ADCSensor        wp_volt_sens(3, 6, 0, 313);
 ADCSensor      fuel_volt_sens(3, 7, 0, 313);
 // ADC2
-ADCSensor    fuel_current_sens(10, 1, 2500, 20);
-ADCSensor      wp_current_sens(10, 2, 2500, 20);
-ADCSensor    fanr_current_sens(10, 3, 2500, 20);
-ADCSensor    fanl_current_sens(10, 4, 2500, 20);
+ADCSensor    fuel_current_sens(10, 1, 2500, 40);
+ADCSensor      wp_current_sens(10, 2, 2500, 40);
+ADCSensor    fanr_current_sens(10, 3, 2500, 40);
+ADCSensor    fanl_current_sens(10, 4, 2500, 40);
 ADCSensor     pdm_current_sens(10, 5, 2500, 20);
 ADCSensor brakelight_volt_sens(10, 6,    0, 313);
 ADCSensor    starter_volt_sens(10, 7,    0, 313);
-// stupid board temp
-BoardTemp pdm_board_temp_sens(21, GLO_read_resolution_bits, 22.2222, 187);
 
 
 // this function uses the local timers to determine when to call the ADCSensor sample function
@@ -35,7 +32,6 @@ void sample_ADCs(){
   static EasyTimer sample_timer_2(5000); // 5,000Hz
 
   if (sample_timer_1.isup()){
-
           pdm_volt_sens.sample();
          fanl_volt_sens.sample();
          fanr_volt_sens.sample();
