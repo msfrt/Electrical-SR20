@@ -64,7 +64,7 @@ EasyTimer board_temp_sample_timer(50);
 #include "obd.hpp"
 
 // timer that you can use to print things out for debugging
-EasyTimer debug(3);
+EasyTimer debug(1);
 
 
 void setup() { //high 18 low 26
@@ -85,7 +85,7 @@ void setup() { //high 18 low 26
   cbus1.setBaudRate(1000000);
   cbus2.begin();
   cbus2.setBaudRate(1000000);
-  cbus2.setMB(MB17,TX);
+  set_mailboxes();
 
   // populate left fan table
   int *fanl_table_ptr = fan_left_table[0]; // create a temp ptr to populate PWM device
@@ -154,4 +154,45 @@ void loop() {
 
     cbus2.mailboxStatus();
   }
+}
+
+
+
+void set_mailboxes(){
+
+  // to view mailbox status, you can use the member function mailboxStatus(). Don't put it in a fast loop, though,
+  // because you may actually affect how the chips moves things around
+
+  // CAN 2 - sends a bunch of stuff
+  cbus2.setMaxMB(64); // change from default 16 mailboxes to 64 (maximum)
+  cbus2.setMB(MB4,RX,STD);  // change the first 12 mailboxes to recieve standard frames. 4 for extended. the first four
+  cbus2.setMB(MB5,RX,STD);  // already do by default. the rest of the mailboxes (48) are TX mailboxes by default, which
+  cbus2.setMB(MB6,RX,STD);  // is necessary because we send more data than the bus can handle in short periods of time
+  cbus2.setMB(MB7,RX,STD);
+  cbus2.setMB(MB8,RX,STD);
+  cbus2.setMB(MB9,RX,STD);
+  cbus2.setMB(MB10,RX,STD);
+  cbus2.setMB(MB11,RX,STD);
+  cbus2.setMB(MB12,RX,EXT);  // perhaps there is an issue and something is sending extended frames for whatever reason
+  cbus2.setMB(MB13,RX,EXT);  // we have a lot of mailboxes anyways, so these four can be set to extended
+  cbus2.setMB(MB14,RX,EXT);
+  cbus2.setMB(MB15,RX,EXT);
+
+  cbus1.setMaxMB(64);
+  cbus1.setMB(MB4,RX,STD);  // first 16 mailboxes as rx, 4 rx extended. this is pretty overkill, but hey, here they are
+  cbus1.setMB(MB5,RX,STD);
+  cbus1.setMB(MB6,RX,STD);
+  cbus1.setMB(MB7,RX,STD);
+  cbus1.setMB(MB8,RX,STD);
+  cbus1.setMB(MB9,RX,STD);
+  cbus1.setMB(MB10,RX,STD);
+  cbus1.setMB(MB11,RX,STD);
+  cbus1.setMB(MB12,RX,STD);
+  cbus1.setMB(MB13,RX,STD);
+  cbus1.setMB(MB14,RX,STD);
+  cbus1.setMB(MB15,RX,STD);
+  cbus1.setMB(MB16,RX,EXT);
+  cbus1.setMB(MB17,RX,EXT);
+  cbus1.setMB(MB18,RX,EXT);
+  cbus1.setMB(MB19,RX,EXT);
 }
