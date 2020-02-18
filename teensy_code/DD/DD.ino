@@ -170,6 +170,7 @@ void setup() {
   cbus1.setBaudRate(1000000);
   cbus2.begin();
   cbus2.setBaudRate(1000000);
+  set_mailboxes();
 
   // initialze serial coms
   Serial.begin(115200);
@@ -461,4 +462,71 @@ void screen_mode_begins(int &screen_mode, bool startup_screen){
     display_left.writeRect(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, (uint16_t*)lana1);
     display_right.writeRect(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, (uint16_t*)lana2);
   }
+}
+
+
+void set_mailboxes(){
+
+  // to view mailbox status, you can use the member function mailboxStatus(). Don't put it in a fast loop, though,
+  // because you may actually affect how the chips moves things around
+
+  cbus1.setMaxMB(64);
+  cbus1.setMB(MB4,RX,STD);  // first 24 mailboxes as rx, 8 rx extended. this is pretty overkill, but hey, here they are
+  cbus1.setMB(MB5,RX,STD);  // this leaves the last 32 mailboxes for tx
+  cbus1.setMB(MB6,RX,STD);
+  cbus1.setMB(MB7,RX,STD);
+  cbus1.setMB(MB8,RX,STD);
+  cbus1.setMB(MB9,RX,STD);
+  cbus1.setMB(MB10,RX,STD);
+  cbus1.setMB(MB11,RX,STD);
+  cbus1.setMB(MB12,RX,STD);
+  cbus1.setMB(MB13,RX,STD);
+  cbus1.setMB(MB14,RX,STD);
+  cbus1.setMB(MB15,RX,STD);
+  cbus1.setMB(MB16,RX,STD);
+  cbus1.setMB(MB17,RX,STD);
+  cbus1.setMB(MB18,RX,STD);
+  cbus1.setMB(MB19,RX,STD);
+  cbus1.setMB(MB20,RX,STD);
+  cbus1.setMB(MB21,RX,STD);
+  cbus1.setMB(MB22,RX,STD);
+  cbus1.setMB(MB23,RX,STD);
+  cbus1.setMB(MB24,RX,EXT);
+  cbus1.setMB(MB25,RX,EXT);
+  cbus1.setMB(MB26,RX,EXT);
+  cbus1.setMB(MB27,RX,EXT);
+  cbus1.setMB(MB28,RX,EXT);
+  cbus1.setMB(MB29,RX,EXT);
+  cbus1.setMB(MB30,RX,EXT);
+  cbus1.setMB(MB31,RX,EXT);
+
+  cbus2.setMaxMB(64);
+  cbus2.setMB(MB4,RX,STD);
+  cbus2.setMB(MB5,RX,STD);
+  cbus2.setMB(MB6,RX,STD);
+  cbus2.setMB(MB7,RX,STD);
+  cbus2.setMB(MB8,RX,STD);
+  cbus2.setMB(MB9,RX,STD);
+  cbus2.setMB(MB10,RX,STD);
+  cbus2.setMB(MB11,RX,STD);
+  cbus2.setMB(MB12,RX,STD);
+  cbus2.setMB(MB13,RX,STD);
+  cbus2.setMB(MB14,RX,STD);
+  cbus2.setMB(MB15,RX,STD);
+  cbus2.setMB(MB16,RX,STD);
+  cbus2.setMB(MB17,RX,STD);
+  cbus2.setMB(MB18,RX,STD);
+  cbus2.setMB(MB19,RX,STD);
+  cbus2.setMB(MB20,RX,STD);
+  cbus2.setMB(MB21,RX,STD);
+  cbus2.setMB(MB22,RX,STD);
+  cbus2.setMB(MB23,RX,STD);
+  cbus2.setMB(MB24,RX,EXT);
+  cbus2.setMB(MB25,RX,EXT);
+  cbus2.setMB(MB26,RX,EXT);
+  cbus2.setMB(MB27,RX,EXT);
+  cbus2.setMB(MB28,RX,EXT);
+  cbus2.setMB(MB29,RX,EXT);
+  cbus2.setMB(MB30,RX,EXT);
+  cbus2.setMB(MB31,RX,EXT);
 }
