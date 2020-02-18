@@ -3,6 +3,7 @@
 
 #include <FlexCAN_T4.h>
 #include <EasyTimer.h>
+#include <BoardTemp.h>
 #include "sigs_inside.hpp"
 
 FlexCAN_T4<CAN1, RX_SIZE_256, TX_SIZE_16> cbus1;
@@ -286,6 +287,7 @@ void send_PDM_21(){
 }
 
 
+
 void send_PDM_22(){
   static StateCounter ctr;
   msg.id = 272;
@@ -313,7 +315,7 @@ void send_PDM_23(){
   msg.id = 273;
   msg.len = 8;
 
-  PDM_boardTemp = pdm_board_temp_sens.value();
+  PDM_boardTemp = board_temp.value();
   PDM_brakelightVoltAvg = brakelight_volt_sens.avg();
   PDM_starterRelayVoltAvg = starter_volt_sens.avg();
 

@@ -41,10 +41,15 @@ void read_USER_11(CAN_message_t &imsg){
   USER_driverSignal.set_can_value(imsg.buf[0]);
 }
 
+// ID 281 on bus 2
+void read_PDM_281(CAN_message_t &imsg){
+  PDM_driverDisplayLEDs.set_can_value(imsg.buf[0]);
+}
 
-// ID 712 on bus 2 - the 64-bit message
-char obd_message[9] = ""; // <= 8 characters!!! One extra char in defintiion for the null-terminator.
-void read_USER_12(CAN_message_t &imsg){
+
+// ID 712 or ID 280 on bus 2 - the 64-bit message
+char obd_message[9] = ""; // <= 8 characters!!! One extra char in definition for the null-terminator.
+void read_driver_message(CAN_message_t &imsg){
   for (int i = 0; i < 8; i++){
     obd_message[i] = imsg.buf[i];
   }
@@ -52,6 +57,7 @@ void read_USER_12(CAN_message_t &imsg){
 
   warning_message_display.begin();
 }
+
 
 
 // ID 100 on bus 1 - M400 dataset 1
@@ -126,6 +132,13 @@ void read_can2(){
       case 274:
         read_PDM_24(rxmsg);
         break;
+      case 281:
+        read_PDM_281(rxmsg);
+        break;
+      case 280:
+      case 712:
+        read_driver_message(rxmsg);
+        break;
       case 410:
         read_ATCCF_10(rxmsg);
         break;
@@ -137,9 +150,6 @@ void read_can2(){
         break;
       case 711:
         read_USER_11(rxmsg);
-        break;
-      case 712:
-        read_USER_12(rxmsg);
         break;
     } // end switch statement
 
