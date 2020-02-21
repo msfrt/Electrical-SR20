@@ -28,6 +28,12 @@ const int pixel_brightness_percent = 100;  // 0 - 100%
 Adafruit_NeoPixel pixel = Adafruit_NeoPixel(pixel_cnt, pixel_pin, NEO_GRB + NEO_KHZ800);
 
 
+// GPS messages
+// GPS communications datasheet: https://cdn-shop.adafruit.com/datasheets/PMTK_A11.pdf
+char set_gps_fast_serial_cmd[] = {0x24, 0x50, 0x4D, 0x54, 0x4B, 0x32, 0x35, 0x31, 0x2C, 0x31, 0x31, 0x35, 0x32, 0x30, 0x30, 0x2A, 0x31, 0x46, 0x0D, 0x0A};
+char set_gps_fast_update_cmd[] = {0x24, 0x50, 0x4D, 0x54, 0x4B, 0x32, 0x32, 0x30, 0x2C, 0x31, 0x30, 0x30, 0x2A, 0x32, 0x46, 0x0D, 0x0A};
+
+
 EasyTimer debug_timer(10);
 
 
@@ -48,6 +54,31 @@ void setup() {
   pixel.setBrightness(map(pixel_brightness_percent, 0, 100, 0, 255));
   pixel.begin();
   pixel.show();
+
+
+  // GPS initialization
+  pixel.setPixelColor(0, 255, 50, 0); pixel.show(); // pixel redorange
+
+  Serial2.begin(9600);
+  delay(2000);
+
+  pixel.setPixelColor(0, 255, 255, 0); pixel.show(); // pixel yeller
+  Serial2.write(set_gps_fast_serial_cmd);
+  delay(500);
+  Serial1.end();
+
+  delay(1000);
+  Serial2.begin(115200);
+  delay(500);
+  Serial2.write(set_gps_fast_update_cmd);
+
+  pixel.setPixelColor(0, 0, 255, 0); pixel.show(); // pixel green
+
+  delay(500);
+  Serial2.end();
+  // END - GPS initialization
+
+
 
 }
 

@@ -8,9 +8,12 @@
 
 int OBDFLAG_oil_pressure = 0;
 
+// Oil pressure parameters
 const int OBDPARAM_oil_pressure_min_rpm = 2500;   // only check for oil issues above this rpm
 const int OBDPARAM_oil_pressure_dip_time_ms = 5000;   // time allowed below minimum pressure before raising a flag
 const int OBDPARAM_oil_pressure_min_percent_allowed = 70;  // percent of predicted oil pressure before it is determined bad
+
+//
 
 // forward references
 bool obd_oil_pressure_acceptence(StateSignal&, StateSignal&);
@@ -79,7 +82,7 @@ bool obd_oil_pressure_acceptence(StateSignal &oil_pressure, StateSignal &rpm){
     if (millis() > good_until_time && OBDFLAG_oil_pressure == 0){
       OBDFLAG_oil_pressure = 1;
 
-      // send messages to the driver (send 5 times because this is important and can NOT be missed buy DD)
+      // send messages to the driver (send 10 times because this is important and can NOT be missed buy DD)
       for (int i = 0; i < 10; i++){
         // PDM 31 - driver display LED
         msg.buf[0] = 3; // LED color code RED
