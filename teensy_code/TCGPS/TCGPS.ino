@@ -14,6 +14,8 @@ FlexCAN_T4<CAN2, RX_SIZE_256, TX_SIZE_16> cbus2;
 
 #include "can_send.hpp"
 
+#include "lap_trigger.hpp"
+
 // board temp setup
 #define READ_RESOLUTION_BITS 12
 const int board_temp_pin = 19;
@@ -26,6 +28,9 @@ const int pixel_pin = 9;  // teensy pin #
 const int pixel_cnt = 1;  // number of LEDs
 const int pixel_brightness_percent = 100;  // 0 - 100%
 Adafruit_NeoPixel pixel = Adafruit_NeoPixel(pixel_cnt, pixel_pin, NEO_GRB + NEO_KHZ800);
+
+// EEPROM CS pin
+const int eeprom_cs_pin = 10;
 
 
 // GPS messages
@@ -50,6 +55,10 @@ void setup() {
 
   Serial.begin(115200);
 
+  // EEPROM disabled
+  pinMode(eeprom_cs_pin, OUTPUT);
+  digitalWrite(eeprom_cs_pin, HIGH);
+
   // begin NeoPixel
   pixel.setBrightness(map(pixel_brightness_percent, 0, 100, 0, 255));
   pixel.begin();
@@ -57,7 +66,7 @@ void setup() {
 
 
   // GPS initialization
-  pixel.setPixelColor(0, 255, 50, 0); pixel.show(); // pixel redorange
+  pixel.setPixelColor(0, 255, 0, 0); pixel.show(); // pixel red
 
   Serial2.begin(9600);
   delay(2000);
@@ -78,8 +87,6 @@ void setup() {
   Serial2.end();
   // END - GPS initialization
 
-
-
 }
 
 
@@ -95,9 +102,13 @@ void loop() {
   }
 
   // turn the neopixels rainbow colors :-)
-  rainbow_pixels(pixel);
+  if (!laptrigger_sucess_pixel(pixel)){
+    rainbow_pixels(pixel);
+  }
 
   // send can messages
   send_can1();
   send_can2();
+
+
 }
