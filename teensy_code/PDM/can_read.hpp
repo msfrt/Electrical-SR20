@@ -3,7 +3,9 @@
 
 #include "can_send.hpp"
 #include "sigs_inside.hpp"
+#include <FlexCAN_T4.h>
 
+static CAN_message_t rxmsg;
 
 // ID 411 on bus 2
 void read_ATCCF_11(CAN_message_t &imsg){
