@@ -28,8 +28,8 @@ ADCSensor    starter_volt_sens(10, 7,    0, 313);
 void sample_ADCs(){
 
   // static timer definitions (keeps them in the local scope & never deleted)
-  static EasyTimer sample_timer_1(10000); // 10,000Hz
-  static EasyTimer sample_timer_2(5000); // 5,000Hz
+  static EasyTimer sample_timer_1(2000); // 2,000Hz
+  static EasyTimer sample_timer_2(1000); // 1,000Hz
 
   if (sample_timer_1.isup()){
           pdm_volt_sens.sample();
