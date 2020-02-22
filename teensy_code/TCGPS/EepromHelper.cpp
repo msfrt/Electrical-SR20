@@ -2,6 +2,8 @@
 #include <Arduino.h>
 #include <SPI.H>
 
+// #define DEBUG_EEPROM
+
 
 void EEPROM_25LC128::begin(){
   // set the chip select pin as an output:
@@ -18,9 +20,17 @@ bool EEPROM_25LC128::writeByte(uint16_t address, uint8_t data, bool verify){
   // before ANYTHING, read the current adress and compare to the data we want to store. If it's the same, there's
   // simply no need to write new data, as the number of write cycles is limited before the chip degrades into oblivion
   if (data == this->readByte(address)){
-    Serial.print("This data already exists at 0x"); Serial.print(address, HEX); Serial.println("!");
+
+    // debugging print statement
+    #ifdef DEBUG_EEPROM
+    Serial.print("The data 0x"); Serial.print(data, HEX); Serial.print(" already exists at 0x");
+    Serial.print(address, HEX); Serial.println("!");
+    #endif
+
     return true; // data is already there, so it's like we wrote it
   }
+
+  //Serial.println("Never got here!");
 
   // if verify, set the curernt write attempt to 0. Otherwise, current attempt is one less than the max
   if (verify){
@@ -39,8 +49,12 @@ bool EEPROM_25LC128::writeByte(uint16_t address, uint8_t data, bool verify){
       if (this->readByte(address) == data){
         break;
       } else {
+
+        // debugging print statement
+        #ifdef DEBUG_EEPROM
         Serial.print("Attempt "); Serial.print(current_write_attempt_); Serial.print(" to write \""); Serial.print(data);
         Serial.print("\" at address 0x"); Serial.print(address, HEX); Serial.println(" has failed!");
+        #endif
       }
     }
 

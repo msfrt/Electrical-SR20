@@ -45,6 +45,9 @@ char set_gps_fast_update_cmd[] = {0x24, 0x50, 0x4D, 0x54, 0x4B, 0x32, 0x32, 0x30
 
 EasyTimer debug_timer(1);
 
+uint16_t minute_address = 0x0001;
+uint16_t hours_address = 0x0002;
+
 
 void setup() {
 
@@ -93,7 +96,6 @@ void setup() {
   delay(500);
   Serial2.end();
   // END - GPS initialization-------------
-
 }
 
 bool printed = false;
@@ -106,7 +108,11 @@ void loop() {
 
 
   if (debug_timer.isup()){
-    Serial.println(eeprom.readByte(69));
+    timer(hours_address, minute_address);
+    Serial.print("time: ");
+    Serial.print(eeprom.readByte(hours_address));
+    Serial.print(":");
+    Serial.println(eeprom.readByte(minute_address));
   }
 
 
@@ -120,7 +126,26 @@ void loop() {
   send_can1();
   send_can2();
 
+}
 
-  if ()
+
+void timer(uint16_t hours_addr, uint16_t minute_addr){
+  static int current_hour = eeprom.readByte(hours_addr);
+  static int current_minute = eeprom.readByte(minute_addr);
+
+  static int last_minute_millis = 0;
+
+  if (millis() > last_minute_millis + 60000){
+    current_minute++;
+    last_minute_millis = millis();
+  }
+
+  if (current_minute == 60){
+    current_hour++;
+    current_minute = 0;
+  }
+
+  eeprom.writeByte(hours_addr, current_hour);
+  eeprom.writeByte(minute_addr, current_minute);
 
 }
