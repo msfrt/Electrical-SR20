@@ -98,7 +98,7 @@ void setup() {
   // END - GPS initialization-------------
 }
 
-bool printed = false;
+EEPROM_Value<int> testing_int(10);
 
 void loop() {
   // put your main code here, to run repeatedly:
@@ -113,6 +113,19 @@ void loop() {
     Serial.print(eeprom.readByte(hours_address));
     Serial.print(":");
     Serial.println(eeprom.readByte(minute_address));
+
+    Serial.println();
+    Serial.println();
+
+    eeprom.write(testing_int);
+
+    Serial.println();
+    Serial.println();
+
+
+    int increment = testing_int.value();
+    testing_int = increment + 1;
+
   }
 
 
@@ -138,14 +151,14 @@ void timer(uint16_t hours_addr, uint16_t minute_addr){
   if (millis() > last_minute_millis + 60000){
     current_minute++;
     last_minute_millis = millis();
+    eeprom.writeByte(minute_addr, current_minute, true);
   }
 
   if (current_minute == 60){
     current_hour++;
     current_minute = 0;
+    eeprom.writeByte(hours_addr, current_hour, true);
+    eeprom.writeByte(minute_addr, current_minute, true);
   }
-
-  eeprom.writeByte(hours_addr, current_hour);
-  eeprom.writeByte(minute_addr, current_minute);
 
 }
