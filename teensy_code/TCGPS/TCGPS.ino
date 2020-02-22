@@ -149,23 +149,29 @@ void loop() {
 
 
 
-void timer(uint16_t hours_addr, uint16_t minute_addr){
-  static int current_hour = eeprom.readByte(hours_addr);
-  static int current_minute = eeprom.readByte(minute_addr);
-
+void timer(EEPROM_Value hours, EEPROM_Value minutes){
+  static int current_hour = eeprom.read(hours);
+  static int current_minute = eeprom.read(minutes);
   static unsigned int last_minute_millis = 0;
 
-  if (millis() > last_minute_millis + 60000){
-    current_minute++;
+  if (millis() > last_minute_millis + 60000){  // 60,000ms = 60s
+
+    // minutes AND hours have changed
+    if (current_minute >= 59){
+      current_hour++;
+      current_minute = 0;
+      eeprom.write(hours);
+      eeprom.write(minutes);
+
+    // just minutes have changed
+    } else {
+      current_minute++;
+      eeprom.write(minutes);
+    }
+
+    // update the last minute timer
     last_minute_millis = millis();
-    eeprom.writeByte(minute_addr, current_minute, true);
   }
 
-  if (current_minute == 60){
-    current_hour++;
-    current_minute = 0;
-    eeprom.writeByte(hours_addr, current_hour, true);
-    eeprom.writeByte(minute_addr, current_minute, true);
-  }
 
 }

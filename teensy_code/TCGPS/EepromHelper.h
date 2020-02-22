@@ -74,6 +74,7 @@ class EEPROM_25LC128{
 
 };
 
+
 // templated. keep in this file.
 template <class T1>
 bool EEPROM_25LC128::write(EEPROM_Value<T1> eeprom_value){
@@ -89,8 +90,6 @@ bool EEPROM_25LC128::write(EEPROM_Value<T1> eeprom_value){
 
     // copy over the last 8-bits
     write_byte = current_value;
-
-    Serial.print("write: "); Serial.println(write_byte);
 
     // read the value at the current byte address
     this->writeByte(eeprom_value.address_ + byte, write_byte, true);
@@ -120,10 +119,6 @@ T2 EEPROM_25LC128::read(EEPROM_Value<T2> eeprom_value){
 
     // read the value at the current byte address
     read_byte = this->readByte(eeprom_value.address_ + byte);
-
-
-    // Serial.print("READ ADDRESS: "); Serial.println(eeprom_value.address_ + byte);
-    // Serial.print("READ VALUE: "); Serial.println(read_byte);
 
     // update the last 8-bits of the value by adding the new byte
     eeprom_value = eeprom_value.value_ + read_byte;
