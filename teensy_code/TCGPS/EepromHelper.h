@@ -8,7 +8,7 @@ template <class T>
 class EEPROM_Value{
 
   private:
-    uint16_t memory_loc_;
+    uint16_t address_;
     uint8_t size_; // size in bytes of the type T
     T value_;
 
@@ -18,7 +18,7 @@ class EEPROM_Value{
   public:
 
     EEPROM_Value() = delete;
-    EEPROM_Value(uint16_t memory_address) : memory_loc_(memory_address) {
+    EEPROM_Value(uint16_t memory_address) : address_(memory_address) {
       size_ = sizeof(T);
     }
 
@@ -26,7 +26,7 @@ class EEPROM_Value{
     T value() {return value_;}
 
     // allow us to use the = operator to assign values
-    const T operator=(T new_value) {value_ = new_value;}
+    const T operator=(T new_value) {value_ = new_value; return value_;}
 
 };
 
@@ -68,15 +68,70 @@ class EEPROM_25LC128{
     template <class T1>
     bool write(EEPROM_Value<T1> eeprom_value);
 
+    // used for reading EEPROM_Values
+    template <class T2>
+    T2 read(EEPROM_Value<T2> eeprom_value);
+
 };
 
-
+// templated. keep in this file.
 template <class T1>
 bool EEPROM_25LC128::write(EEPROM_Value<T1> eeprom_value){
-  Serial.print("ADDRESS: "); Serial.println(eeprom_value.memory_loc_);
-  Serial.print("SIZEOF: "); Serial.println(eeprom_value.size_);
-  Serial.print("VALUE: "); Serial.println(eeprom_value.value());
+
+  // used to store the current byte that will be written
+  uint8_t write_byte = 0;
+
+  // make a copy so we can bitshift without destroying original value
+  T1 current_value = eeprom_value.value_;
+
+  // loop to set each byte. We set the least significant first in the last byte position.
+  for (int byte = eeprom_value.size_ - 1; byte >= 0; byte--){
+
+    // copy over the last 8-bits
+    write_byte = current_value;
+
+    Serial.print("write: "); Serial.println(write_byte);
+
+    // read the value at the current byte address
+    this->writeByte(eeprom_value.address_ + byte, write_byte, true);
+
+    // shift the current_value over by 8-bits to get ready for the next byte to set
+    current_value >>= 8;
+  }
+
   return true;
+}
+
+
+// templated. keep in this file.
+template <class T2>
+T2 EEPROM_25LC128::read(EEPROM_Value<T2> eeprom_value){
+
+  uint8_t read_byte = 0;
+
+  // set the value to zero, then we'll bitshift the value left 8 bits if necessary when each byte comes in
+  eeprom_value = 0;
+
+  // loop to fetch each byte
+  for (uint8_t byte = 0; byte < eeprom_value.size_; byte++){
+
+    // shift current value over 1 byte
+    eeprom_value = eeprom_value.value_ << 8;
+
+    // read the value at the current byte address
+    read_byte = this->readByte(eeprom_value.address_ + byte);
+
+
+    // Serial.print("READ ADDRESS: "); Serial.println(eeprom_value.address_ + byte);
+    // Serial.print("READ VALUE: "); Serial.println(read_byte);
+
+    // update the last 8-bits of the value by adding the new byte
+    eeprom_value = eeprom_value.value_ + read_byte;
+  }
+
+  // return the final value (which is also stored in the EEPROM_Value object, obviously)
+  return eeprom_value.value_;
+
 }
 
 

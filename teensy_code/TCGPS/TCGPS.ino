@@ -48,6 +48,8 @@ EasyTimer debug_timer(1);
 uint16_t minute_address = 0x0001;
 uint16_t hours_address = 0x0002;
 
+EEPROM_Value<int> testing_int(10);
+
 
 void setup() {
 
@@ -96,9 +98,13 @@ void setup() {
   delay(500);
   Serial2.end();
   // END - GPS initialization-------------
+
+  testing_int = -69;
+  eeprom.write(testing_int);
 }
 
-EEPROM_Value<int> testing_int(10);
+
+
 
 void loop() {
   // put your main code here, to run repeatedly:
@@ -117,14 +123,11 @@ void loop() {
     Serial.println();
     Serial.println();
 
-    eeprom.write(testing_int);
+    Serial.print("READ INT TEST: "); Serial.println(eeprom.read(testing_int));
 
     Serial.println();
     Serial.println();
 
-
-    int increment = testing_int.value();
-    testing_int = increment + 1;
 
   }
 
@@ -142,11 +145,15 @@ void loop() {
 }
 
 
+
+
+
+
 void timer(uint16_t hours_addr, uint16_t minute_addr){
   static int current_hour = eeprom.readByte(hours_addr);
   static int current_minute = eeprom.readByte(minute_addr);
 
-  static int last_minute_millis = 0;
+  static unsigned int last_minute_millis = 0;
 
   if (millis() > last_minute_millis + 60000){
     current_minute++;
