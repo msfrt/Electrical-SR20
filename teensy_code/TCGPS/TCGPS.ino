@@ -4,7 +4,7 @@
 #include <FlexCAN_T4.h>
 #include <EasyTimer.h>
 #include <BoardTemp.h>
-#include "EepromHelper.h"
+#include <EepromHelper.h>
 
 // can bus decleration
 FlexCAN_T4<CAN1, RX_SIZE_256, TX_SIZE_16> cbus1;
@@ -45,10 +45,9 @@ char set_gps_fast_update_cmd[] = {0x24, 0x50, 0x4D, 0x54, 0x4B, 0x32, 0x32, 0x30
 
 EasyTimer debug_timer(1);
 
-uint16_t minute_address = 0x0001;
-uint16_t hours_address = 0x0002;
-
-EEPROM_Value<int> testing_int(10);
+// EEPROM VALUES
+EEPROM_Value<int> board_hours(0x0020);
+EEPROM_Value<int> board_minutes(0x0024);
 
 
 void setup() {
@@ -99,8 +98,6 @@ void setup() {
   Serial2.end();
   // END - GPS initialization-------------
 
-  testing_int = -69;
-  eeprom.write(testing_int);
 }
 
 
@@ -113,26 +110,6 @@ void loop() {
     board_temp.sample();
 
 
-  if (debug_timer.isup()){
-    timer(hours_address, minute_address);
-    Serial.print("time: ");
-    Serial.print(eeprom.readByte(hours_address));
-    Serial.print(":");
-    Serial.println(eeprom.readByte(minute_address));
-
-    Serial.println();
-    Serial.println();
-
-    Serial.print("READ INT TEST: "); Serial.println(eeprom.read(testing_int));
-
-    Serial.println();
-    Serial.println();
-
-
-  }
-
-
-
   // turn the neopixels rainbow colors :-)
   if (!laptrigger_sucess_pixel(pixel)){
     rainbow_pixels(pixel);
@@ -142,30 +119,35 @@ void loop() {
   send_can1();
   send_can2();
 
+
+  // board time tracking (counts cumulative time the board has been running since 4:02PM February 22, 2020)
+  timer(board_hours, board_minutes);
+
+  if (debug_timer.isup()){
+  }
+
 }
 
 
 
 
 
-
-void timer(EEPROM_Value hours, EEPROM_Value minutes){
-  static int current_hour = eeprom.read(hours);
-  static int current_minute = eeprom.read(minutes);
+template <class T1, class T2>
+void timer(EEPROM_Value<T1> hours, EEPROM_Value<T2> minutes){
   static unsigned int last_minute_millis = 0;
 
   if (millis() > last_minute_millis + 60000){  // 60,000ms = 60s
 
     // minutes AND hours have changed
-    if (current_minute >= 59){
-      current_hour++;
-      current_minute = 0;
+    if (eeprom.read(minutes) >= 59){
+      hours = eeprom.read(hours) + 1;
+      minutes = 0;
       eeprom.write(hours);
       eeprom.write(minutes);
 
     // just minutes have changed
     } else {
-      current_minute++;
+      minutes = eeprom.read(minutes) + 1;
       eeprom.write(minutes);
     }
 
