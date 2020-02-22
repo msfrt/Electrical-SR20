@@ -32,24 +32,24 @@ void sample_ADCs(){
   static EasyTimer sample_timer_2(1000); // 1,000Hz
 
   if (sample_timer_1.isup()){
-          pdm_volt_sens.sample();
-         fanl_volt_sens.sample();
-         fanr_volt_sens.sample();
-           wp_volt_sens.sample();
-         main_volt_sens.sample();
-         data_volt_sens.sample();
-         fuel_volt_sens.sample();
-    keepalive_volt_sens.sample();
-       pdm_current_sens.sample();
-      fanl_current_sens.sample();
-      fanr_current_sens.sample();
-        wp_current_sens.sample();
-      fuel_current_sens.sample();
+          pdm_volt_sens.sample_n(5);
+         fanl_volt_sens.sample_n(5);
+         fanr_volt_sens.sample_n(5);
+           wp_volt_sens.sample_n(5);
+         main_volt_sens.sample_n(5);
+         data_volt_sens.sample_n(5);
+         fuel_volt_sens.sample_n(5);
+    keepalive_volt_sens.sample_n(5);
+       pdm_current_sens.sample_n(5);
+      fanl_current_sens.sample_n(5);
+      fanr_current_sens.sample_n(5);
+        wp_current_sens.sample_n(5);
+      fuel_current_sens.sample_n(5);
   }
 
   if (sample_timer_2.isup()){
-    brakelight_volt_sens.sample();
-       starter_volt_sens.sample();
+    brakelight_volt_sens.sample_n(5);
+       starter_volt_sens.sample_n(5);
   }
 }
 
