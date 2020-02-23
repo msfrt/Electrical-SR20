@@ -5,6 +5,7 @@
 #include <EasyTimer.h>
 #include <BoardTemp.h>
 #include <EepromHelper.h>
+#include <XBee.h>
 
 // can bus decleration
 FlexCAN_T4<CAN1, RX_SIZE_256, TX_SIZE_16> cbus1;
@@ -50,9 +51,40 @@ EEPROM_Value<int> board_hours(0x0020);
 EEPROM_Value<int> board_minutes(0x0024);
 
 
+// XBee setup and parameters ---------------------
+
+//increase buffer size for serial data coming in from the C50 (unit: bytes)
+#define SERIAL4_RX_BUFFER_SIZE 256
+
+// used to hold the data that will be sent to the XBee. This must be less than 256, and you may get droped frames or
+// errors when sending too close to the 246 limit
+uint8_t xbee_payload[224] = {0};
+
+// xbee object
+XBee xbee = XBee();
+
+// XBee CTS pin (when XBee can not recieve any more data, this is HIGH)
+const int xbee_cts_pin = 18;
+
+// address of the recieving modules. Currently, this is the address that all XBees will read
+XBeeAddress64 addr64 = XBeeAddress64(0x00000000,0x0000FFFF);
+
+// Used to create a variable to hold the payload (in explicit mode)
+ZBExplicitTxRequest telemetry_tx_rq = ZBExplicitTxRequest(addr64, xbee_payload, sizeof(xbee_payload));
+
+// empty (for now). Will be used for lap trigger
+ZBExplicitRxResponse rx = ZBExplicitRxResponse();
+
+
 void setup() {
 
   Serial.begin(115200);
+  Serial3.begin(115200); // TX & RX for XBee
+  Serial4.begin(115200); // RX from C50
+
+  // Attach XBee to serial 3
+  xbee.setSerial(Serial3);
+  pinMode(xbee_cts_pin, INPUT);
 
   // initilize CAN busses
   cbus1.begin();
@@ -119,11 +151,15 @@ void loop() {
   send_can1();
   send_can2();
 
+  // send telemetry shenanigans
+  telemetry_send();
+
 
   // board time tracking (counts cumulative time the board has been running since 4:02PM February 22, 2020)
   timer(board_hours, board_minutes);
 
   if (debug_timer.isup()){
+    Serial.println("TEST");
   }
 
 }
@@ -154,6 +190,55 @@ void timer(EEPROM_Value<T1> hours, EEPROM_Value<T2> minutes){
     // update the last minute timer
     last_minute_millis = millis();
   }
+}
 
+
+
+
+// reads in data from the C50 serial input, packages it for the XBee, and then transmits to the XBee module
+bool telemetry_send(){
+
+  // if there is data from the C50 and the Xbee is able to recieve data
+  if (Serial4.available() && digitalRead(xbee_cts_pin) == LOW){
+
+    // fill up the transmit array with C50 data
+    for (uint8_t byte = 0; byte < sizeof(xbee_payload); byte++){
+      xbee_payload[byte] = Serial4.read();
+    }
+
+    // create a transmission request with the new payload (this is unecessary, remove later once working)
+    //ZBExplicitTxRequest zbTx = ZBExplicitTxRequest(addr64, xbee_payload, sizeof(xbee_payload));
+
+    // send the message
+    xbee.send(telemetry_tx_rq);
+
+    // xbee.send() returns void, so we'll assume that it send okay lololol
+    return true;
+  }
+
+  return false;
 
 }
+
+
+
+// ron's telem code --------------------------------------------------------
+
+// //Read from C50 and send to XBee
+// if((Serial1.available() > 0) && (digitalRead(CTS) == LOW)){
+//   // Fill bits up to 224 (Position 223)
+//   if(counter <223){ // n-1 bytes of Payload[] array
+//     payload[counter] = Serial1.read();
+//     counter++;
+//   }
+//   else{ //when counter is 223
+//     payload[counter] = Serial1.read();
+//
+//     // Create new Transmission Request with newly finished payload
+//     ZBExplicitTxRequest zbTx = ZBExplicitTxRequest(addr64,payload,sizeof(payload));
+//
+//     // Send Transmition
+//     xbee.send(zbTx);
+//     counter = 0;
+//   }
+// }
