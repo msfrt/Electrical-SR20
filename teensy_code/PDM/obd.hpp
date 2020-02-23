@@ -240,6 +240,13 @@ bool obd_fuel_pressure_checker(StateSignal &fuelp){
   }
 
 
+  // check to see if the car is not cranking/running
+  if (!(GLO_engine_state == 1 || GLO_engine_state == 2)){
+    OBDFLAG_fuel_pressure = 0;
+    return true;
+  }
+
+
   // current oil temp is acceptable
   if (fuelp.value() > OBDPARAM_fuel_pressure_min_pressure){
     fuelp_good = true;
