@@ -8,6 +8,7 @@
 #include <SPI.h>
 #include <Adafruit_NeoPixel.h>
 #include <BoardTemp.h>
+#include <EepromHelper.h>
 
 /* TODOS:
  *  -
@@ -41,6 +42,13 @@ Adafruit_NeoPixel GLO_obd_neopixel(1, GLO_NeoPixel_teensy_pin, NEO_GRB + NEO_KHZ
 //BoardTemp(int pin, int read_bits, int temp_cal, int mv_cal);
 BoardTempDiode board_temp(21, GLO_read_resolution_bits, 28.1, 594);
 EasyTimer board_temp_sample_timer(50);
+
+// EEPROM
+const int eeprom_cs_pin = 9;
+EEPROM_25LC128 eeprom(eeprom_cs_pin);
+
+// eeprom-saved signals
+#include "EEPROM_sigs.hpp"
 
 // useful sensor sampling definitions can be found here
 #include "sensors.hpp"
@@ -110,9 +118,8 @@ void setup() { //high 18 low 26
   // turn the data circuit on
   digitalWrite(GLO_data_circuit_teensy_pin, HIGH);
 
-  // EEPROM PINS
-  pinMode(9, INPUT);
-  digitalWrite(9, HIGH);
+  // EEPROM
+  eeprom.begin();
 
   GLO_obd_neopixel.setPixelColor(0, 0, 255, 0); // green
   GLO_obd_neopixel.show();
