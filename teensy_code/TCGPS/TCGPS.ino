@@ -54,7 +54,7 @@ EEPROM_Value<int> board_minutes(0x0024);
 // XBee setup and parameters ---------------------
 
 //increase buffer size for serial data coming in from the C50 (unit: bytes)
-#define SERIAL4_RX_BUFFER_SIZE 256
+#define SERIAL4_RX_BUFFER_SIZE 128
 
 // used to hold the data that will be sent to the XBee. This must be less than 256, and you may get droped frames or
 // errors when sending too close to the 246 limit
@@ -212,7 +212,7 @@ bool telemetry_send(){
     // send the message
     xbee.send(telemetry_tx_rq);
 
-    // xbee.send() returns void, so we'll assume that it send okay lololol
+    // xbee.send returns void, so we'll assume that it send okay lololol
     return true;
   }
 
