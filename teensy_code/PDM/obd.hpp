@@ -61,8 +61,16 @@ bool obd_oil_pressure_acceptence(StateSignal &oil_pressure, StateSignal &rpm){
   static float predicted_pressure = 0.0;
 
   // check if the sensors are valid in the first place.
-  if (!oil_pressure.is_valid() || !rpm.is_valid())
+  if (!oil_pressure.is_valid() || !rpm.is_valid()){
+    OBDFLAG_oil_pressure = 0;
     return true;
+
+  // if the rpm is not above the minimum, we assume the oil pressure is good
+  } else if (M400_rpm.value() < OBDPARAM_oil_pressure_min_rpm){
+    OBDFLAG_oil_pressure = 0;
+    return true;
+  }
+
 
   // calcluate the predicted pressure
   // Function generated: 02/15/2020 10:28:53
