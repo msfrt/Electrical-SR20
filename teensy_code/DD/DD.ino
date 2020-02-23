@@ -116,7 +116,7 @@ char rpm_form[] = "%4.2f";
 char oilp_form[] = "%3.1f";
 char engt_form[] = "%4.1f";
 char battv_form[] = "%4.2f";
-InfoScreen engine_vitals_right_screen(display_right, M400_rpm, M400_oilPressure, M400_engineTemp, M400_batteryVoltage,
+InfoScreen engine_vitals_right_screen(display_right, M400_rpm, M400_oilPressure, M400_engineTemp, PDM_pdmVoltAvg,
                                         /* label */  "RPM:",   "OILP:",          "ENG:",          "BAT:",
                             /* string formatting */  rpm_form, oilp_form ,       engt_form,       battv_form );
 
