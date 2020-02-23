@@ -80,7 +80,7 @@ void obd_main(){
 
   // fuel pressure check
   if (OBDTIMER_fuel_pressure_check.isup()){
-    obd_fuel_pressure_checker(M400_fuelPressure)
+    obd_fuel_pressure_checker(M400_fuelPressure);
   }
 
 
