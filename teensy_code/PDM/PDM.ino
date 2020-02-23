@@ -47,6 +47,10 @@ EasyTimer board_temp_sample_timer(50);
 const int eeprom_cs_pin = 9;
 EEPROM_25LC128 eeprom(eeprom_cs_pin);
 
+// engine time clock update frequency. (can be quite low, but don't set too low, as we want this to still be accurate)
+// the actual time checking happens in the timer function.
+EasyTimer engine_time_update_timer(1);
+
 // eeprom-saved signals
 #include "EEPROM_sigs.hpp"
 
@@ -73,6 +77,8 @@ EEPROM_25LC128 eeprom(eeprom_cs_pin);
 
 // timer that you can use to print things out for debugging
 EasyTimer debug(1);
+
+
 
 
 void setup() { //high 18 low 26
@@ -121,6 +127,10 @@ void setup() { //high 18 low 26
   // EEPROM
   eeprom.begin();
 
+  // write the eeprom variables that are not commented out in the write eeprom function in the EEPROM_sigs file
+  initialize_eeprom_variables();
+
+
   GLO_obd_neopixel.setPixelColor(0, 0, 255, 0); // green
   GLO_obd_neopixel.show();
 
@@ -128,6 +138,7 @@ void setup() { //high 18 low 26
   board_temp.begin();
 
 }
+
 
 void loop() {
 
@@ -152,6 +163,10 @@ void loop() {
 
   // continously run OBD (individual timers are included)
   obd_main();
+
+  // engine timer update
+  if (engine_time_update_timer.isup())
+    engine_timer(eeprom_engine_hours, eeprom_engine_minutes);
 
   // send all of the things
   send_can1();

@@ -169,7 +169,7 @@ void loop() {
 
 
 template <class T1, class T2>
-void timer(EEPROM_Value<T1> hours, EEPROM_Value<T2> minutes){
+void timer(EEPROM_Value<T1> &hours, EEPROM_Value<T2> &minutes){
   static unsigned int last_minute_millis = 0;
 
   if (millis() > last_minute_millis + 60000){  // 60,000ms = 60s
