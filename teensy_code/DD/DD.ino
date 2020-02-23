@@ -113,19 +113,19 @@ int screen_mode = 1;
 
 char rpm_form[] = "%04.1f";
 char oilp_form[] = "%03.0f";
+char oilt_form[] = "%03.0f";
 char engt_form[] = "%04.1f";
-char battv_form[] = "%04.1f";
-InfoScreen engine_vitals_right_screen(display_right, M400_rpm, M400_oilPressure, M400_engineTemp, PDM_pdmVoltAvg,
-                                        /* label */  "RPM:",   "OILP:",          "ENG:",          "BAT:",
-                            /* string formatting */  rpm_form, oilp_form ,       engt_form,       battv_form );
+InfoScreen engine_vitals_right_screen(display_right, M400_rpm, M400_oilPressure, M400_oilTemp, M400_engineTemp,
+                                        /* label */  "RPM:",   "OILP:",          "OILT:",      "ENG:",
+                            /* string formatting */  rpm_form, oilp_form ,       oilt_form,    engt_form );
 
 char speed_form[] = "%04.1f";
-char gear_form[] = "%01.0f";
+char battv_form[] = "%04.1f";
 char bias_form[] = "%02.0f%%"; // the extra two %'s are not a typo!
 char fanl_form[] = "%03.0f";
-InfoScreen auxilary_info_left_screen(display_left, M400_groundSpeed, M400_gear, ATCCF_brakeBias, PDM_fanLeftPWM,
-                                      /* label */  "SPD:",           "GEAR:  ", "BIAS:",         "FANS:",
-                          /* string formatting */  speed_form,       gear_form, bias_form,       fanl_form);
+InfoScreen auxilary_info_left_screen(display_left, M400_groundSpeed, PDM_pdmVoltAvg, ATCCF_brakeBias, PDM_fanLeftPWM,
+                                      /* label */  "SPD:",           "BAT:",         "BIAS:",         "FANS:",
+                          /* string formatting */  speed_form,       battv_form,     bias_form,       fanl_form);
 
 
 NumberDisplay gear_display_left(display_left, M400_gear, "GEAR");

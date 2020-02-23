@@ -54,7 +54,7 @@ EEPROM_Value<int> board_minutes(0x0024);
 // XBee setup and parameters ---------------------
 
 //increase buffer size for serial data coming in from the C50 (unit: bytes)
-#define SERIAL4_RX_BUFFER_SIZE 128
+#define SERIAL4_RX_BUFFER_SIZE 256
 
 // used to hold the data that will be sent to the XBee. This must be less than 256, and you may get droped frames or
 // errors when sending too close to the 246 limit
@@ -144,7 +144,12 @@ void loop() {
 
   // turn the neopixels rainbow colors :-)
   if (!laptrigger_sucess_pixel(pixel)){
-    rainbow_pixels(pixel);
+    if (digitalRead(xbee_cts_pin) == HIGH){
+      pixel.setPixelColor(0, 255, 0, 0);
+      pixel.show();
+    } else {
+      rainbow_pixels(pixel);
+    }
   }
 
   // send can messages
@@ -159,7 +164,6 @@ void loop() {
   timer(board_hours, board_minutes);
 
   if (debug_timer.isup()){
-    Serial.println("TEST");
   }
 
 }
@@ -192,7 +196,7 @@ void timer(EEPROM_Value<T1> &hours, EEPROM_Value<T2> &minutes){
   }
 }
 
-
+EasyTimer sendtimer(10);
 
 
 // reads in data from the C50 serial input, packages it for the XBee, and then transmits to the XBee module
@@ -201,16 +205,18 @@ bool telemetry_send(){
   // if there is data from the C50 and the Xbee is able to recieve data
   if (Serial4.available() && digitalRead(xbee_cts_pin) == LOW){
 
+    Serial.println("SERIAL 4 WAS AVAILABLE and good. SEND IT!");
+
     // fill up the transmit array with C50 data
     for (uint8_t byte = 0; byte < sizeof(xbee_payload); byte++){
       xbee_payload[byte] = Serial4.read();
     }
 
-    // create a transmission request with the new payload (this is unecessary, remove later once working)
-    //ZBExplicitTxRequest zbTx = ZBExplicitTxRequest(addr64, xbee_payload, sizeof(xbee_payload));
+    // create a transmission request with the new payload
+    ZBExplicitTxRequest zbTx = ZBExplicitTxRequest(addr64, xbee_payload, sizeof(xbee_payload));
 
     // send the message
-    xbee.send(telemetry_tx_rq);
+    xbee.send(zbTx);
 
     // xbee.send returns void, so we'll assume that it send okay lololol
     return true;
