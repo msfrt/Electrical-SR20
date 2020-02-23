@@ -101,7 +101,6 @@ int screen_mode = 1;
 
 // info screen struct and functions
 #include "info_screen.hpp"
-
 // big number display struct and functions
 #include "big_number_display.hpp"
 
@@ -112,18 +111,18 @@ int screen_mode = 1;
 #include "lap_timer.hpp"
 
 
-char rpm_form[] = "%4.2f";
-char oilp_form[] = "%3.1f";
-char engt_form[] = "%4.1f";
-char battv_form[] = "%4.2f";
+char rpm_form[] = "%04.1f";
+char oilp_form[] = "%03.0f";
+char engt_form[] = "%04.1f";
+char battv_form[] = "%04.1f";
 InfoScreen engine_vitals_right_screen(display_right, M400_rpm, M400_oilPressure, M400_engineTemp, PDM_pdmVoltAvg,
                                         /* label */  "RPM:",   "OILP:",          "ENG:",          "BAT:",
                             /* string formatting */  rpm_form, oilp_form ,       engt_form,       battv_form );
 
-char speed_form[] = "%4.1f";
-char gear_form[] = "%1.0f";
-char bias_form[] = "%2.0f%%";
-char fanl_form[] = "%3.0f";
+char speed_form[] = "%04.1f";
+char gear_form[] = "%01.0f";
+char bias_form[] = "%02.0f%%"; // the extra two %'s are not a typo!
+char fanl_form[] = "%03.0f";
 InfoScreen auxilary_info_left_screen(display_left, M400_groundSpeed, M400_gear, ATCCF_brakeBias, PDM_fanLeftPWM,
                                       /* label */  "SPD:",           "GEAR:  ", "BIAS:",         "FANS:",
                           /* string formatting */  speed_form,       gear_form, bias_form,       fanl_form);
