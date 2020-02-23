@@ -319,6 +319,21 @@ void obd_leds(){
       }
     }
 
+  // if there is just a warning flag that's not safety critical, blink yellow
+  } if (OBDFLAG_fuel_pressure){
+    static EasyTimer meh_blink(10);
+    if (meh_blink.isup()){
+      if (leds_on){
+        leds_on = false;
+        GLO_obd_neopixel.setPixelColor(0, 0, 0, 0);
+        GLO_obd_neopixel.show();
+      } else {
+        leds_on = true;
+        GLO_obd_neopixel.setPixelColor(0, 255, 255, 0);
+        GLO_obd_neopixel.show();
+      }
+    }
+
   // if pdm determines that the engine is cranking, flash orange really fast like rititititititit (engine noise)
   } else if (GLO_engine_state == 1){
     static EasyTimer cranking_blink(20);
