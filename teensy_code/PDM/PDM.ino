@@ -120,6 +120,8 @@ void setup() { //high 18 low 26
   // board temp initialization
   board_temp.begin();
 
+
+
 }
 
 void loop() {
@@ -152,7 +154,57 @@ void loop() {
 
   if (debug.isup()){
 
-    cbus2.mailboxStatus();
+    //cbus2.mailboxStatus();
+
+    /*
+    Serial.print("PDM_Volt: ");
+    Serial.println(pdm_volt_sens.read_mvoltage());
+    Serial.print("PDM_Keepalive_Volt: ");
+    Serial.println(keepalive_volt_sens.read_mvoltage());
+    Serial.print("Main_Volt: ");
+    Serial.println(main_volt_sens.read_mvoltage());
+    Serial.print("Data_Volt: ");
+    Serial.println(data_volt_sens.read_mvoltage());
+    Serial.print("Fuel_Volt: ");
+    Serial.println(fuel_volt_sens.read_mvoltage());
+    Serial.print("FANR_Volt: ");
+    Serial.println(fanr_volt_sens.read_mvoltage());
+    Serial.print("FANL_Volt: ");
+    Serial.println(fanl_volt_sens.read_mvoltage());
+    Serial.print("WP_Volt: ");
+    Serial.println(wp_volt_sens.read_mvoltage());
+    Serial.print("BrakeLight_Volt: ");
+    Serial.println(brakelight_volt_sens.read_mvoltage());
+    Serial.print("Starter_Volt: ");
+    Serial.println(starter_volt_sens.read_mvoltage());
+    Serial.println("--------------------------");
+
+
+    Serial.print("PDM_current: ");
+    Serial.println(pdm_current_sens.read_mvoltage());
+    Serial.print("Fuel_current: ");
+    Serial.println(fuel_current_sens.read_mvoltage());
+    Serial.print("FANL_current: ");
+    Serial.println(fanl_current_sens.read_mvoltage());
+    Serial.print("FANR_current: ");
+    Serial.println(fanr_current_sens.read_mvoltage());
+    Serial.print("WP_current: ");
+    Serial.println(wp_current_sens.read_mvoltage());
+    Serial.println("--------------------------");
+
+    Serial.print("PDM_current: ");
+    Serial.println(pdm_current_sens.avg());
+    Serial.print("Fuel_current: ");
+    Serial.println(fuel_current_sens.avg());
+    Serial.print("FANL_current: ");
+    Serial.println(fanl_current_sens.avg());
+    Serial.print("FANR_current: ");
+    Serial.println(fanr_current_sens.avg());
+    Serial.print("WP_current: ");
+    Serial.println(wp_current_sens.avg());
+    Serial.println("--------------------------");
+    */
+
   }
 }
 
