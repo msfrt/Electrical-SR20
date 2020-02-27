@@ -40,6 +40,12 @@ BO_ 3221225472 VECTOR__INDEPENDENT_SIG_MSG: 0 Vector__XXX
  SG_ PDM_driverDisplayMessage : 0|64@1+ (1,0) [0|1.84467440737096E+019] "char" Vector__XXX
  SG_ ATCCR_counterMsg465 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
 
+BO_ 275 PDM_25: 8 Vector__XXX
+ SG_ PDM_engineMinutes : 48|16@1- (1,0) [-32768|32767] "Minutes" Vector__XXX
+ SG_ PDM_engineHours : 32|16@1- (1,0) [-32768|32767] "Hours" Vector__XXX
+ SG_ PDM_carMiles : 16|16@1- (0.1,0) [0|0] "Miles" Vector__XXX
+ SG_ PDM_counterMsg275 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
+
 BO_ 281 PDM_31: 8 Vector__XXX
  SG_ PDM_driverDisplayLEDs : 0|8@1- (1,0) [-128|127] "int" Vector__XXX
 
@@ -243,6 +249,10 @@ BO_ 410 ATCCF_10: 8 ATCCF
 CM_ BO_ 3221225472 "This is a message for not used signals, created by Vector CANdb++ DBC OLE DB Provider.";
 CM_ SG_ 3221225472 PDM_driverDisplayMessage "8 character message sent to the driver display and shown to the driver";
 CM_ SG_ 3221225472 ATCCR_counterMsg465 "Counter for Message 465";
+CM_ SG_ 275 PDM_engineMinutes "Fuel Current Maximum";
+CM_ SG_ 275 PDM_engineHours "Fuel Current Maximum";
+CM_ SG_ 275 PDM_carMiles "Fuel Current Maximum";
+CM_ SG_ 275 PDM_counterMsg275 "Counter for Message 274";
 CM_ BO_ 281 "PDM -> DD";
 CM_ SG_ 281 PDM_driverDisplayLEDs "flashing LEDs on driver diplay
 
