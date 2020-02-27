@@ -134,7 +134,6 @@ void setup() { //high 18 low 26
   // write the eeprom variables that are not commented out in the write eeprom function in the EEPROM_sigs file
   initialize_eeprom_variables();
 
-
   GLO_obd_neopixel.setPixelColor(0, 0, 255, 0); // green
   GLO_obd_neopixel.show();
 
