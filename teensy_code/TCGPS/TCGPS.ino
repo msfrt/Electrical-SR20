@@ -54,7 +54,7 @@ EEPROM_Value<int> board_minutes(0x0024);
 // XBee setup and parameters ---------------------
 
 //increase buffer size for serial data coming in from the C50 (unit: bytes)
-#define SERIAL4_RX_BUFFER_SIZE 256
+#define SERIAL4_RX_BUFFER_SIZE 1024
 
 // used to hold the data that will be sent to the XBee. This must be less than 256, and you may get droped frames or
 // errors when sending too close to the 246 limit
@@ -205,18 +205,21 @@ bool telemetry_send(){
   // if there is data from the C50 and the Xbee is able to recieve data
   if (Serial4.available() && digitalRead(xbee_cts_pin) == LOW){
 
-    Serial.println("SERIAL 4 WAS AVAILABLE and good. SEND IT!");
+    Serial.print("sending data: ");
 
     // fill up the transmit array with C50 data
     for (uint8_t byte = 0; byte < sizeof(xbee_payload); byte++){
       xbee_payload[byte] = Serial4.read();
+      Serial.print(xbee_payload[byte], HEX); Serial.print(" ");
     }
+    Serial.println("\n");
 
     // create a transmission request with the new payload
     ZBExplicitTxRequest zbTx = ZBExplicitTxRequest(addr64, xbee_payload, sizeof(xbee_payload));
 
     // send the message
     xbee.send(zbTx);
+    //xbee.send(telemetry_tx_rq);
 
     // xbee.send returns void, so we'll assume that it send okay lololol
     return true;
