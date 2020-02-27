@@ -141,8 +141,6 @@ void setup() { //high 18 low 26
   // board temp initialization
   board_temp.begin();
 
-
-
 }
 
 

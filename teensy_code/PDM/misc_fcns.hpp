@@ -46,6 +46,7 @@ void odometer(StateSignal &speed, EEPROM_Value<T1> &mileage10){
   static float running_mileage10 = 0; // counts mileage10 since start up. Once it reaches 1, the value in memory is
                                       // incremented and this is reset to 0
 
+
   // determine the number of seconds for this calculation
   calc_period_seconds = (millis() - last_calc_time) / 1000.0;
   last_calc_time = millis();
@@ -59,10 +60,10 @@ void odometer(StateSignal &speed, EEPROM_Value<T1> &mileage10){
     // calulate the mileage10 since the last calculation and add it to the running total
     running_mileage10 += miles10_per_second * calc_period_seconds;
 
-    // if there's been a 10th of a mile driven, increment the mileage and write it
-    if (running_mileage10 >= 1.0){
+    // if there's been a half of a mile driven, increment the mileage and write it
+    if (running_mileage10 >= 5.0){
       mileage10 = mileage10.value() + 1;
-      running_mileage10 -= 1.0; // subtract one mile10
+      running_mileage10 -= 5.0; // subtract one mile10
       eeprom.write(mileage10);
     }
   }
