@@ -355,6 +355,25 @@ void send_PDM_24(){
 }
 
 
+
+void send_PDM_25(){
+  static StateCounter ctr;
+  msg.id = 275;
+  msg.len = 8;
+
+  msg.buf[0] = ctr.value();
+  msg.buf[1] = 0;
+  msg.buf[2] = eeprom_mileage.value();
+  msg.buf[3] = eeprom_mileage.value() >> 8;
+  msg.buf[4] = eeprom_engine_hours.value();
+  msg.buf[5] = eeprom_engine_hours.value() >> 8;
+  msg.buf[6] = eeprom_engine_minutes.value();
+  msg.buf[7] = eeprom_engine_minutes.value() >> 8;
+
+  cbus2.write(msg);
+}
+
+
 void send_can1(){
   // hey, there's nothing in here! (for now, at least)
 }
@@ -434,6 +453,11 @@ void send_can2(){
   static EasyTimer PDM_24_timer(50); // 50Hz
   if (PDM_24_timer.isup()){
     send_PDM_24();
+  }
+
+  static EasyTimer PDM_25_timer(10); // 10Hz
+  if (PDM_25_timer.isup()){
+    send_PDM_25();
   }
 
 }

@@ -51,6 +51,10 @@ EEPROM_25LC128 eeprom(eeprom_cs_pin);
 // the actual time checking happens in the timer function.
 EasyTimer engine_time_update_timer(1);
 
+// odemeter update frequency. Should probably keep this pretty low, because if it updates too fast, the calculations
+// will be so small that mileage may actually never be incremented because of poor floating-point math
+EasyTimer odometer_update_timer(2);
+
 // eeprom-saved signals
 #include "EEPROM_sigs.hpp"
 
@@ -137,8 +141,6 @@ void setup() { //high 18 low 26
   // board temp initialization
   board_temp.begin();
 
-
-
 }
 
 
@@ -169,6 +171,10 @@ void loop() {
   // engine timer update
   if (engine_time_update_timer.isup())
     engine_timer(eeprom_engine_hours, eeprom_engine_minutes);
+
+  // odometer update
+  if (odometer_update_timer.isup())
+    odometer(M400_groundSpeed, eeprom_mileage);
 
   // send all of the things
   send_can1();
