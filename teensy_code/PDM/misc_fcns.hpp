@@ -2,6 +2,42 @@
 #define MISC_FUNCTIONS_HPP
 
 
+
+
+template <class T1, class T2>
+void engine_timer(EEPROM_Value<T1> &hours, EEPROM_Value<T2> &minutes){
+  static unsigned int last_minute_millis = 0;
+
+  // if the engine is not on (state 2), keep setting the last minute to the current time. This ensures that the
+  // next minute is only triggered when the engine is actuall on.
+  if (GLO_engine_state != 2){
+    last_minute_millis = millis();
+  }
+
+  if (millis() > last_minute_millis + 60000){  // 60,000ms = 60s
+
+    // minutes AND hours have changed
+    if (eeprom.read(minutes) >= 59){
+      hours = eeprom.read(hours) + 1;
+      minutes = 0;
+      eeprom.write(hours);
+      eeprom.write(minutes);
+
+    // just minutes have changed
+    } else {
+      minutes = eeprom.read(minutes) + 1;
+      eeprom.write(minutes);
+    }
+
+    // update the last minute timer
+    last_minute_millis = millis();
+  }
+}
+
+
+
+
+
 // this function takes a reference to the engine state variable and returns a reference to the same variable.
 // the engine state will be updated if determined necessary.
 int &determine_engine_state(int &engine_state){
@@ -62,6 +98,12 @@ bool brakelight(){
     return false;
   }
 }
+
+
+
+
+
+
 
 
 #endif

@@ -62,6 +62,10 @@ void read_M400_101(CAN_message_t &imsg){
       M400_engineTemp.set_can_value(imsg.buf[6] << 8 | imsg.buf[7]);
       break;
 
+    case 10:
+      M400_fuelPressure.set_can_value(imsg.buf[2] << 8 | imsg.buf[3]);
+      break;
+
     case 15:
       M400_oilPressure.set_can_value(imsg.buf[6] << 8 | imsg.buf[7]);
       break;

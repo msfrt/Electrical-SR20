@@ -8,6 +8,7 @@
 #include <SPI.h>
 #include <Adafruit_NeoPixel.h>
 #include <BoardTemp.h>
+#include <EepromHelper.h>
 
 /* TODOS:
  *  -
@@ -42,6 +43,17 @@ Adafruit_NeoPixel GLO_obd_neopixel(1, GLO_NeoPixel_teensy_pin, NEO_GRB + NEO_KHZ
 BoardTempDiode board_temp(21, GLO_read_resolution_bits, 28.1, 594);
 EasyTimer board_temp_sample_timer(50);
 
+// EEPROM
+const int eeprom_cs_pin = 9;
+EEPROM_25LC128 eeprom(eeprom_cs_pin);
+
+// engine time clock update frequency. (can be quite low, but don't set too low, as we want this to still be accurate)
+// the actual time checking happens in the timer function.
+EasyTimer engine_time_update_timer(1);
+
+// eeprom-saved signals
+#include "EEPROM_sigs.hpp"
+
 // useful sensor sampling definitions can be found here
 #include "sensors.hpp"
 
@@ -65,6 +77,8 @@ EasyTimer board_temp_sample_timer(50);
 
 // timer that you can use to print things out for debugging
 EasyTimer debug(1);
+
+
 
 
 void setup() { //high 18 low 26
@@ -110,9 +124,12 @@ void setup() { //high 18 low 26
   // turn the data circuit on
   digitalWrite(GLO_data_circuit_teensy_pin, HIGH);
 
-  // EEPROM PINS
-  pinMode(9, INPUT);
-  digitalWrite(9, HIGH);
+  // EEPROM
+  eeprom.begin();
+
+  // write the eeprom variables that are not commented out in the write eeprom function in the EEPROM_sigs file
+  initialize_eeprom_variables();
+
 
   GLO_obd_neopixel.setPixelColor(0, 0, 255, 0); // green
   GLO_obd_neopixel.show();
@@ -123,6 +140,7 @@ void setup() { //high 18 low 26
 
 
 }
+
 
 void loop() {
 
@@ -147,6 +165,10 @@ void loop() {
 
   // continously run OBD (individual timers are included)
   obd_main();
+
+  // engine timer update
+  if (engine_time_update_timer.isup())
+    engine_timer(eeprom_engine_hours, eeprom_engine_minutes);
 
   // send all of the things
   send_can1();
