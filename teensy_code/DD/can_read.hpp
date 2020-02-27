@@ -21,6 +21,12 @@ void read_ATCCF_11(CAN_message_t &imsg){
 }
 
 
+// ID 261 on bus 2
+void read_PDM_11(CAN_message_t &imsg){
+  PDM_pdmVoltAvg.set_can_value(imsg.buf[2] | imsg.buf[3] << 8);
+}
+
+
 // ID 274 on bus 2
 void read_PDM_24(CAN_message_t &imsg){
   PDM_fanLeftPWM.set_can_value(imsg.buf[2]);
@@ -99,8 +105,16 @@ void read_M400_101(CAN_message_t &imsg){
       M400_engineTemp.set_can_value(imsg.buf[6] << 8 | imsg.buf[7]);
       break;
 
+    case 10:
+      M400_fuelPressure.set_can_value(imsg.buf[2] << 8 | imsg.buf[3]);
+      break;
+
     case 15:
       M400_oilPressure.set_can_value(imsg.buf[6] << 8 | imsg.buf[7]);
+      break;
+
+    case 16:
+      M400_oilTemp.set_can_value(imsg.buf[2] << 8 | imsg.buf[3]);
       break;
   }
 }
@@ -129,6 +143,9 @@ void read_can2(){
   if (cbus2.read(rxmsg)){
 
     switch (rxmsg.id) {
+      case 261:
+        read_PDM_11(rxmsg);
+        break;
       case 274:
         read_PDM_24(rxmsg);
         break;
