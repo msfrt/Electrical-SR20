@@ -36,6 +36,40 @@ void engine_timer(EEPROM_Value<T1> &hours, EEPROM_Value<T2> &minutes){
 
 
 
+// call the odemeter at a decently fast rate for semi-accurate calculations. Beware, if you call this too fast, the
+// time difference may be close to 0, and therefore may not. MILEAGE STORED IS FACTORED BY 10
+template <class T1>
+void odometer(StateSignal &speed, EEPROM_Value<T1> &mileage10){
+  static unsigned int last_calc_time = 0;
+  static float calc_period_seconds = 0.0;
+  static float miles10_per_second = 0;
+  static float running_mileage10 = 0; // counts mileage10 since start up. Once it reaches 1, the value in memory is
+                                      // incremented and this is reset to 0
+
+  // determine the number of seconds for this calculation
+  calc_period_seconds = (millis() - last_calc_time) / 1000.0;
+  last_calc_time = millis();
+
+  // if the car is moving forward, the speed signal is valid, and the car is determined to be on: increment mileage
+  if (speed.value() > 0 && speed.is_valid() && GLO_engine_state == 2){
+
+    // turn miles per hour to miles10 per second
+    miles10_per_second = (speed.value() / 3600.0) * 10;
+
+    // calulate the mileage10 since the last calculation and add it to the running total
+    running_mileage10 += miles10_per_second * calc_period_seconds;
+
+    // if there's been a 10th of a mile driven, increment the mileage and write it
+    if (running_mileage10 >= 1.0){
+      mileage10 = mileage10.value() + 1;
+      running_mileage10 -= 1.0; // subtract one mile10
+      eeprom.write(mileage10);
+    }
+  }
+}
+
+
+
 
 
 // this function takes a reference to the engine state variable and returns a reference to the same variable.
