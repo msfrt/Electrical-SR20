@@ -249,7 +249,7 @@ bool obd_fuel_pressure_checker(StateSignal &fuelp){
 
 
   // check to see if the car is not running
-  if (GLO_engine_state != 2)){
+  if (GLO_engine_state != 2){
     OBDFLAG_fuel_pressure = 0;
     return true;
   }

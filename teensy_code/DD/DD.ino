@@ -248,7 +248,7 @@ void loop() {
 
   // if button 1 was pressed changed the led mode
   if (check_button(button2_pin, button2_time)){
-    if (++led_mode > 3){ // upper bound
+    if (++led_mode > 2){ // upper bound
       led_mode = 1;
     }
   }
@@ -321,22 +321,7 @@ void loop() {
     pixels_left.show();
     pixels_right.show();
 
-  // gradient RPM bar
   } else if (led_mode == 2){
-
-    rpm_bar_gradient(pixels_top, M400_rpm, M400_gear);
-    engine_cut_bar(pixels_left,  M400_tcPowerReduction);
-    engine_cut_bar(pixels_right, M400_tcPowerReduction);
-
-    // these two are unused
-    pixels_left.setPixelColor(0, 0, 0, 0);
-    pixels_right.setPixelColor(0, 0, 0, 0);
-
-    pixels_top.show();
-    pixels_left.show();
-    pixels_right.show();
-
-  } else if (led_mode == 3){
     party_bar(pixels_top, pixels_left, pixels_right);
 
   // tell the driver to come in
