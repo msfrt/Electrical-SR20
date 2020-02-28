@@ -36,6 +36,9 @@ BS_:
 BU_: C50 TC_GPS_TELEM PDM MM5 DRIVERDISPLAY M400
 
 
+BO_ 161 TCGPS_11: 8 Vector__XXX
+ SG_ TCGPS_laptrigger : 0|8@1- (1,0) [0|0] "bool" Vector__XXX
+
 BO_ 380 MM5_02: 8 MM5
  SG_ MM5_Az : 32|16@1+ (-0.0001274,-4.1745795) [0|0] "" Vector__XXX
 
@@ -128,6 +131,7 @@ BO_ 100 M400_dataSet1: 8 M400
 
 
 
+CM_ SG_ 161 TCGPS_laptrigger "100 = sucess";
 CM_ SG_ 101 M400_oilTemp "Oil Temp ";
 CM_ SG_ 101 M400_oilPressure "Oil Pressure ";
 CM_ SG_ 101 M400_manifoldPressure "Manifold Pressure ";
