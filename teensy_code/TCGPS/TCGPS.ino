@@ -55,7 +55,7 @@ EEPROM_Value<int> board_minutes(0x0024);
 
 // used to hold the data that will be sent to the XBee. This must be less than 256, and you may get droped frames or
 // errors when sending too close to the 246 limit
-unsigned char xbee_payload[224] = {0};
+uint8_t xbee_payload[224] = {0};
 
 // xbee object
 XBee xbee = XBee();
@@ -202,41 +202,35 @@ EasyTimer sendtimer(10);
 
 // reads in data from the C50 serial input, packages it for the XBee, and then transmits to the XBee module
 bool telemetry_send(){
-  static int current_byte = 0;
+  static unsigned int current_byte = 0;
 
-  // if there is data from the C50 and the Xbee is able to recieve data
-  if (Serial4.available() && digitalRead(xbee_cts_pin) == LOW){
-
-    Serial.print("Bytes available for reading: "); Serial.println(Serial4.available());
-    Serial.print("packing data: ");
-    // fill up the transmit array with C50 data
-    // for (uint8_t byte = 0; byte < sizeof(xbee_payload); byte++){
-    //   xbee_payload[byte] = Serial4.read();
-    //   Serial.print(xbee_payload[byte], HEX); Serial.print(" ");
-    // }
-    while (Serial4.available() && current_byte < sizeof(xbee_payload) - 1){
-      xbee_payload[current_byte] = Serial4.read();
-      Serial.print(xbee_payload[current_byte], HEX); Serial.print(" ");
-      current_byte++;
-    }
-
-    if (current_byte >= sizeof(xbee_payload)){
-      Serial.println("\n");
-
-      // create a transmission request with the new payload
-      ZBExplicitTxRequest zbTx = ZBExplicitTxRequest(addr64, xbee_payload, sizeof(xbee_payload));
-
-      // send the message
-      xbee.send(zbTx);
-      //xbee.send(telemetry_tx_rq);
-
-      current_byte = 0;
-
-      // xbee.send returns void, so we'll assume that it send okay lololol
-      return true;
-    }
-
+  while (Serial4.available() && (current_byte < sizeof(xbee_payload))){
+    xbee_payload[current_byte] = Serial4.read();
+    //Serial.print(xbee_payload[current_byte], HEX); Serial.print(" ");
+    current_byte++;
+    //Serial.print("current_byte: "); Serial.println(current_byte);
   }
+
+  if (current_byte == sizeof(xbee_payload)){
+    Serial.print("Sending: ");
+    for (int i = 0; i < sizeof(xbee_payload) - 1; i++){
+      Serial.print(xbee_payload[i]); Serial.print(" ");
+    }
+    Serial.println("");
+
+    // create a transmission request with the new payload
+    ZBExplicitTxRequest zbTx = ZBExplicitTxRequest(addr64, xbee_payload, sizeof(xbee_payload));
+
+    // send the message
+    xbee.send(zbTx);
+    //xbee.send(telemetry_tx_rq);
+
+    current_byte = 0;
+
+    // xbee.send returns void, so we'll assume that it send okay lololol
+    return true;
+  }
+
 
   return false;
 
