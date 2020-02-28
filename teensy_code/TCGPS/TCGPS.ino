@@ -17,9 +17,6 @@ FlexCAN_T4<CAN2, RX_SIZE_256, TX_SIZE_16> cbus2;
 
 #include "can_send.hpp"
 
-#include "lap_trigger.hpp"
-
-
 // board temp setup
 #define READ_RESOLUTION_BITS 12
 const int board_temp_pin = 19;
@@ -72,8 +69,14 @@ XBeeAddress64 addr64 = XBeeAddress64(0x00000000,0x0000FFFF);
 // Used to create a variable to hold the payload (in explicit mode)
 ZBExplicitTxRequest telemetry_tx_rq = ZBExplicitTxRequest(addr64, xbee_payload, sizeof(xbee_payload));
 
-// empty (for now). Will be used for lap trigger
-ZBExplicitRxResponse rx = ZBExplicitRxResponse();
+// incoming messages from the Xbee
+ZBExplicitRxResponse xbee_rx = ZBExplicitRxResponse();
+
+// for safety, only trigger a lap if this string was recieved:
+char laptrigger_rx_key[] = "SR20";
+
+// laptrigger support functions
+#include "lap_trigger.hpp"
 
 
 void setup() {
@@ -156,6 +159,11 @@ void loop() {
   send_can1();
   send_can2();
 
+  // attempt to read a lap trigger
+  if (laptrigger_read()){
+    send_TCGPS_11(); // a.k.a. the lap trigger message
+  }
+
   // send telemetry shenanigans
   telemetry_send();
 
@@ -228,6 +236,8 @@ bool telemetry_send(){
   return false;
 
 }
+
+
 
 
 

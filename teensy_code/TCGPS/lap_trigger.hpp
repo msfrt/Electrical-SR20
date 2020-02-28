@@ -40,7 +40,46 @@ bool laptrigger_sucess_pixel(Adafruit_NeoPixel &pixels, const bool &turn_on = fa
   } else {
     return false;
   }
+}
 
+
+
+bool laptrigger_read(){
+  xbee.readPacket();
+
+  // if there is a message available to read
+  if(xbee.getResponse().isAvailable()){
+    Serial.println("Check: 1");
+
+    // if the ID is correct
+    if(xbee.getResponse().getApiId() == ZB_EXPLICIT_RX_RESPONSE){
+      Serial.println("Check: 2");
+
+      // fill the response object
+      xbee.getResponse().getZBExplicitRxResponse(xbee_rx);
+
+      // create an array to store the incoming data
+      char incoming_msg[xbee_rx.getDataLength()+1] = {0};
+
+      // read each byte and save it into the msg array
+      for(int i=0; i < (xbee_rx.getDataLength() - 1); i++){
+        incoming_msg[i] = xbee_rx.getData(i);
+      }
+
+      Serial.println(incoming_msg);
+      //int lngth = sizeof(xbee_rx.getData());
+      //Serial.write(xbee_rx.getData(9));
+      //Serial.println(xbee_rx.getDataLength());
+
+      // if they were the same (if there is 0 difference)
+      if (strcmp(incoming_msg, laptrigger_rx_key) == 0){
+        laptrigger_sucess_pixel(pixel, true); // trigger the initial LED signal
+        return true;
+      }
+    }
+  }
+
+  return false;
 }
 
 #endif

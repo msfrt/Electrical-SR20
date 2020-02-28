@@ -37,7 +37,27 @@ void send_TCGPS_10(){
   msg.buf[7] = 0;
 
   // send the message
-  cbus2.write(msg);
+  cbus1.write(msg);
+}
+
+
+// lap trigger message, no fancy signals needed.
+void send_TCGPS_11(){
+
+  msg.id = 161;
+  msg.len = 8;
+
+  msg.buf[0] = 100;
+  msg.buf[1] = 0;
+  msg.buf[2] = 0;
+  msg.buf[3] = 0;
+  msg.buf[4] = 0;
+  msg.buf[5] = 0;
+  msg.buf[6] = 0;
+  msg.buf[7] = 0;
+
+  // send the message
+  cbus1.write(msg);
 }
 
 
