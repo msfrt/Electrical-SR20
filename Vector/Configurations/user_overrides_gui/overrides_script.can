@@ -1,0 +1,141 @@
+/*@!Encoding:1252*/
+includes
+{
+  
+}
+
+variables
+{
+  msTimer send_timer;
+  int send_count = 0; // number of times we've sent a message
+  
+  message USER_10 overrides_msg; // declaration of USER 10 into a variable that we can edit and send
+  message USER_11 USER_11_msg;
+  message USER_12 USER_12_msg;
+}
+  
+on start
+{
+  // set the first delay of the timer when we start the bus reading
+  setTimer(send_timer, @Vector::USER_overrideMsgDelayMs);
+  
+  // reset send count
+  send_count = 0;
+}
+
+on timer send_timer
+{
+  
+  // if we should send the message
+  if (@Vector::USER_overridesActiveBool == 1){
+    
+    // load up the message variables with the global variables we set in the GUI
+    overrides_msg.USER_fanLeftOverride = @Vector::USER_fanLeftOverride;
+    overrides_msg.USER_fanRightOverride = @Vector::USER_fanRightOverride;
+    overrides_msg.USER_wpOverride = @Vector::USER_wpOverride;
+    overrides_msg.USER_brakeLightOverride = @Vector::USER_brakeLightOverride;
+    
+    // send it!
+    output(overrides_msg);
+  }
+  
+  
+  // reset the timer
+  setTimer(send_timer, @Vector::USER_overrideMsgDelayMs);
+}
+
+
+// driver display LED message
+on sysvar Vector::USER_sendUser11Bool
+{
+  // user wanted to send a message
+  if (@Vector::USER_sendUser11Bool == 1){
+    USER_11_msg.USER_driverSignal = @Vector::USER_ddLED;
+    output(USER_11_msg);
+  }
+}
+
+
+// driver display text message
+on sysvar Vector::USER_sendUser12Bool
+{
+  int i = 0; // used to iterate through the string
+  
+  // user wanted to send a message
+  if (@Vector::USER_sendUser12Bool == 1){
+    
+    char buffer[255];
+    int len;
+    len = sysGetVariableArrayLength(sysvar::Vector::USER_ddString);
+    
+    // while there's a character to copy over, copy it. no strncopy :'(
+    for(i = 0; i < len; i++){
+      if (i == 0){
+        @Vector::USER_ddMessageCh0 = @Vector::USER_ddString[i];
+        
+      } else if (i == 1){
+        @Vector::USER_ddMessageCh1 = @Vector::USER_ddString[i];
+        
+      } else if (i == 2){
+        @Vector::USER_ddMessageCh2 = @Vector::USER_ddString[i];
+        
+      } else if (i == 3){
+        @Vector::USER_ddMessageCh3 = @Vector::USER_ddString[i];
+        
+      } else if (i == 4){
+        @Vector::USER_ddMessageCh4 = @Vector::USER_ddString[i];
+        
+      } else if (i == 5){
+        @Vector::USER_ddMessageCh5 = @Vector::USER_ddString[i];
+        
+      } else if (i == 6){
+        @Vector::USER_ddMessageCh6 = @Vector::USER_ddString[i];
+        
+      } else if (i == 7){
+        @Vector::USER_ddMessageCh7 = @Vector::USER_ddString[i];
+      }
+    }
+    
+    // fill the rest with 0's
+    for(i; i < 8; i++){
+      if (i == 0){
+        @Vector::USER_ddMessageCh0 = 0;
+        
+      } else if (i == 1){
+        @Vector::USER_ddMessageCh1 = 0;
+        
+      } else if (i == 2){
+        @Vector::USER_ddMessageCh2 = 0;
+        
+      } else if (i == 3){
+        @Vector::USER_ddMessageCh3 = 0;
+        
+      } else if (i == 4){
+        @Vector::USER_ddMessageCh4 = 0;
+        
+      } else if (i == 5){
+        @Vector::USER_ddMessageCh5 = 0;
+        
+      } else if (i == 6){
+        @Vector::USER_ddMessageCh6 = 0;
+        
+      } else if (i == 7){
+        @Vector::USER_ddMessageCh7 = 0;
+      }
+    }
+
+    
+    USER_12_msg.USER_driverMessageChar0 = @Vector::USER_ddMessageCh0;
+    USER_12_msg.USER_driverMessageChar1 = @Vector::USER_ddMessageCh1;
+    USER_12_msg.USER_driverMessageChar2 = @Vector::USER_ddMessageCh2;
+    USER_12_msg.USER_driverMessageChar3 = @Vector::USER_ddMessageCh3;
+    USER_12_msg.USER_driverMessageChar4 = @Vector::USER_ddMessageCh4;
+    USER_12_msg.USER_driverMessageChar5 = @Vector::USER_ddMessageCh5;
+    USER_12_msg.USER_driverMessageChar6 = @Vector::USER_ddMessageCh6;
+    USER_12_msg.USER_driverMessageChar7 = @Vector::USER_ddMessageCh7;
+    output(USER_12_msg);
+  }
+  
+  
+}
+
