@@ -13,6 +13,8 @@ StateSignal DD_boardTemp(16, true, 10, 0, -3276, 3276, 0);
 StateSignal DD_requestDRS(16, true, 1, 0, 0, 5, 0);
 
 // incoming signals
+StateSignal TCGPS_laptrigger(8, true, 1, 0, 0, 100, 0, 500);
+
 StateSignal M400_engineTemp(16, true, 10, 0, -3276, 3276, 0, 1000); // secondary val: 0, timeout: 1000ms
 StateSignal M400_oilTemp(16, true, 10, 0, -3276, 3276, 0, 1000);
 StateSignal M400_oilPressure(16, true, 10, 0, -3276, 3276, 0, 1000);

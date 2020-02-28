@@ -236,6 +236,9 @@ void loop() {
   read_can1();
   read_can2();
 
+  // check the laptrigger for a timeout
+  TCGPS_laptrigger.timeout_check();
+
   // board temp sampling shenanigans
   if (board_temp_sample_timer.isup())
     board_temp.sample();
@@ -357,7 +360,7 @@ void loop() {
   if (info_screen_update_timer.isup()){
     static bool lap_timer_on = false; // used to determine if we need to run initilizations after lap screen turns off
 
-    if (lap_timer_screen(display_left, display_right, M400_gear, prev_lap_times, prev_lap_times_diff, prev_lap_numbers)
+    if (lap_timer_screen(display_left, display_right, TCGPS_laptrigger, prev_lap_times, prev_lap_times_diff, prev_lap_numbers)
         || warning_message_display.show()){
       lap_timer_on = true;
 

@@ -10,6 +10,7 @@
 // outgoing signals
 StateSignal TCGPS_teensyTemp(16, true, 10, 0, -3276, 3276, 0);
 StateSignal TCGPS_boardTemp(16, true, 10, 0, -3276, 3276, 0);
+StateSignal TCGPS_laptrigger(8, true, 1, 0, 0, 100, 0, 500);
 
 // incoming signals
 StateSignal M400_engineTemp(16, true, 10, 0, -3276, 3276, 0, 1000); // secondary val: 0, timeout: 1000ms

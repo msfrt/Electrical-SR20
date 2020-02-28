@@ -47,7 +47,7 @@ void send_TCGPS_11(){
   msg.id = 161;
   msg.len = 8;
 
-  msg.buf[0] = 100;
+  msg.buf[0] = TCGPS_laptrigger.can_value();
   msg.buf[1] = 0;
   msg.buf[2] = 0;
   msg.buf[3] = 0;
@@ -63,7 +63,12 @@ void send_TCGPS_11(){
 
 
 void send_can1(){
-  // hey, there's nothing in here! (for now, at least)
+
+  // sends laptrigger message constantly, but the value should be 0 if a trigger has not happened.
+  static EasyTimer TCGPS_11_timer(10); // 10Hz
+  if (TCGPS_11_timer.isup()){
+    send_TCGPS_11();
+  }
 }
 
 void send_can2(){

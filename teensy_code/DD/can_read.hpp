@@ -9,6 +9,11 @@ static CAN_message_t rxmsg;
 extern UserMessageDisplay warning_message_display;
 
 
+// ID 161 on bus 1
+void read_TCGPS_11(CAN_message_t &imsg){
+  TCGPS_laptrigger.set_can_value(imsg.buf[0]);
+}
+
 // ID 410 on bus 2
 void read_ATCCF_10(CAN_message_t &imsg){
   ATCCF_brakeBias.set_can_value(imsg.buf[2] | imsg.buf[3] << 8);
@@ -131,6 +136,9 @@ void read_can1(){
         break;
       case 101:
         read_M400_101(rxmsg);
+        break;
+      case 161:
+        read_TCGPS_11(rxmsg);
         break;
     } // end switch statement
 

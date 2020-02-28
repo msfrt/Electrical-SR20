@@ -55,7 +55,7 @@ EEPROM_Value<int> board_minutes(0x0024);
 
 // used to hold the data that will be sent to the XBee. This must be less than 256, and you may get droped frames or
 // errors when sending too close to the 246 limit
-uint8_t xbee_payload[224] = {0};
+unsigned char xbee_payload[224] = {0};
 
 // xbee object
 XBee xbee = XBee();
@@ -77,6 +77,10 @@ char laptrigger_rx_key[] = "SR20";
 
 // laptrigger support functions
 #include "lap_trigger.hpp"
+
+// will continue to send laptrigger signals for this duration after a signal is recieved
+unsigned long trigger_send_duration_ms = 200;
+unsigned long trigger_send_until;
 
 
 void setup() {
@@ -111,27 +115,7 @@ void setup() {
   pixel.show();
 
 
-  // GPS initialization ------------------
-  pixel.setPixelColor(0, 255, 0, 0); pixel.show(); // pixel red
 
-  Serial2.begin(9600);
-  delay(2000);
-
-  pixel.setPixelColor(0, 255, 255, 0); pixel.show(); // pixel yeller
-  Serial2.write(set_gps_fast_serial_cmd);
-  delay(500);
-  Serial1.end();
-
-  delay(1000);
-  Serial2.begin(115200);
-  delay(500);
-  Serial2.write(set_gps_fast_update_cmd);
-
-  pixel.setPixelColor(0, 0, 255, 0); pixel.show(); // pixel green
-
-  delay(500);
-  Serial2.end();
-  // END - GPS initialization-------------
 
 }
 
@@ -161,7 +145,16 @@ void loop() {
 
   // attempt to read a lap trigger
   if (laptrigger_read()){
+    TCGPS_laptrigger = 100;
     send_TCGPS_11(); // a.k.a. the lap trigger message
+
+    trigger_send_until = millis() + trigger_send_duration_ms;
+
+  } else if (millis() <= trigger_send_until){
+    // do nothing
+
+  } else {
+    TCGPS_laptrigger = 0;
   }
 
   // send telemetry shenanigans
@@ -209,28 +202,40 @@ EasyTimer sendtimer(10);
 
 // reads in data from the C50 serial input, packages it for the XBee, and then transmits to the XBee module
 bool telemetry_send(){
+  static int current_byte = 0;
 
   // if there is data from the C50 and the Xbee is able to recieve data
   if (Serial4.available() && digitalRead(xbee_cts_pin) == LOW){
 
-    Serial.print("sending data: ");
-
+    Serial.print("Bytes available for reading: "); Serial.println(Serial4.available());
+    Serial.print("packing data: ");
     // fill up the transmit array with C50 data
-    for (uint8_t byte = 0; byte < sizeof(xbee_payload); byte++){
-      xbee_payload[byte] = Serial4.read();
-      Serial.print(xbee_payload[byte], HEX); Serial.print(" ");
+    // for (uint8_t byte = 0; byte < sizeof(xbee_payload); byte++){
+    //   xbee_payload[byte] = Serial4.read();
+    //   Serial.print(xbee_payload[byte], HEX); Serial.print(" ");
+    // }
+    while (Serial4.available() && current_byte < sizeof(xbee_payload) - 1){
+      xbee_payload[current_byte] = Serial4.read();
+      Serial.print(xbee_payload[current_byte], HEX); Serial.print(" ");
+      current_byte++;
     }
-    Serial.println("\n");
 
-    // create a transmission request with the new payload
-    ZBExplicitTxRequest zbTx = ZBExplicitTxRequest(addr64, xbee_payload, sizeof(xbee_payload));
+    if (current_byte >= sizeof(xbee_payload)){
+      Serial.println("\n");
 
-    // send the message
-    xbee.send(zbTx);
-    //xbee.send(telemetry_tx_rq);
+      // create a transmission request with the new payload
+      ZBExplicitTxRequest zbTx = ZBExplicitTxRequest(addr64, xbee_payload, sizeof(xbee_payload));
 
-    // xbee.send returns void, so we'll assume that it send okay lololol
-    return true;
+      // send the message
+      xbee.send(zbTx);
+      //xbee.send(telemetry_tx_rq);
+
+      current_byte = 0;
+
+      // xbee.send returns void, so we'll assume that it send okay lololol
+      return true;
+    }
+
   }
 
   return false;
