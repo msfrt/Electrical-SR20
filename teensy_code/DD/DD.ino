@@ -38,6 +38,8 @@ const int pixels_top_cnt = 16; // number of LEDs
 const int pixels_left_cnt = 4;
 const int pixels_right_cnt = 4;
       int pixel_brightness_percent = 5; // 0 - 100; 100 is blinding... 4 is the minimum for all LED bar colors to work
+const int pixel_brightness_nighttime = 1;
+const int pixel_brightness_daytime = 10;
 
 Adafruit_NeoPixel pixels_top =   Adafruit_NeoPixel(pixels_top_cnt,   pixels_top_pin,   NEO_GRB + NEO_KHZ800);
 Adafruit_NeoPixel pixels_left =  Adafruit_NeoPixel(pixels_left_cnt,  pixels_left_pin,  NEO_GRB + NEO_KHZ800);
@@ -65,6 +67,10 @@ Adafruit_NeoPixel pixels_right = Adafruit_NeoPixel(pixels_right_cnt, pixels_righ
 
 const int DISPLAY_HEIGHT = 240;
 const int DISPLAY_WIDTH = 320;
+
+// used for light-sensor dimming
+const int display_brightness_percent_nighttime = 75;
+const int display_brightness_percent_daytime = 100;
 
 
 ILI9341_t3n display_left = ILI9341_t3n(TFTL_CS, TFTL_DC, TFTL_RST);
@@ -109,6 +115,11 @@ int screen_mode = 1;
 
 // lap timer screen
 #include "lap_timer.hpp"
+
+// brightness sensor reading and mapping function
+#include "light_sensor.hpp"
+EasyTimer light_sensor_sample_timer(100);
+const int light_sensor_pin = 20;
 
 
 char rpm_form[] = "%04.1f";
@@ -235,6 +246,32 @@ void loop() {
   // read CAN buses
   read_can1();
   read_can2();
+
+  // determine display and pixel brightness
+  if (light_sensor_sample_timer.isup()){
+    static int brightness_factor;
+    brightness_factor = brightness_sensor(light_sensor_pin, READ_RESOLUTION_BITS);
+
+    // if there was an update to the brightness
+    if (brightness_factor > -1){
+
+      pixel_brightness_percent = map(brightness_factor, 0, 100, pixel_brightness_nighttime, pixel_brightness_daytime);
+      display_left_brightness_percent = map(brightness_factor, 0, 100, display_brightness_percent_nighttime, display_brightness_percent_daytime);
+      display_right_brightness_percent = map(brightness_factor, 0, 100, display_brightness_percent_nighttime, display_brightness_percent_daytime);
+
+      Serial.println(display_left_brightness_percent);
+      Serial.println(pixel_brightness_percent);
+      Serial.println(map(display_left_brightness_percent, 0, 100, 0, 255));
+      Serial.println(map(pixel_brightness_percent, 0, 100, 0, 255));
+
+      // update brightness
+      analogWrite(TFTL_BL, map(display_left_brightness_percent, 0, 100, 0, 255));
+      analogWrite(TFTR_BL, map(display_right_brightness_percent, 0, 100, 0, 255));
+      pixels_top.setBrightness(map(pixel_brightness_percent, 0, 100, 0, 255));
+      pixels_left.setBrightness(map(pixel_brightness_percent, 0, 100, 0, 255));
+      pixels_right.setBrightness(map(pixel_brightness_percent, 0, 100, 0, 255));
+    }
+  }
 
   // check the laptrigger for a timeout
   TCGPS_laptrigger.timeout_check();
