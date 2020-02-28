@@ -114,7 +114,8 @@ void setup() {
   pixel.begin();
   pixel.show();
 
-
+  // run the GPS initilization sequence
+  gps();
 
 
 }
@@ -212,11 +213,11 @@ bool telemetry_send(){
   }
 
   if (current_byte == sizeof(xbee_payload)){
-    Serial.print("Sending: ");
-    for (int i = 0; i < sizeof(xbee_payload) - 1; i++){
-      Serial.print(xbee_payload[i]); Serial.print(" ");
-    }
-    Serial.println("");
+    // Serial.print("Sending: ");
+    // for (size_t i = 0; i < sizeof(xbee_payload) - 1; i++){
+    //   Serial.print(xbee_payload[i]); Serial.print(" ");
+    // }
+    // Serial.println("");
 
     // create a transmission request with the new payload
     ZBExplicitTxRequest zbTx = ZBExplicitTxRequest(addr64, xbee_payload, sizeof(xbee_payload));
@@ -230,8 +231,6 @@ bool telemetry_send(){
     // xbee.send returns void, so we'll assume that it send okay lololol
     return true;
   }
-
-
   return false;
 
 }
@@ -240,23 +239,26 @@ bool telemetry_send(){
 
 
 
-// ron's telem code --------------------------------------------------------
+void gps(){
 
-// //Read from C50 and send to XBee
-// if((Serial1.available() > 0) && (digitalRead(CTS) == LOW)){
-//   // Fill bits up to 224 (Position 223)
-//   if(counter <223){ // n-1 bytes of Payload[] array
-//     payload[counter] = Serial1.read();
-//     counter++;
-//   }
-//   else{ //when counter is 223
-//     payload[counter] = Serial1.read();
-//
-//     // Create new Transmission Request with newly finished payload
-//     ZBExplicitTxRequest zbTx = ZBExplicitTxRequest(addr64,payload,sizeof(payload));
-//
-//     // Send Transmition
-//     xbee.send(zbTx);
-//     counter = 0;
-//   }
-// }
+  pixel.setPixelColor(0, 255, 0, 0); pixel.show(); // pixel red
+
+  Serial2.begin(9600);
+  delay(2000);
+
+  pixel.setPixelColor(0, 255, 255, 0); pixel.show(); // pixel yeller
+  Serial2.write(set_gps_fast_serial_cmd);
+  delay(500);
+  Serial1.end();
+
+  delay(1000);
+  Serial2.begin(115200);
+  delay(500);
+  Serial2.write(set_gps_fast_update_cmd);
+
+  pixel.setPixelColor(0, 0, 255, 0); pixel.show(); // pixel green
+
+  delay(500);
+  Serial2.end();
+  // END - GPS initialization-------------
+}

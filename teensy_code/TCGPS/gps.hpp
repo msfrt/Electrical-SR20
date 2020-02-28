@@ -1,8 +1,8 @@
 #ifndef GPS_SUPPORT_CODE
 #define GPD_SUPPORT_CODE
 
-bool gps(){
-  // GPS initialization ------------------
+void gps(){
+
   pixel.setPixelColor(0, 255, 0, 0); pixel.show(); // pixel red
 
   Serial2.begin(9600);
