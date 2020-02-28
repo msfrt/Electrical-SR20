@@ -17,9 +17,6 @@ FlexCAN_T4<CAN2, RX_SIZE_256, TX_SIZE_16> cbus2;
 
 #include "can_send.hpp"
 
-#include "lap_trigger.hpp"
-
-
 // board temp setup
 #define READ_RESOLUTION_BITS 12
 const int board_temp_pin = 19;
@@ -72,8 +69,18 @@ XBeeAddress64 addr64 = XBeeAddress64(0x00000000,0x0000FFFF);
 // Used to create a variable to hold the payload (in explicit mode)
 ZBExplicitTxRequest telemetry_tx_rq = ZBExplicitTxRequest(addr64, xbee_payload, sizeof(xbee_payload));
 
-// empty (for now). Will be used for lap trigger
-ZBExplicitRxResponse rx = ZBExplicitRxResponse();
+// incoming messages from the Xbee
+ZBExplicitRxResponse xbee_rx = ZBExplicitRxResponse();
+
+// for safety, only trigger a lap if this string was recieved:
+char laptrigger_rx_key[] = "SR20";
+
+// laptrigger support functions
+#include "lap_trigger.hpp"
+
+// will continue to send laptrigger signals for this duration after a signal is recieved
+unsigned long trigger_send_duration_ms = 200;
+unsigned long trigger_send_until;
 
 
 void setup() {
@@ -107,28 +114,9 @@ void setup() {
   pixel.begin();
   pixel.show();
 
+  // run the GPS initilization sequence
+  gps();
 
-  // GPS initialization ------------------
-  pixel.setPixelColor(0, 255, 0, 0); pixel.show(); // pixel red
-
-  Serial2.begin(9600);
-  delay(2000);
-
-  pixel.setPixelColor(0, 255, 255, 0); pixel.show(); // pixel yeller
-  Serial2.write(set_gps_fast_serial_cmd);
-  delay(500);
-  Serial1.end();
-
-  delay(1000);
-  Serial2.begin(115200);
-  delay(500);
-  Serial2.write(set_gps_fast_update_cmd);
-
-  pixel.setPixelColor(0, 0, 255, 0); pixel.show(); // pixel green
-
-  delay(500);
-  Serial2.end();
-  // END - GPS initialization-------------
 
 }
 
@@ -155,6 +143,20 @@ void loop() {
   // send can messages
   send_can1();
   send_can2();
+
+  // attempt to read a lap trigger
+  if (laptrigger_read()){
+    TCGPS_laptrigger = 100;
+    send_TCGPS_11(); // a.k.a. the lap trigger message
+
+    trigger_send_until = millis() + trigger_send_duration_ms;
+
+  } else if (millis() <= trigger_send_until){
+    // do nothing
+
+  } else {
+    TCGPS_laptrigger = 0;
+  }
 
   // send telemetry shenanigans
   telemetry_send();
@@ -201,18 +203,21 @@ EasyTimer sendtimer(10);
 
 // reads in data from the C50 serial input, packages it for the XBee, and then transmits to the XBee module
 bool telemetry_send(){
+  static unsigned int current_byte = 0;
 
-  // if there is data from the C50 and the Xbee is able to recieve data
-  if (Serial4.available() && digitalRead(xbee_cts_pin) == LOW){
+  while (Serial4.available() && (current_byte < sizeof(xbee_payload))){
+    xbee_payload[current_byte] = Serial4.read();
+    //Serial.print(xbee_payload[current_byte], HEX); Serial.print(" ");
+    current_byte++;
+    //Serial.print("current_byte: "); Serial.println(current_byte);
+  }
 
-    Serial.print("sending data: ");
-
-    // fill up the transmit array with C50 data
-    for (uint8_t byte = 0; byte < sizeof(xbee_payload); byte++){
-      xbee_payload[byte] = Serial4.read();
-      Serial.print(xbee_payload[byte], HEX); Serial.print(" ");
-    }
-    Serial.println("\n");
+  if (current_byte == sizeof(xbee_payload)){
+    // Serial.print("Sending: ");
+    // for (size_t i = 0; i < sizeof(xbee_payload) - 1; i++){
+    //   Serial.print(xbee_payload[i]); Serial.print(" ");
+    // }
+    // Serial.println("");
 
     // create a transmission request with the new payload
     ZBExplicitTxRequest zbTx = ZBExplicitTxRequest(addr64, xbee_payload, sizeof(xbee_payload));
@@ -221,33 +226,39 @@ bool telemetry_send(){
     xbee.send(zbTx);
     //xbee.send(telemetry_tx_rq);
 
+    current_byte = 0;
+
     // xbee.send returns void, so we'll assume that it send okay lololol
     return true;
   }
-
   return false;
 
 }
 
 
 
-// ron's telem code --------------------------------------------------------
 
-// //Read from C50 and send to XBee
-// if((Serial1.available() > 0) && (digitalRead(CTS) == LOW)){
-//   // Fill bits up to 224 (Position 223)
-//   if(counter <223){ // n-1 bytes of Payload[] array
-//     payload[counter] = Serial1.read();
-//     counter++;
-//   }
-//   else{ //when counter is 223
-//     payload[counter] = Serial1.read();
-//
-//     // Create new Transmission Request with newly finished payload
-//     ZBExplicitTxRequest zbTx = ZBExplicitTxRequest(addr64,payload,sizeof(payload));
-//
-//     // Send Transmition
-//     xbee.send(zbTx);
-//     counter = 0;
-//   }
-// }
+
+void gps(){
+
+  pixel.setPixelColor(0, 255, 0, 0); pixel.show(); // pixel red
+
+  Serial2.begin(9600);
+  delay(2000);
+
+  pixel.setPixelColor(0, 255, 255, 0); pixel.show(); // pixel yeller
+  Serial2.write(set_gps_fast_serial_cmd);
+  delay(500);
+  Serial1.end();
+
+  delay(1000);
+  Serial2.begin(115200);
+  delay(500);
+  Serial2.write(set_gps_fast_update_cmd);
+
+  pixel.setPixelColor(0, 0, 255, 0); pixel.show(); // pixel green
+
+  delay(500);
+  Serial2.end();
+  // END - GPS initialization-------------
+}

@@ -97,11 +97,19 @@ bool obd_oil_pressure_acceptence(StateSignal &oil_pressure, StateSignal &rpm){
   // check if the sensors are valid in the first place.
   if (!oil_pressure.is_valid() || !rpm.is_valid()){
     OBDFLAG_oil_pressure = 0;
+    good_until_time = millis() + OBDPARAM_oil_pressure_dip_time_ms;
+    return true;
+
+  // the engine's not even on
+  } else if (GLO_engine_state != 2){
+    OBDFLAG_oil_pressure = 0;
+    good_until_time = millis() + OBDPARAM_oil_pressure_dip_time_ms;
     return true;
 
   // if the rpm is not above the minimum, we assume the oil pressure is good
   } else if (M400_rpm.value() < OBDPARAM_oil_pressure_min_rpm){
     OBDFLAG_oil_pressure = 0;
+    good_until_time = millis() + OBDPARAM_oil_pressure_dip_time_ms;
     return true;
   }
 
@@ -240,8 +248,8 @@ bool obd_fuel_pressure_checker(StateSignal &fuelp){
   }
 
 
-  // check to see if the car is not cranking/running
-  if (!(GLO_engine_state == 1 || GLO_engine_state == 2)){
+  // check to see if the car is not running
+  if (GLO_engine_state != 2){
     OBDFLAG_fuel_pressure = 0;
     return true;
   }

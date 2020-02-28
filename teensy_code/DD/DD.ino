@@ -236,6 +236,9 @@ void loop() {
   read_can1();
   read_can2();
 
+  // check the laptrigger for a timeout
+  TCGPS_laptrigger.timeout_check();
+
   // board temp sampling shenanigans
   if (board_temp_sample_timer.isup())
     board_temp.sample();
@@ -245,7 +248,7 @@ void loop() {
 
   // if button 1 was pressed changed the led mode
   if (check_button(button2_pin, button2_time)){
-    if (++led_mode > 3){ // upper bound
+    if (++led_mode > 2){ // upper bound
       led_mode = 1;
     }
   }
@@ -318,22 +321,7 @@ void loop() {
     pixels_left.show();
     pixels_right.show();
 
-  // gradient RPM bar
   } else if (led_mode == 2){
-
-    rpm_bar_gradient(pixels_top, M400_rpm, M400_gear);
-    engine_cut_bar(pixels_left,  M400_tcPowerReduction);
-    engine_cut_bar(pixels_right, M400_tcPowerReduction);
-
-    // these two are unused
-    pixels_left.setPixelColor(0, 0, 0, 0);
-    pixels_right.setPixelColor(0, 0, 0, 0);
-
-    pixels_top.show();
-    pixels_left.show();
-    pixels_right.show();
-
-  } else if (led_mode == 3){
     party_bar(pixels_top, pixels_left, pixels_right);
 
   // tell the driver to come in
@@ -357,7 +345,7 @@ void loop() {
   if (info_screen_update_timer.isup()){
     static bool lap_timer_on = false; // used to determine if we need to run initilizations after lap screen turns off
 
-    if (lap_timer_screen(display_left, display_right, M400_gear, prev_lap_times, prev_lap_times_diff, prev_lap_numbers)
+    if (lap_timer_screen(display_left, display_right, TCGPS_laptrigger, prev_lap_times, prev_lap_times_diff, prev_lap_numbers)
         || warning_message_display.show()){
       lap_timer_on = true;
 
