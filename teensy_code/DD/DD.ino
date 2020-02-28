@@ -288,6 +288,11 @@ void loop() {
                static_cast<int>(USER_driverSignal.value()) == 1){
       led_mode = 10;
 
+    // go back to default LED mode
+    } else if (static_cast<int>(PDM_driverDisplayLEDs.value()) == 0 ||
+               static_cast<int>(USER_driverSignal.value()) == 0){
+      led_mode = 1;
+
     }
   }
 
