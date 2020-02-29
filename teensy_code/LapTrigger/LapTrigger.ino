@@ -54,11 +54,11 @@ Adafruit_ST7735 tft = Adafruit_ST7735(TFT_CS, TFT_DC, TFT_MOSI, TFT_SCK, TFT_RST
 #define GRN    0x07E0
 #define CYAN   0x07FF
 #define MAG    0xF81F
-#define YLW    0xFFE0 
+#define YLW    0xFFE0
 #define WHT    0xFFFF
 
 //Button Pins
-#define logPin 23
+#define photoGateSignalPin 23
 
 unsigned long lastTime;
 float lapTime = 0.0;
@@ -79,23 +79,23 @@ void setup() {
   Serial.begin(115200);
   Serial1.begin(115200);
   xbee.setSerial(Serial1);
-  
+
   pinMode(TFT_SD_CS,OUTPUT);
   pinMode(TFT_CS,OUTPUT);
   SD.begin(TFT_SD_CS);
   bool fileEval = true;
-  
+
   for(int i=0; fileEval == true; i++){
-    
+
     //Create New File Name
     String nameString = "Data"+String(i)+".csv";
-    
+
     //Convert File Name to Character Array for SD Functions
     char fileName[nameString.length()+1];
     nameString.toCharArray(fileName,nameString.length()+1);
 
     Serial.println(fileName);
-    
+
     //Test For Files And Set Up Headers
     if (!SD.exists(fileName)){
       Data = SD.open(fileName,FILE_WRITE);        // Create File
@@ -108,17 +108,17 @@ void setup() {
       fileEval = true;
     }
   }
-  
+
   //Initialize the LCD Screen
   tft.initR(INITR_BLACKTAB);
-  
+
   //IN/OUT for pins
-  pinMode(logPin,INPUT);
+  pinMode(photoGateSignalPin,INPUT);
   pinMode(TFT_LITE,OUTPUT);
-  
+
   //Turn on screen
   digitalWrite(TFT_LITE, HIGH);
-  
+
   //Set time variables
   lastTime = millis();
   printTime = micros();
@@ -131,33 +131,33 @@ void setup() {
   tft.drawLine(0,30,159,30,GRN);
   tft.drawXBitmap(130,1,FSAE_bits,28,28,GRN); //FSAE Logo
 
-  
+
 }
 
 void loop() {
-  if((digitalRead(logPin) == LOW) && (lapNotReset == true)){
+  if((digitalRead(photoGateSignalPin) == LOW) && (lapNotReset == true)){
     lapNotReset = false;
   }
-  if((digitalRead(logPin) == HIGH) && (lapNotReset != true)){
+  if((digitalRead(photoGateSignalPin) == HIGH) && (lapNotReset != true)){
     Serial.println(lapTime);
     lastTime = millis();
     lapNotReset = true;
-    
+
     //String for sending to XBee
-    
+
     //Sending Lap Info as string
     //String lapInfo ="Lap " + String(lapNum) + ": "+ String(lapTime) + "\n";
     //Serial.print(lapInfo);
 
     //Sending Constant for Lap Trigger
     sendMsg("SR20",broadcast);
-    
+
     //Keyboard.begin();
-    
+
     SD.begin(TFT_SD_CS);
     //Create File Name
     String nameString = "Data"+String(fileNumber)+".csv";
-  
+
     //Convert File Name to Character Array for SD Functions
     char fileName[nameString.length()+1];
     nameString.toCharArray(fileName,nameString.length()+1);
@@ -187,7 +187,7 @@ void loop() {
     }
     int pushTime = millis();
 
-    
+
     /*
     //Use Keyboard to print to file
     Keyboard.print(laps[0],3);
@@ -197,27 +197,27 @@ void loop() {
     Data.print( "1 \n"); //String(lapNum) + "," + String(laps[0],3)
     Data.flush();
     */
-    
-   
+
+
     Serial.print("Done!");
-    
+
     lapNum++;
 
-    
+
 
     //Delay button Press
-    while((millis() - pushTime) <500){     
+    while((millis() - pushTime) <500){
     }
   }
-  
+
   lapTime = (float)(millis() - lastTime) / 1000.0;
-  
+
   if((micros() - printTime) > 10000){
     //Set Text Settings for Current Time
     tft.setTextSize(3);
     tft.setCursor(2,2);
     tft.print(lapTime,3);
-    
+
     //Clocking
     printTime = micros();
   }
@@ -243,7 +243,7 @@ void sendMsg(String str, XBeeAddress64 adrs){
   char msgChar[str.length()+1] = {0};
   str.toCharArray(msgChar,str.length()+1);
   uint8_t msg[sizeof(msgChar)]= {0};
-  
+
   for(int i=0;i<(sizeof(msg)-1);i++){
     msg[i]=msgChar[i];
   }
