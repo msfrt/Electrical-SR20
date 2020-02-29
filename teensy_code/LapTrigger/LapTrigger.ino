@@ -70,6 +70,7 @@ bool lapNotReset = true;
 
 File Data;
 int fileNumber = 0;
+String nameString = "";
 
 extern const uint8_t MSU_bits[];
 extern const uint8_t FSAE_bits[];
@@ -88,7 +89,7 @@ void setup() {
   for(int i=0; fileEval == true; i++){
 
     //Create New File Name
-    String nameString = "Data"+String(i)+".csv";
+    nameString = "Data"+String(i)+".csv";
 
     //Convert File Name to Character Array for SD Functions
     char fileName[nameString.length()+1];
@@ -101,13 +102,18 @@ void setup() {
       Data = SD.open(fileName,FILE_WRITE);        // Create File
       Data.println("Lap,Time(Sec)");              // Make Header. If file is alread created header does not need to be rewritten
       Data.close();                               // Close File
-      fileNumber = i;
+      //fileNumber = i;                           // Dont need with String defined globaly
       fileEval = false;
     }
     else{
       fileEval = true;
     }
   }
+  // Opens Up file for writing
+  openFile(nameString);
+
+  // First time stoping SD Card
+  digitalWrite(TFT_SD_CS, HIGH);
 
   //Initialize the LCD Screen
   tft.initR(INITR_BLACKTAB);
@@ -154,6 +160,7 @@ void loop() {
 
     //Keyboard.begin();
 
+    /* Unneeded code to reset SD Card
     SD.begin(TFT_SD_CS);
     //Create File Name
     String nameString = "Data"+String(fileNumber)+".csv";
@@ -164,8 +171,13 @@ void loop() {
     Data= SD.open(fileName,FILE_WRITE);
     Data.print("1");
     Data.close();
-    startScreen();
+    */
 
+    //startScreen();
+
+    // SPI Select Screen
+    digitalWrite(TFT_SD_CS, HIGH);
+    digitalWrite(TFT_CS, LOW);
     //Clear Screen on new lap
     tft.fillRect(0,37,159,127,BLK);
     tft.fillRect(0,0,129,29,BLK);
@@ -251,3 +263,32 @@ void sendMsg(String str, XBeeAddress64 adrs){
   ZBExplicitTxRequest sendOut = ZBExplicitTxRequest(adrs,msg,sizeof(msg));
   xbee.send(sendOut);
 }
+
+void openFile(String fileTitle){
+  // SPI Select SD Card
+  digitalWrite(TFT_SD_CS, LOW);
+  digitalWrite(TFT_CS, HIGH);
+
+  //Convert File Name to Character Array for SD Functions
+  char fileName[fileTitle.length()+1];
+  nameString.toCharArray(fileName,fileTitle.length()+1);
+  Data= SD.open(fileName,FILE_WRITE);
+
+  // SPI Select Screen
+  digitalWrite(TFT_SD_CS, HIGH);
+  digitalWrite(TFT_CS, LOW);
+  }
+
+  void printLap(int onLap, float timeOfLap) {
+    // SPI Select SD Card
+    digitalWrite(TFT_SD_CS, LOW);
+    digitalWrite(TFT_CS, HIGH);
+
+    String fileOutput = String(onLap) + "," + String(timeOfLap) + "\n";
+    Data.print(fileOutput);
+    Data.flush();
+
+    // SPI Select Screen
+    digitalWrite(TFT_SD_CS, HIGH);
+    digitalWrite(TFT_CS, LOW);
+  }
