@@ -27,8 +27,9 @@ EasyTimer board_temp_sample_timer(100);
 
 // photos :) - converted with http://www.rinkydinkelectronics.com/t_imageconverter565.php
 #include "lana1.c"
-#include "lana2.c"
-#include "fuck_kyle_busch.c"
+#include "lana3.c"
+#include "do-it-for-dale.c"
+#include "kyle_busch.c"
 
 // NeoPixel parameters
 const int pixels_top_pin = 3; // teensy pin #
@@ -93,6 +94,8 @@ int screen_mode = 1;
 #include "party_bar.hpp"
 #include "warning_lights.hpp"
 #include "lockup_indicator.hpp"
+
+unsigned long warning_lights_timeout_dur = 15000; // 15s
 
 // signal definitions
 #include "sigs_inside.hpp" // eventually move signal and can message definitions to shared folder, then link using the full file path
@@ -299,7 +302,7 @@ void loop() {
 
     // increment the screen
     } else {
-      if (++screen_mode > 5){ // upper bound
+      if (++screen_mode > 6){ // upper bound
         screen_mode = 1;
       }
       screen_mode_begins(screen_mode, true);
@@ -339,6 +342,8 @@ void loop() {
 
   // LED updates -------------------------------------------------------
 
+  static unsigned int last_normal_led_time = millis();
+
   if (led_mode == 1){
     rpm_bar(pixels_top, M400_rpm, M400_gear);
     engine_cut_bar(pixels_left,  M400_tcPowerReduction);
@@ -358,8 +363,11 @@ void loop() {
     pixels_left.show();
     pixels_right.show();
 
+    last_normal_led_time = millis();
+
   } else if (led_mode == 2){
     party_bar(pixels_top, pixels_left, pixels_right);
+    last_normal_led_time = millis();
 
   // tell the driver to come in
   } else if (led_mode == 10){
@@ -373,6 +381,13 @@ void loop() {
   } else if (led_mode == 12){
     full_warning_lights(pixels_top, pixels_left, pixels_right, "RED");
 
+  }
+
+
+  // test for warning LED timeout
+  if ((led_mode == 10 || led_mode == 11 || led_mode == 12) &&
+      (millis() > (last_normal_led_time + warning_lights_timeout_dur) )){
+    led_mode = 1;
   }
 
 
@@ -437,6 +452,8 @@ void loop() {
 
     }
 
+    // Modes that simply display images are not seen here, as they are only written once in screen_mode_begins
+
   }
 
 
@@ -489,7 +506,12 @@ void screen_mode_begins(int &screen_mode, bool startup_screen){
   } else if (screen_mode == 5) {
     // display lana del rey
     display_left.writeRect(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, (uint16_t*)lana1);
-    display_right.writeRect(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, (uint16_t*)lana2);
+    display_right.writeRect(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, (uint16_t*)lana3);
+
+  } else if (screen_mode == 6) {
+    // display lana del rey
+    display_left.writeRect(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, (uint16_t*)do_it_for_dale);
+    display_right.writeRect(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, (uint16_t*)kyle_busch);
   }
 }
 

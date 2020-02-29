@@ -3,7 +3,7 @@
 
 void full_warning_lights(Adafruit_NeoPixel &top, Adafruit_NeoPixel &left,
                     Adafruit_NeoPixel &right, String color, bool override = false){
-  static EasyTimer flash_timer(3);
+  static EasyTimer flash_timer(4);
   static bool leds_on(false);
   static uint8_t R = 255;
   static uint8_t G = 255;
