@@ -126,7 +126,7 @@ const int light_sensor_pin = 20;
 
 
 char rpm_form[] = "%04.1f";
-char oilp_form[] = "%03.0f";
+char oilp_form[] = "%03.1f";
 char oilt_form[] = "%03.0f";
 char engt_form[] = "%04.1f";
 InfoScreen engine_vitals_right_screen(display_right, M400_rpm, M400_oilPressure, M400_oilTemp, M400_engineTemp,
@@ -227,10 +227,13 @@ void setup() {
   // if you set it higher than 5, I have respect for your patience
   led_startup(pixels_top, pixels_left, pixels_right, 1);
 
+  // scale rpm on the engine vitals screen down by 1000
+  engine_vitals_right_screen.inv_factor_sig1 = 1000;
 
+  // starts the screens at the main info screens
   auxilary_info_left_screen.begin();
-   // scale rpm down by 1000
   engine_vitals_right_screen.begin();
+
 
   // initilize board temp
   board_temp.begin();

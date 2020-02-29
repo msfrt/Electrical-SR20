@@ -32,8 +32,8 @@ const int OBDPARAM_oil_temp_time_allowed_ms = 5000;
 EasyTimer OBDTIMER_oil_temp_check(1); // 1Hz
 
 // fuel pressure parameters
-const int OBDPARAM_fuel_pressure_min_pressure = 55;
-const int OBDPARAM_fuel_pressure_time_allowed_ms = 1000;
+const int OBDPARAM_fuel_pressure_min_pressure = 53; // psi
+const int OBDPARAM_fuel_pressure_time_allowed_ms = 3000;
 EasyTimer OBDTIMER_fuel_pressure_check(10);
 
 
