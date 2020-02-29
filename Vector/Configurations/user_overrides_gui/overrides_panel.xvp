@@ -5,7 +5,7 @@
       <Object Type="Vector.CANalyzer.Panels.Design.ButtonControl, Vector.CANalyzer.Panels.CommonControls, Version=8.2.80.0, Culture=neutral, PublicKeyToken=null" Name="ButtonControl2" Children="Controls" ControlName="Button">
         <Property Name="Name">ButtonControl2</Property>
         <Property Name="Size">83, 23</Property>
-        <Property Name="Location">136, 122</Property>
+        <Property Name="Location">283, 93</Property>
         <Property Name="Text">Send</Property>
         <Property Name="SymbolConfiguration">4;16;Vector;;;USER_sendUser11Bool;1;;;-1</Property>
         <Property Name="TabIndex">18</Property>
@@ -13,7 +13,7 @@
       <Object Type="Vector.CANalyzer.Panels.Design.TextBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=8.2.80.0, Culture=neutral, PublicKeyToken=null" Name="TextBoxControl10" Children="Controls" ControlName="Input/Output Box 3">
         <Property Name="Name">TextBoxControl10</Property>
         <Property Name="Size">100, 29</Property>
-        <Property Name="Location">2, 127</Property>
+        <Property Name="Location">157, 96</Property>
         <Property Name="AlarmUpperTextColor">WindowText</Property>
         <Property Name="ValueDecimalPlaces">0</Property>
         <Property Name="AlarmLowerBkgColor">Salmon</Property>
@@ -32,7 +32,7 @@
       <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=8.2.80.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl11" Children="Controls" ControlName="Static Text 4">
         <Property Name="Name">StaticTextControl11</Property>
         <Property Name="Size">156, 81</Property>
-        <Property Name="Location">3, 22</Property>
+        <Property Name="Location">4, 27</Property>
         <Property Name="Text">Driver Display LED color codes:
 
 0: Default
@@ -41,8 +41,8 @@
 3: Blink red</Property>
       </Object>
       <Property Name="Name">GroupBoxControl4</Property>
-      <Property Name="Size">230, 179</Property>
-      <Property Name="Location">394, 432</Property>
+      <Property Name="Size">380, 135</Property>
+      <Property Name="Location">635, 294</Property>
       <Property Name="Text">USER_11</Property>
       <Property Name="TabIndex">9</Property>
     </Object>
@@ -55,165 +55,13 @@
 side of the text/HEX box. This will automatically populate the char&lt;n&gt; values
 when you click the send button.</Property>
       </Object>
-      <Object Type="Vector.CANalyzer.Panels.Design.TextBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=8.2.80.0, Culture=neutral, PublicKeyToken=null" Name="TextBoxControl6" Children="Controls" ControlName="Input/Output Box 2">
-        <Property Name="Name">TextBoxControl6</Property>
-        <Property Name="Size">79, 29</Property>
-        <Property Name="Location">287, 116</Property>
-        <Property Name="AlarmUpperTextColor">WindowText</Property>
-        <Property Name="ValueDecimalPlaces">0</Property>
-        <Property Name="AlarmLowerBkgColor">Salmon</Property>
-        <Property Name="ValueDisplay">Hexadecimal</Property>
-        <Property Name="AlarmUpperBkgColor">IndianRed</Property>
-        <Property Name="AlarmLowerTextColor">WindowText</Property>
-        <Property Name="AlarmUpperFont">Microsoft Sans Serif, 8.142858pt</Property>
-        <Property Name="AlarmGeneralSettings">1;2;0;255</Property>
-        <Property Name="DisplayLabel">Left</Property>
-        <Property Name="DescriptionText">Char7</Property>
-        <Property Name="AlarmLowerFont">Microsoft Sans Serif, 8.142858pt</Property>
-        <Property Name="DescriptionSize">33, 16</Property>
-        <Property Name="SymbolConfiguration">4;16;Vector;;;USER_ddMessageCh7;1;;;-1</Property>
-        <Property Name="TabIndex">16</Property>
-      </Object>
-      <Object Type="Vector.CANalyzer.Panels.Design.TextBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=8.2.80.0, Culture=neutral, PublicKeyToken=null" Name="TextBoxControl7" Children="Controls" ControlName="Input/Output Box 2">
-        <Property Name="Name">TextBoxControl7</Property>
-        <Property Name="Size">79, 29</Property>
-        <Property Name="Location">196, 116</Property>
-        <Property Name="AlarmUpperTextColor">WindowText</Property>
-        <Property Name="ValueDecimalPlaces">0</Property>
-        <Property Name="AlarmLowerBkgColor">Salmon</Property>
-        <Property Name="ValueDisplay">Hexadecimal</Property>
-        <Property Name="AlarmUpperBkgColor">IndianRed</Property>
-        <Property Name="AlarmLowerTextColor">WindowText</Property>
-        <Property Name="AlarmUpperFont">Microsoft Sans Serif, 8.142858pt</Property>
-        <Property Name="AlarmGeneralSettings">1;2;0;255</Property>
-        <Property Name="DisplayLabel">Left</Property>
-        <Property Name="DescriptionText">Char6</Property>
-        <Property Name="AlarmLowerFont">Microsoft Sans Serif, 8.142858pt</Property>
-        <Property Name="DescriptionSize">33, 16</Property>
-        <Property Name="SymbolConfiguration">4;16;Vector;;;USER_ddMessageCh6;1;;;-1</Property>
-        <Property Name="TabIndex">15</Property>
-      </Object>
-      <Object Type="Vector.CANalyzer.Panels.Design.TextBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=8.2.80.0, Culture=neutral, PublicKeyToken=null" Name="TextBoxControl8" Children="Controls" ControlName="Input/Output Box 2">
-        <Property Name="Name">TextBoxControl8</Property>
-        <Property Name="Size">79, 29</Property>
-        <Property Name="Location">100, 116</Property>
-        <Property Name="AlarmUpperTextColor">WindowText</Property>
-        <Property Name="ValueDecimalPlaces">0</Property>
-        <Property Name="AlarmLowerBkgColor">Salmon</Property>
-        <Property Name="ValueDisplay">Hexadecimal</Property>
-        <Property Name="AlarmUpperBkgColor">IndianRed</Property>
-        <Property Name="AlarmLowerTextColor">WindowText</Property>
-        <Property Name="AlarmUpperFont">Microsoft Sans Serif, 8.142858pt</Property>
-        <Property Name="AlarmGeneralSettings">1;2;0;255</Property>
-        <Property Name="DisplayLabel">Left</Property>
-        <Property Name="DescriptionText">Char5</Property>
-        <Property Name="AlarmLowerFont">Microsoft Sans Serif, 8.142858pt</Property>
-        <Property Name="DescriptionSize">33, 16</Property>
-        <Property Name="SymbolConfiguration">4;16;Vector;;;USER_ddMessageCh5;1;;;-1</Property>
-        <Property Name="TabIndex">14</Property>
-      </Object>
-      <Object Type="Vector.CANalyzer.Panels.Design.TextBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=8.2.80.0, Culture=neutral, PublicKeyToken=null" Name="TextBoxControl9" Children="Controls" ControlName="Input/Output Box 2">
-        <Property Name="Name">TextBoxControl9</Property>
-        <Property Name="Size">79, 29</Property>
-        <Property Name="Location">4, 116</Property>
-        <Property Name="AlarmUpperTextColor">WindowText</Property>
-        <Property Name="ValueDecimalPlaces">0</Property>
-        <Property Name="AlarmLowerBkgColor">Salmon</Property>
-        <Property Name="ValueDisplay">Hexadecimal</Property>
-        <Property Name="AlarmUpperBkgColor">IndianRed</Property>
-        <Property Name="AlarmLowerTextColor">WindowText</Property>
-        <Property Name="AlarmUpperFont">Microsoft Sans Serif, 8.142858pt</Property>
-        <Property Name="AlarmGeneralSettings">1;2;0;255</Property>
-        <Property Name="DisplayLabel">Left</Property>
-        <Property Name="DescriptionText">Char4</Property>
-        <Property Name="AlarmLowerFont">Microsoft Sans Serif, 8.142858pt</Property>
-        <Property Name="DescriptionSize">33, 16</Property>
-        <Property Name="SymbolConfiguration">4;16;Vector;;;USER_ddMessageCh4;1;;;-1</Property>
-        <Property Name="TabIndex">13</Property>
-      </Object>
-      <Object Type="Vector.CANalyzer.Panels.Design.TextBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=8.2.80.0, Culture=neutral, PublicKeyToken=null" Name="TextBoxControl4" Children="Controls" ControlName="Input/Output Box 2">
-        <Property Name="Name">TextBoxControl4</Property>
-        <Property Name="Size">79, 29</Property>
-        <Property Name="Location">287, 97</Property>
-        <Property Name="AlarmUpperTextColor">WindowText</Property>
-        <Property Name="ValueDecimalPlaces">0</Property>
-        <Property Name="AlarmLowerBkgColor">Salmon</Property>
-        <Property Name="ValueDisplay">Hexadecimal</Property>
-        <Property Name="AlarmUpperBkgColor">IndianRed</Property>
-        <Property Name="AlarmLowerTextColor">WindowText</Property>
-        <Property Name="AlarmUpperFont">Microsoft Sans Serif, 8.142858pt</Property>
-        <Property Name="AlarmGeneralSettings">1;2;0;255</Property>
-        <Property Name="DisplayLabel">Left</Property>
-        <Property Name="DescriptionText">Char3</Property>
-        <Property Name="AlarmLowerFont">Microsoft Sans Serif, 8.142858pt</Property>
-        <Property Name="DescriptionSize">33, 16</Property>
-        <Property Name="SymbolConfiguration">4;16;Vector;;;USER_ddMessageCh3;1;;;-1</Property>
-        <Property Name="TabIndex">12</Property>
-      </Object>
-      <Object Type="Vector.CANalyzer.Panels.Design.TextBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=8.2.80.0, Culture=neutral, PublicKeyToken=null" Name="TextBoxControl5" Children="Controls" ControlName="Input/Output Box 2">
-        <Property Name="Name">TextBoxControl5</Property>
-        <Property Name="Size">79, 29</Property>
-        <Property Name="Location">196, 97</Property>
-        <Property Name="AlarmUpperTextColor">WindowText</Property>
-        <Property Name="ValueDecimalPlaces">0</Property>
-        <Property Name="AlarmLowerBkgColor">Salmon</Property>
-        <Property Name="ValueDisplay">Hexadecimal</Property>
-        <Property Name="AlarmUpperBkgColor">IndianRed</Property>
-        <Property Name="AlarmLowerTextColor">WindowText</Property>
-        <Property Name="AlarmUpperFont">Microsoft Sans Serif, 8.142858pt</Property>
-        <Property Name="AlarmGeneralSettings">1;2;0;255</Property>
-        <Property Name="DisplayLabel">Left</Property>
-        <Property Name="DescriptionText">Char2</Property>
-        <Property Name="AlarmLowerFont">Microsoft Sans Serif, 8.142858pt</Property>
-        <Property Name="DescriptionSize">33, 16</Property>
-        <Property Name="SymbolConfiguration">4;16;Vector;;;USER_ddMessageCh2;1;;;-1</Property>
-        <Property Name="TabIndex">11</Property>
-      </Object>
       <Object Type="Vector.CANalyzer.Panels.Design.ButtonControl, Vector.CANalyzer.Panels.CommonControls, Version=8.2.80.0, Culture=neutral, PublicKeyToken=null" Name="ButtonControl1" Children="Controls" ControlName="Button">
         <Property Name="Name">ButtonControl1</Property>
         <Property Name="Size">83, 23</Property>
-        <Property Name="Location">283, 144</Property>
+        <Property Name="Location">283, 125</Property>
         <Property Name="Text">Send</Property>
         <Property Name="SymbolConfiguration">4;16;Vector;;;USER_sendUser12Bool;1;;;-1</Property>
         <Property Name="TabIndex">8</Property>
-      </Object>
-      <Object Type="Vector.CANalyzer.Panels.Design.TextBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=8.2.80.0, Culture=neutral, PublicKeyToken=null" Name="TextBoxControl3" Children="Controls" ControlName="Input/Output Box 2">
-        <Property Name="Name">TextBoxControl3</Property>
-        <Property Name="Size">79, 29</Property>
-        <Property Name="Location">100, 97</Property>
-        <Property Name="AlarmUpperTextColor">WindowText</Property>
-        <Property Name="ValueDecimalPlaces">0</Property>
-        <Property Name="AlarmLowerBkgColor">Salmon</Property>
-        <Property Name="ValueDisplay">Hexadecimal</Property>
-        <Property Name="AlarmUpperBkgColor">IndianRed</Property>
-        <Property Name="AlarmLowerTextColor">WindowText</Property>
-        <Property Name="AlarmUpperFont">Microsoft Sans Serif, 8.142858pt</Property>
-        <Property Name="AlarmGeneralSettings">1;2;0;255</Property>
-        <Property Name="DisplayLabel">Left</Property>
-        <Property Name="DescriptionText">Char1</Property>
-        <Property Name="AlarmLowerFont">Microsoft Sans Serif, 8.142858pt</Property>
-        <Property Name="DescriptionSize">33, 16</Property>
-        <Property Name="SymbolConfiguration">4;16;Vector;;;USER_ddMessageCh1;1;;;-1</Property>
-        <Property Name="TabIndex">10</Property>
-      </Object>
-      <Object Type="Vector.CANalyzer.Panels.Design.TextBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=8.2.80.0, Culture=neutral, PublicKeyToken=null" Name="TextBoxControl2" Children="Controls" ControlName="Input/Output Box 2">
-        <Property Name="Name">TextBoxControl2</Property>
-        <Property Name="Size">79, 29</Property>
-        <Property Name="Location">4, 97</Property>
-        <Property Name="AlarmUpperTextColor">WindowText</Property>
-        <Property Name="ValueDecimalPlaces">0</Property>
-        <Property Name="AlarmLowerBkgColor">Salmon</Property>
-        <Property Name="ValueDisplay">Hexadecimal</Property>
-        <Property Name="AlarmUpperBkgColor">IndianRed</Property>
-        <Property Name="AlarmLowerTextColor">WindowText</Property>
-        <Property Name="AlarmUpperFont">Microsoft Sans Serif, 8.142858pt</Property>
-        <Property Name="AlarmGeneralSettings">1;2;0;255</Property>
-        <Property Name="DisplayLabel">Left</Property>
-        <Property Name="DescriptionText">Char0</Property>
-        <Property Name="AlarmLowerFont">Microsoft Sans Serif, 8.142858pt</Property>
-        <Property Name="DescriptionSize">33, 16</Property>
-        <Property Name="SymbolConfiguration">4;16;Vector;;;USER_ddMessageCh0;1;;;-1</Property>
-        <Property Name="TabIndex">9</Property>
       </Object>
       <Object Type="Vector.CANalyzer.Panels.Design.HexEditorControl, Vector.CANalyzer.Panels.CommonControls, Version=8.2.80.0, Culture=neutral, PublicKeyToken=null" Name="HexEditorControl1" Children="Controls" ControlName="Hex/Text Editor">
         <Property Name="Name">HexEditorControl1</Property>
@@ -225,14 +73,14 @@ when you click the send button.</Property>
         <Property Name="TabIndex">7</Property>
       </Object>
       <Property Name="Name">GroupBoxControl3</Property>
-      <Property Name="Size">380, 179</Property>
-      <Property Name="Location">2, 432</Property>
+      <Property Name="Size">380, 168</Property>
+      <Property Name="Location">635, 121</Property>
       <Property Name="Text">USER_12</Property>
       <Property Name="TabIndex">8</Property>
     </Object>
     <Object Type="Vector.CANalyzer.Panels.Design.StartStopControl, Vector.CANalyzer.Panels.CommonControls, Version=8.2.80.0, Culture=neutral, PublicKeyToken=null" Name="StartStopControl1" Children="Controls" ControlName="Start Stop Control">
       <Property Name="Name">StartStopControl1</Property>
-      <Property Name="Size">33, 16</Property>
+      <Property Name="Size">18, 9</Property>
       <Property Name="Location">320, 83</Property>
       <Property Name="TabIndex">6</Property>
     </Object>
@@ -441,7 +289,7 @@ when you click the send button.</Property>
     <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=8.2.80.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl1" Children="Controls" ControlName="Static Text">
       <Property Name="Name">StaticTextControl1</Property>
       <Property Name="Size">285, 27</Property>
-      <Property Name="Location">2, 76</Property>
+      <Property Name="Location">2, 80</Property>
       <Property Name="Font">Microsoft Sans Serif, 9pt</Property>
       <Property Name="Text">SR-20 User Overrides Panel
 Dave Yonkers, 2020</Property>
@@ -453,6 +301,6 @@ Dave Yonkers, 2020</Property>
       <Property Name="ImageFile">logo.png</Property>
     </Object>
     <Property Name="Name">Panel</Property>
-    <Property Name="Size">655, 650</Property>
+    <Property Name="Size">1118, 650</Property>
   </Object>
 </Panel>
