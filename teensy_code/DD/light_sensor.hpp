@@ -8,7 +8,7 @@ int brightness_sensor(const int &pin, const int analog_read_bits){
   static unsigned int max_read_val = pow(2, analog_read_bits) - 1; // maximum analogRead possible
   static unsigned long running_total = 0;
   static unsigned long running_sample_count = 0;
-  static unsigned long sample_count_max = 200; // number of samples before calculating a value
+  static unsigned long sample_count_max = 500; // number of samples before calculating a value
   static unsigned long uC_millivoltage = 3300;
   static float mvoltage = 0.0;
   static int last_calcd_value = 100;

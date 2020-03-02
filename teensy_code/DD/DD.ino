@@ -253,6 +253,13 @@ void loop() {
   read_can1();
   read_can2();
 
+  // determine the gear
+  determine_gear(M400_rpm, M400_groundSpeed, M400_gear);
+
+  // determine if it's party time (if the car has been off for X minutes)
+  determine_if_party_time(M400_rpm, led_mode);
+
+
   // determine display and pixel brightness
   if (light_sensor_sample_timer.isup()){
     static int brightness_factor;
@@ -583,4 +590,45 @@ void set_mailboxes(){
   cbus2.setMB(MB29,RX,EXT);
   cbus2.setMB(MB30,RX,EXT);
   cbus2.setMB(MB31,RX,EXT);
+}
+
+
+// temporarily used to determine what gear we are in for the driver display shift lights
+int determine_gear(StateSignal &rpm, StateSignal &speed, StateSignal &gear){
+
+  // set the gear signal to non-valid
+  gear.set_validity(false);
+
+  // if rpm is decently high and the car is moving, we'll say that we're at least in gear 1
+  if ((rpm.value() >= 1500) && (speed.value() >= 5)){
+    gear.set_secondary_value(1);
+    return 1;
+  } else {
+    gear.set_secondary_value(0);
+    return 0;
+  }
+
+}
+
+
+
+bool determine_if_party_time(StateSignal &rpm, int &led_mode){
+  static unsigned long party_time_timeout = 300000; // 300k millisconds = 5minutes
+  static unsigned long normal_until_time = millis() + party_time_timeout;
+  static bool party_time = false;
+
+  // if the rpm is greater than 0, really, then they were at least cranking or somthing
+  if (rpm.value() > 10){
+    normal_until_time = millis() + party_time_timeout;
+    party_time = false;
+
+  } else if (millis() > normal_until_time){
+    if (party_time == false){
+      party_time = true;
+      led_mode = 2;
+    }
+  }
+
+  return party_time;
+
 }

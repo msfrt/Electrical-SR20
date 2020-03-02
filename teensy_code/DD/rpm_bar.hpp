@@ -39,7 +39,7 @@ int led_pwm(int &total_pwm){
 // sets the rpm bar to the desired output. Returns a boolean true if the driver should shift
 bool rpm_bar(Adafruit_NeoPixel &top, StateSignal &rpm, StateSignal &gear){
 
-  static const int idle_rpm = 2000;
+  static const int idle_rpm = 2500;
   static const int idle_rev_limit_rpm = 8000;
   static const int rev_limit_rpm = 14000;
 
