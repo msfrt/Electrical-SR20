@@ -40,7 +40,7 @@ const int pixels_left_cnt = 4;
 const int pixels_right_cnt = 4;
       int pixel_brightness_percent = 5; // 0 - 100; 100 is blinding... 4 is the minimum for all LED bar colors to work
 const int pixel_brightness_nighttime = 1;
-const int pixel_brightness_daytime = 50;
+const int pixel_brightness_daytime = 55;
 
 Adafruit_NeoPixel pixels_top =   Adafruit_NeoPixel(pixels_top_cnt,   pixels_top_pin,   NEO_GRB + NEO_KHZ800);
 Adafruit_NeoPixel pixels_left =  Adafruit_NeoPixel(pixels_left_cnt,  pixels_left_pin,  NEO_GRB + NEO_KHZ800);
