@@ -40,6 +40,11 @@ BO_ 3221225472 VECTOR__INDEPENDENT_SIG_MSG: 0 Vector__XXX
  SG_ PDM_driverDisplayMessage : 0|64@1+ (1,0) [0|1.84467440737096E+019] "char" Vector__XXX
  SG_ ATCCR_counterMsg465 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
 
+BO_ 259 PDM_09: 8 Vector__XXX
+ SG_ PDM_OBD_oilTemp : 2|1@1+ (1,0) [0|0] "bool" Vector__XXX
+ SG_ PDM_OBD_oilPressure : 1|1@1+ (1,0) [0|0] "bool" Vector__XXX
+ SG_ PDM_OBD_fuelPressure : 0|1@1+ (1,0) [0|0] "bool" Vector__XXX
+
 BO_ 275 PDM_25: 8 Vector__XXX
  SG_ PDM_engineMinutes : 48|16@1- (1,0) [-32768|32767] "Minutes" Vector__XXX
  SG_ PDM_engineHours : 32|16@1- (1,0) [-32768|32767] "Hours" Vector__XXX
@@ -180,6 +185,7 @@ BO_ 262 PDM_12: 8 PDM
  SG_ PDM_fanRightCurrentAvg : 16|16@1- (0.01,0) [-327.68|327.67] "A" Vector__XXX
 
 BO_ 260 PDM_10: 8 PDM
+ SG_ PDM_dataLog : 7|1@1+ (1,0) [0|1] "bool" Vector__XXX
  SG_ PDM_pdmCurrentMin : 48|16@1- (0.01,0) [-327.68|327.67] "A" Vector__XXX
  SG_ PDM_pdmCurrentMax : 32|16@1- (0.01,0) [-327.68|327.67] "A" Vector__XXX
  SG_ PDM_pdmCurrentAvg : 16|16@1- (0.01,0) [-327.68|327.67] "A" Vector__XXX
@@ -249,6 +255,10 @@ BO_ 410 ATCCF_10: 8 ATCCF
 CM_ BO_ 3221225472 "This is a message for not used signals, created by Vector CANdb++ DBC OLE DB Provider.";
 CM_ SG_ 3221225472 PDM_driverDisplayMessage "8 character message sent to the driver display and shown to the driver";
 CM_ SG_ 3221225472 ATCCR_counterMsg465 "Counter for Message 465";
+CM_ BO_ 259 "OBD flags";
+CM_ SG_ 259 PDM_OBD_oilTemp "OBD";
+CM_ SG_ 259 PDM_OBD_oilPressure "OBD";
+CM_ SG_ 259 PDM_OBD_fuelPressure "OBD";
 CM_ SG_ 275 PDM_engineMinutes "Fuel Current Maximum";
 CM_ SG_ 275 PDM_engineHours "Fuel Current Maximum";
 CM_ SG_ 275 PDM_carMiles "Fuel Current Maximum";
