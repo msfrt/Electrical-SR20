@@ -41,9 +41,9 @@ BO_ 3221225472 VECTOR__INDEPENDENT_SIG_MSG: 0 Vector__XXX
  SG_ ATCCR_counterMsg465 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
 
 BO_ 259 PDM_09: 8 Vector__XXX
- SG_ PDM_OBD_oilTemp : 2|1@1+ (1,0) [0|0] "bool" Vector__XXX
- SG_ PDM_OBD_oilPressure : 1|1@1+ (1,0) [0|0] "bool" Vector__XXX
- SG_ PDM_OBD_fuelPressure : 0|1@1+ (1,0) [0|0] "bool" Vector__XXX
+ SG_ PDM_OBD_oilTemp : 8|1@1+ (1,0) [0|0] "bool" Vector__XXX
+ SG_ PDM_OBD_oilPressure : 0|1@1+ (1,0) [0|0] "bool" Vector__XXX
+ SG_ PDM_OBD_fuelPressure : 16|1@1+ (1,0) [0|0] "bool" Vector__XXX
 
 BO_ 275 PDM_25: 8 Vector__XXX
  SG_ PDM_engineMinutes : 48|16@1- (1,0) [-32768|32767] "Minutes" Vector__XXX
