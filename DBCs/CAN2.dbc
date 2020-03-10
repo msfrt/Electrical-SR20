@@ -41,6 +41,7 @@ BO_ 3221225472 VECTOR__INDEPENDENT_SIG_MSG: 0 Vector__XXX
  SG_ ATCCR_counterMsg465 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
 
 BO_ 259 PDM_09: 8 Vector__XXX
+ SG_ PDM_engineState : 56|8@1- (1,0) [0|3] "int" Vector__XXX
  SG_ PDM_OBD_oilTemp : 8|1@1+ (1,0) [0|0] "bool" Vector__XXX
  SG_ PDM_OBD_oilPressure : 0|1@1+ (1,0) [0|0] "bool" Vector__XXX
  SG_ PDM_OBD_fuelPressure : 16|1@1+ (1,0) [0|0] "bool" Vector__XXX
@@ -256,6 +257,10 @@ CM_ BO_ 3221225472 "This is a message for not used signals, created by Vector CA
 CM_ SG_ 3221225472 PDM_driverDisplayMessage "8 character message sent to the driver display and shown to the driver";
 CM_ SG_ 3221225472 ATCCR_counterMsg465 "Counter for Message 465";
 CM_ BO_ 259 "OBD flags";
+CM_ SG_ 259 PDM_engineState "0 = off
+1 = cranking
+2 = on
+3 = cooldown";
 CM_ SG_ 259 PDM_OBD_oilTemp "OBD";
 CM_ SG_ 259 PDM_OBD_oilPressure "OBD";
 CM_ SG_ 259 PDM_OBD_fuelPressure "OBD";
