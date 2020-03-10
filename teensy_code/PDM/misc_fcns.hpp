@@ -19,6 +19,7 @@ void engine_timer(EEPROM_Value<T1> &hours, EEPROM_Value<T2> &minutes){
     // minutes AND hours have changed
     if (eeprom.read(minutes) >= 59){
       hours = eeprom.read(hours) + 1;
+
       minutes = 0;
       eeprom.write(hours);
       eeprom.write(minutes);
@@ -132,6 +133,25 @@ bool brakelight(){
     digitalWrite(GLO_brakelight_teensy_pin, LOW);
     return false;
   }
+}
+
+
+bool determine_logging_state(int &engine_state, const unsigned long &timeout_dur){
+  static unsigned long log_until_time;
+  static bool log_bool = 0;
+
+  if (engine_state == 1 || engine_state == 2 || engine_state == 3){
+    log_until_time = millis() + timeout_dur;
+  }
+
+  // set le bool
+  if (millis() < log_until_time){
+    log_bool = 1;
+  } else {
+    log_bool = 0;
+  }
+
+  return log_bool;
 }
 
 

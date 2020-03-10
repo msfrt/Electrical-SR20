@@ -6,12 +6,37 @@
 #include <BoardTemp.h>
 #include "sigs_inside.hpp"
 
+// external definitions
+extern int OBDFLAG_oil_pressure;
+extern int OBDFLAG_oil_temp;
+extern int OBDFLAG_fuel_pressure;
+
 FlexCAN_T4<CAN1, RX_SIZE_256, TX_SIZE_16> cbus1;
 FlexCAN_T4<CAN2, RX_SIZE_256, TX_SIZE_16> cbus2;
 
 static CAN_message_t msg;
 
 // send message definitions
+
+// look at PDM 10 for structure
+void send_PDM_09(){
+  static StateCounter ctr;
+
+  msg.id = 259;
+  msg.len = 8;
+
+  msg.buf[0] = OBDFLAG_oil_pressure;
+  msg.buf[1] = OBDFLAG_oil_temp;
+  msg.buf[2] = OBDFLAG_fuel_pressure;
+  msg.buf[3] = 0;
+  msg.buf[4] = 0;
+  msg.buf[5] = 0;
+  msg.buf[6] = 0;
+  msg.buf[7] = 0;
+
+  cbus2.write(msg);
+}
+
 
 
 void send_PDM_10(){
@@ -30,7 +55,7 @@ void send_PDM_10(){
   PDM_pdmCurrentMin = pdm_current_sens.min();
 
   // load up the message buffer
-  msg.buf[0] = ctr.value();
+  msg.buf[0] = ctr.value() | GLO_data_log_bool << 7;
   msg.buf[1] = 0;
   msg.buf[2] = PDM_pdmCurrentAvg.can_value();
   msg.buf[3] = PDM_pdmCurrentAvg.can_value() >> 8;
@@ -361,6 +386,10 @@ void send_PDM_25(){
   msg.id = 275;
   msg.len = 8;
 
+  eeprom.read(eeprom_engine_hours);
+  eeprom.read(eeprom_engine_minutes);
+  eeprom.read(eeprom_mileage);
+
   msg.buf[0] = ctr.value();
   msg.buf[1] = 0;
   msg.buf[2] = eeprom_mileage.value();
@@ -379,6 +408,11 @@ void send_can1(){
 }
 
 void send_can2(){
+
+  static EasyTimer PDM_09_timer(10); // 10Hz
+  if (PDM_09_timer.isup()){
+    send_PDM_09();
+  }
 
   static EasyTimer PDM_10_timer(100); // 100Hz
   if (PDM_10_timer.isup()){

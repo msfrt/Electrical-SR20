@@ -37,6 +37,10 @@ const int GLO_data_circuit_teensy_pin = 5;
 const int GLO_NeoPixel_teensy_pin = 2;
       int GLO_NeoPixel_brightness_percent = 10; // 0 - 100 %
 
+// booloean used in the C50 to determine if we should be logging
+bool GLO_data_log_bool = 0;
+const unsigned long data_log_timeout_ms = 5000; // time to log after engine and cooldown mode has stopped
+
 Adafruit_NeoPixel GLO_obd_neopixel(1, GLO_NeoPixel_teensy_pin, NEO_GRB + NEO_KHZ800);
 
 //BoardTemp(int pin, int read_bits, int temp_cal, int mv_cal);
@@ -164,12 +168,16 @@ void loop() {
   fan_right.set_pwm(GLO_engine_state);
   water_pump.set_pwm(GLO_engine_state);
 
+  // determine if we need to log right now
+  GLO_data_log_bool = determine_logging_state(GLO_engine_state, GLO_engine_cooldown_duration);
+
   // continously run OBD (individual timers are included)
   obd_main();
 
   // engine timer update
-  if (engine_time_update_timer.isup())
+  if (engine_time_update_timer.isup()){
     engine_timer(eeprom_engine_hours, eeprom_engine_minutes);
+  }
 
   // odometer update
   if (odometer_update_timer.isup())
@@ -180,7 +188,9 @@ void loop() {
   send_can2();
 
   if (debug.isup()){
-    //cbus2.mailboxStatus();
+    Serial.println();
+    Serial.println(eeprom_engine_hours.value());
+    Serial.println(eeprom_engine_minutes.value());
   }
 }
 
