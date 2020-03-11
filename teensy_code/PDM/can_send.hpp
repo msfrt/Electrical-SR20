@@ -386,9 +386,9 @@ void send_PDM_25(){
   msg.id = 275;
   msg.len = 8;
 
-  eeprom.read(eeprom_engine_hours);
-  eeprom.read(eeprom_engine_minutes);
-  eeprom.read(eeprom_mileage);
+  // eeprom.read(eeprom_engine_hours);
+  // eeprom.read(eeprom_engine_minutes);
+  // eeprom.read(eeprom_mileage);
 
   msg.buf[0] = ctr.value();
   msg.buf[1] = 0;
