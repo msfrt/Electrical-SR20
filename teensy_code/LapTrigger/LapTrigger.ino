@@ -29,6 +29,7 @@
 XBee xbee = XBee();
 XBeeAddress64 addr64 = XBeeAddress64(0x0013A200,0x40E3AC05);
 XBeeAddress64 broadcast = XBeeAddress64(0x00000000,0x0000FFFF);
+ZBTxStatusResponse check = ZBTxStatusResponse();
 
 //TFT Display Board Pins
 #define TFT_SCK 13
@@ -262,6 +263,17 @@ void sendMsg(String str, XBeeAddress64 adrs){
   //Create Packet to Send Out
   ZBExplicitTxRequest sendOut = ZBExplicitTxRequest(adrs,msg,sizeof(msg));
   xbee.send(sendOut);
+  xbee.readPacketUntilAvailable();
+  if (xbee.getResponse().getApiId() == TX_STATUS_RESPONSE){
+    xbee.getResponse().getTxStatusResponse(check);
+    Serial.println("Status: ");
+    if(check.getDeliveryStatus() == SUCCESS){
+      Serial.print("Success");
+    }
+  else {
+      Serial.print(check.getDeliveryStatus());
+    }
+  }
 }
 
 void openFile(String fileTitle){
