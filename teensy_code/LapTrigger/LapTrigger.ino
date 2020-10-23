@@ -27,7 +27,7 @@
 
 //XBee Serial Setup
 XBee xbee = XBee();
-XBeeAddress64 addr64 = XBeeAddress64(0x0013A200,0x40E3AC05);
+XBeeAddress64 addr64 = XBeeAddress64(0x0013A200,0x4154D778);
 XBeeAddress64 broadcast = XBeeAddress64(0x00000000,0x0000FFFF);
 ZBTxStatusResponse check = ZBTxStatusResponse();
 
@@ -157,7 +157,7 @@ void loop() {
     //Serial.print(lapInfo);
 
     //Sending Constant for Lap Trigger
-    sendMsg("SR20",broadcast);
+    sendMsg("SR20",addr64);
 
     //Keyboard.begin();
 
@@ -212,7 +212,7 @@ void loop() {
     */
 
 
-    Serial.print("Done!");
+    Serial.println("Done!");
 
     lapNum++;
 
@@ -263,16 +263,26 @@ void sendMsg(String str, XBeeAddress64 adrs){
   //Create Packet to Send Out
   ZBExplicitTxRequest sendOut = ZBExplicitTxRequest(adrs,msg,sizeof(msg));
   xbee.send(sendOut);
+  xbee.readPacket();
   xbee.readPacketUntilAvailable();
-  if (xbee.getResponse().getApiId() == TX_STATUS_RESPONSE){
-    xbee.getResponse().getTxStatusResponse(check);
-    Serial.println("Status: ");
+  Serial.println(xbee.getResponse().getApiId(),HEX);
+  if (xbee.getResponse().getApiId() == ZB_TX_STATUS_RESPONSE){
+    xbee.getResponse().getZBTxStatusResponse(check);
+    Serial.print("Status: ");
     if(check.getDeliveryStatus() == SUCCESS){
-      Serial.print("Success");
+      Serial.println(check.getDeliveryStatus(),HEX);
     }
-  else {
-      Serial.print(check.getDeliveryStatus());
+    else {
+      Serial.println(check.getDeliveryStatus(),HEX);
     }
+  }
+  if(xbee.getResponse().isAvailable()){
+      Serial.println(xbee.getResponse().getApiId(),HEX);
+      xbee.getResponse().getTxStatusResponse(check);
+      Serial.println(check.getDeliveryStatus(),HEX);
+  }
+  else{
+   Serial.println("No Other Transmissions");
   }
 }
 
