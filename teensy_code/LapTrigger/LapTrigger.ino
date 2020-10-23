@@ -157,7 +157,7 @@ void loop() {
     //Serial.print(lapInfo);
 
     //Sending Constant for Lap Trigger
-    sendMsg("SR20",addr64);
+    sendMsg("SR20",addr64); //cannot use broadcast for error checking
 
     //Keyboard.begin();
 
@@ -273,16 +273,17 @@ void sendMsg(String str, XBeeAddress64 adrs){
       Serial.println(check.getDeliveryStatus(),HEX);
     }
     else {
-      Serial.println(check.getDeliveryStatus(),HEX);
+      for(int i=0; (i<10 && check.getDeliveryStatus() != SUCCESS);i++){
+        xbee.send(sendOut);
+        xbee.readPacket();
+        xbee.readPacketUntilAvailable();
+        xbee.getResponse().getZBTxStatusResponse(check);
+        Serial.print("Check ");
+        Serial.print(i+1);
+        Serial.print(": ");
+        Serial.println(check.getDeliveryStatus(),HEX);
+      }
     }
-  }
-  if(xbee.getResponse().isAvailable()){
-      Serial.println(xbee.getResponse().getApiId(),HEX);
-      xbee.getResponse().getTxStatusResponse(check);
-      Serial.println(check.getDeliveryStatus(),HEX);
-  }
-  else{
-   Serial.println("No Other Transmissions");
   }
 }
 
