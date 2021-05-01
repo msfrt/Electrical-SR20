@@ -1,4 +1,4 @@
-#include <EasyTimer.h>
+ #include <EasyTimer.h>
 #include <PWMControl.h>
 #include <ReadADC.h>
 #include <StateCAN.h>
@@ -32,19 +32,15 @@ void setup() {
   // initialize SPI communication
   SPI.begin();
 
-  switch (ATCCMS) {
-    case 0:
-      initialize_ADCs_F();
-      break;
-    case 1:
-      initialize_ADCs_R();
-      break;
-  }
+  //initialize ADCs
+  initialize_ADCs();
+
 }
 
 
 void loop() {
-  switch (ATCCMS) {
+  switch (ATCCMS)
+  {
     case 0:
       sample_ADCs_F();
       send_can_F();
