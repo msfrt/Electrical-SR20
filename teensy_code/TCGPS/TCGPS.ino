@@ -5,6 +5,7 @@
 #include <EasyTimer.h>
 #include <BoardTemp.h>
 #include <EepromHelper.h>
+#include <Printers.h>
 #include <XBee.h>
 
 // can bus decleration
