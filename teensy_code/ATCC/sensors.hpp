@@ -52,6 +52,19 @@ ADCSensor brake_temp_rr_sens(7, 500, 5);
 ADCSensor brake_temp_rl_sens(4, 500, 5);
 
 
+float voltage_to_NTC_M12_H_temp(float v){
+
+  // calculated from the excel document.
+  // fifth order because we don't really care about extrapolation here.
+  return -0.8982 * pow(v, 5) +
+          11.970 * pow(v, 4) -
+          61.647 * pow(v, 3) +
+          153.57 * pow(v, 2) -
+          209.75 * pow(v, 1) +
+          187.96;
+}
+
+
 void initialize_ADCs()
 {
   adc1.begin();
