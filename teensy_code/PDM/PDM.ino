@@ -18,6 +18,7 @@
 // global variable definition
 int GLO_engine_state = 0; // engine state (no need to change this variable)
 const int GLO_read_resolution_bits = 12; // bits for Teensy-based read resolution
+const int GLO_max_analog_write_pwm = 255; // maximum PWN value
 
 // minimum voltage for the engine to be in "cranking" mode
 const int GLO_cranking_starter_volt_threshold = 5;
@@ -131,6 +132,8 @@ void setup() { //high 18 low 26
   pinMode(GLO_data_circuit_teensy_pin, OUTPUT);
   // turn the data circuit on
   digitalWrite(GLO_data_circuit_teensy_pin, HIGH);
+  // initialize brakelight pin
+  pinMode(GLO_brakelight_teensy_pin, OUTPUT);
 
   // EEPROM
   eeprom.begin();
@@ -143,6 +146,9 @@ void setup() { //high 18 low 26
 
   // board temp initialization
   board_temp.begin();
+
+  // neat brakelight animation
+  brakelight_startup();
 
 }
 
@@ -160,7 +166,8 @@ void loop() {
   read_can2();
 
   // run the brakelight
-  brakelight();
+  brakelight_run();
+  
 
   // determine engine state and control PWM outputs
   determine_engine_state(GLO_engine_state);
@@ -285,3 +292,8 @@ void set_mailboxes(){
   cbus1.setMB(MB18,RX,EXT);
   cbus1.setMB(MB19,RX,EXT);
 }
+
+
+
+
+

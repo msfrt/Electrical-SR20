@@ -114,27 +114,6 @@ int &determine_engine_state(int &engine_state){
 
 
 
-bool brakelight(){
-  static const int max_bl_pwm = pow(2, GLO_read_resolution_bits) - 1;
-
-  // user override present
-  if (USER_brakeLightOverride.value() >= 0 && USER_brakeLightOverride.value() <= 100){
-    analogWrite(GLO_brakelight_teensy_pin, map(USER_brakeLightOverride.value(), 0, 100, 0, max_bl_pwm));
-    return true;
-
-  // brake-pressure exceeds minimum activation pressure
-  } else if (ATCCF_brakePressureF.value() >= GLO_brakelight_min_pressure_F ||
-      ATCCF_brakePressureR.value() >= GLO_brakelight_min_pressure_R){
-    digitalWrite(GLO_brakelight_teensy_pin, HIGH);
-    return true;
-
-  // turn that shit off :)
-  } else {
-    digitalWrite(GLO_brakelight_teensy_pin, LOW);
-    return false;
-  }
-}
-
 
 bool determine_logging_state(int &engine_state, const unsigned long &timeout_dur){
   static unsigned long log_until_time;
@@ -156,9 +135,51 @@ bool determine_logging_state(int &engine_state, const unsigned long &timeout_dur
 
 
 
+bool brakelight_run(){
+
+  // user override present
+  if (USER_brakeLightOverride.value() >= 0 && USER_brakeLightOverride.value() <= 100){
+
+    analogWrite(GLO_brakelight_teensy_pin, map(USER_brakeLightOverride.value(), 0, 100, 0, GLO_max_analog_write_pwm));
+    return true;
+
+  // brake-pressure exceeds minimum activation pressure
+  } else if (ATCCF_brakePressureF.value() >= GLO_brakelight_min_pressure_F ||
+      ATCCF_brakePressureR.value() >= GLO_brakelight_min_pressure_R){
+    analogWrite(GLO_brakelight_teensy_pin, 255);
+    return true;
+
+  // turn that shit off :)
+  } else {
+    analogWrite(GLO_brakelight_teensy_pin, 0);
+    return false;
+    
+  }
+
+  return false;
+}
 
 
 
+
+void brakelight_startup(){
+  float i = 0;
+  while (i < 3.14159){
+
+    i += 0.01;
+    delay(10);
+
+    float write_val = sin(i) * 1000;  // returns a value between 0 & 1000
+    int pwm = map(write_val, 0, 1000, 0, 220);
+
+    // write to the LED
+    analogWrite(GLO_brakelight_teensy_pin, pwm);
+
+  }
+
+  analogWrite(GLO_brakelight_teensy_pin, 0);
+
+}
 
 
 #endif
