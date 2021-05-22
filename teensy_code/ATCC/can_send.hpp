@@ -28,8 +28,8 @@ void send_ATCCF_10(){
   // load up the message buffer
   msg.buf[0] = ctr.value();
   msg.buf[1] = 0;
-  msg.buf[2] = 0;
-  msg.buf[3] = 0;
+  msg.buf[2] = ATCCF_brakeBias.can_value();
+  msg.buf[3] = ATCCF_brakeBias.can_value() >> 8;
   msg.buf[4] = ATCCF_suspensionTravelFL.can_value();
   msg.buf[5] = ATCCF_suspensionTravelFL.can_value() >> 8;
   msg.buf[6] = ATCCF_suspensionTravelFR.can_value();
@@ -67,6 +67,7 @@ void send_ATCCF_12(){
   msg.id = 412;
   msg.len = 8;
 
+  //ATCCF_coolantTempRadMiddle = coolant_temp_mid_sens.avg();
   ATCCF_coolantTempRadMiddle = voltage_to_NTC_M12_H_temp(coolant_temp_mid_sens.avg());
   ATCCF_rotorTempFL = brake_temp_fl_sens.avg();
   ATCCF_rotorTempFR = brake_temp_fr_sens.avg();

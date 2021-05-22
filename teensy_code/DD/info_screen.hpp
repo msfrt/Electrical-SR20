@@ -8,6 +8,11 @@
 #include "font_LiberationMonoBold.h"
 #include "font_LiberationMonoBoldItalic.h"
 
+
+// green lines that separate signals on the info displays (may look buggy upon refresh)
+#define SHOW_SIGNAL_SEPERATOR_LINES false
+
+
 struct InfoScreen {
 
   ILI9341_t3n &screen;
@@ -117,7 +122,8 @@ void InfoScreen::begin(){
   display_left.setFont(LiberationMono_40_Bold);
   this->screen.fillScreen(ILI9341_BLACK);
   this->print_labels();
-  this->print_lines();
+  if (SHOW_SIGNAL_SEPERATOR_LINES)
+    this->print_lines();
   this->update(true);
 }
 
@@ -147,7 +153,7 @@ void InfoScreen::print_lines(){
 }
 
 void InfoScreen::print_labels(){
-  screen.setTextColor(this->text_color_default);
+  screen.setTextColor(this->text_color_default, this->text_background_default);
   screen.setTextWrap(false);
   screen.setFont(LiberationMono_40_Bold);
 

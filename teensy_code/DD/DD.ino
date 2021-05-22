@@ -95,7 +95,7 @@ int screen_mode = 1;
 #include "warning_lights.hpp"
 #include "lockup_indicator.hpp"
 
-unsigned long warning_lights_timeout_dur = 15000; // 15s
+unsigned long warning_lights_timeout_dur = 5000; // 15s
 
 // signal definitions
 #include "sigs_inside.hpp" // eventually move signal and can message definitions to shared folder, then link using the full file path
@@ -255,9 +255,6 @@ void loop() {
 
   // determine the gear
   determine_gear(M400_rpm, M400_groundSpeed, M400_gear);
-
-  // determine if it's party time (if the car has been off for X minutes)
-  determine_if_party_time(M400_rpm, led_mode);
 
 
   // determine display and pixel brightness
@@ -611,7 +608,7 @@ int determine_gear(StateSignal &rpm, StateSignal &speed, StateSignal &gear){
 }
 
 
-
+// there is a bug in this function somewhere. it turns to a party when driving sometimes
 bool determine_if_party_time(StateSignal &rpm, int &led_mode){
   static unsigned long party_time_timeout = 300000; // 300k millisconds = 5minutes
   static unsigned long normal_until_time = millis() + party_time_timeout;
@@ -632,3 +629,4 @@ bool determine_if_party_time(StateSignal &rpm, int &led_mode){
   return party_time;
 
 }
+

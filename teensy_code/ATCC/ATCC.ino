@@ -17,6 +17,10 @@ const int ATCCMS = 0;
 // can message definitions
 #include "can_send.hpp"
 
+// brake bias calculation for front ATCC
+#include "bias_calc.hpp"
+
+
 void setup() {
 
   // Initialize serial communication
@@ -44,6 +48,7 @@ void loop() {
     case 0:
       sample_ADCs_F();
       send_can_F();
+      calculate_brake_bias(ATCCF_brakePressureF, ATCCF_brakePressureR, ATCCF_brakeBias);
       break;
     case 1:
       sample_ADCs_R();

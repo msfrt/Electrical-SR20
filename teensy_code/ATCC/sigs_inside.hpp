@@ -10,6 +10,7 @@
 StateSignal ATCCF_boardTemp(16, true, 10, 0, -3276, 3276, 0);
 StateSignal ATCCF_brakePressureF(16, true, 10, 0, -3276, 3276, 0);
 StateSignal ATCCF_brakePressureR(16, true, 10, 0, -3276, 3276, 0); //Is this correct in the .dbc
+StateSignal ATCCF_brakeBias(16, true, 10, 0, -3276, 3276, 0);
 
 StateSignal ATCCF_coolantTempRadMiddle(16, true, 10, 0, -3276, 3276, 0);
 
