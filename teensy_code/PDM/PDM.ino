@@ -86,6 +86,7 @@ EasyTimer odometer_update_timer(2);
 
 // timer that you can use to print things out for debugging
 EasyTimer debug(1);
+const bool GLO_debug = false;
 
 
 
@@ -194,7 +195,7 @@ void loop() {
   send_can1();
   send_can2();
 
-  if (debug.isup()){
+  if (GLO_debug && debug.isup()){
     Serial.println();
     Serial.println(eeprom_engine_hours.value());
     Serial.println(eeprom_engine_minutes.value());
