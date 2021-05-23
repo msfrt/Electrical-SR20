@@ -32,7 +32,7 @@ void send_PDM_09(){
   msg.buf[4] = 0;
   msg.buf[5] = 0;
   msg.buf[6] = 0;
-  msg.buf[7] = 0;
+  msg.buf[7] = GLO_engine_state & 0b11111111;
 
   cbus2.write(msg);
 }

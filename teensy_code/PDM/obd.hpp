@@ -21,7 +21,7 @@ EasyTimer OBDTIMER_user_override_timout_check_timer(2); // 2Hz
 
 // Oil pressure parameters
 const int OBDPARAM_oil_pressure_min_rpm = 2500;   // only check for oil issues above this rpm
-const int OBDPARAM_oil_pressure_dip_time_ms = 5000;   // time allowed below minimum pressure before raising a flag
+const int OBDPARAM_oil_pressure_dip_time_ms = 3000;   // time allowed below minimum pressure before raising a flag
 const int OBDPARAM_oil_pressure_min_percent_allowed = 70;  // percent of predicted oil pressure before it is determined bad
 EasyTimer OBDTIMER_oil_pressure_check_timer(10);
 
@@ -46,7 +46,6 @@ void obd_leds();
 
 // this is where you should put your diagnistic checks. Each check should be enclosed in their own timer.
 void obd_main(){
-
 
 
   // user override time-outs
@@ -121,7 +120,7 @@ bool obd_oil_pressure_acceptence(StateSignal &oil_pressure, StateSignal &rpm){
   // current oil pressure is acceptable
   if ((oil_pressure.value() * 100) / predicted_pressure >= OBDPARAM_oil_pressure_min_percent_allowed){
     oil_pressure_good = true;
-    OBDFLAG_oil_pressure = 1;
+    OBDFLAG_oil_pressure = 0;
     good_until_time = millis() + OBDPARAM_oil_pressure_dip_time_ms;
 
 
@@ -186,7 +185,7 @@ bool obd_oil_temp_checker(StateSignal &oiltemp){
   // current oil temp is acceptable
   if (oiltemp.value() < OBDPARAM_oil_temp_max_temp){
     oil_temp_good = true;
-    OBDFLAG_oil_temp = 1;
+    OBDFLAG_oil_temp = 0;
     good_until_time = millis() + OBDPARAM_oil_temp_time_allowed_ms;
 
 
@@ -248,21 +247,21 @@ bool obd_fuel_pressure_checker(StateSignal &fuelp){
   }
 
 
-  // check to see if the car is not running
+  // if the car is not running, do not worry about fuel pressure
   if (GLO_engine_state != 2){
     OBDFLAG_fuel_pressure = 0;
     return true;
   }
 
 
-  // current oil temp is acceptable
+  // current fuel pressure is acceptable
   if (fuelp.value() > OBDPARAM_fuel_pressure_min_pressure){
     fuelp_good = true;
-    OBDFLAG_fuel_pressure= 1;
+    OBDFLAG_fuel_pressure = 0;
     good_until_time = millis() + OBDPARAM_fuel_pressure_time_allowed_ms;
 
 
-  // current oil temp is unacceptable
+  // current fuel pressure is unacceptable
   } else {
     fuelp_good = false;
 
