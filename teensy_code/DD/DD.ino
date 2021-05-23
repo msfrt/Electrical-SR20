@@ -26,10 +26,8 @@ EasyTimer board_temp_sample_timer(100);
 #include "font_LiberationMonoBoldItalic.h"
 
 // photos :) - converted with http://www.rinkydinkelectronics.com/t_imageconverter565.php
-#include "lana1.c"
-#include "lana3.c"
-#include "do-it-for-dale.c"
-#include "kyle_busch.c"
+#include "titans1.c"
+#include "titans2.c"
 
 // NeoPixel parameters
 const int pixels_top_pin = 3; // teensy pin #
@@ -300,7 +298,7 @@ void loop() {
     }
   }
 
-  // if button 2 was pressed change the screen mode and run the required initilizations
+  // if button 2 was pressed change the screen mode and run the required initializations
   if (check_button(button1_pin, button1_time)){
 
     // check to see if there's a message displayed. If so, simply turn it off. Otherwise, increment the screen
@@ -309,7 +307,7 @@ void loop() {
 
     // increment the screen
     } else {
-      if (++screen_mode > 6){ // upper bound
+      if (++screen_mode > 5){ // upper bound
         screen_mode = 1;
       }
       screen_mode_begins(screen_mode, true);
@@ -511,14 +509,14 @@ void screen_mode_begins(int &screen_mode, bool startup_screen){
     lap_time_display_right.begin(startup_screen);
 
   } else if (screen_mode == 5) {
-    // display lana del rey
-    display_left.writeRect(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, (uint16_t*)lana1);
-    display_right.writeRect(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, (uint16_t*)lana3);
+    // display titans
+    display_left.writeRect(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, (uint16_t*)titans1);
+    display_right.writeRect(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, (uint16_t*)titans2);
 
   } else if (screen_mode == 6) {
-    // display lana del rey
-    display_left.writeRect(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, (uint16_t*)do_it_for_dale);
-    display_right.writeRect(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, (uint16_t*)kyle_busch);
+    // display titans
+    display_left.writeRect(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, (uint16_t*)titans1);
+    display_right.writeRect(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, (uint16_t*)titans2);
   }
 }
 
