@@ -21,7 +21,7 @@ EasyTimer OBDTIMER_user_override_timout_check_timer(2); // 2Hz
 
 // Oil pressure parameters
 const int OBDPARAM_oil_pressure_min_rpm = 2500;   // only check for oil issues above this rpm
-const int OBDPARAM_oil_pressure_dip_time_ms = 5000;   // time allowed below minimum pressure before raising a flag
+const int OBDPARAM_oil_pressure_dip_time_ms = 3000;   // time allowed below minimum pressure before raising a flag
 const int OBDPARAM_oil_pressure_min_percent_allowed = 70;  // percent of predicted oil pressure before it is determined bad
 EasyTimer OBDTIMER_oil_pressure_check_timer(10);
 
@@ -37,6 +37,10 @@ const int OBDPARAM_fuel_pressure_time_allowed_ms = 3000;
 EasyTimer OBDTIMER_fuel_pressure_check(10);
 
 
+// notify the driver of OBD issues
+const bool OBDPARAM_notify_driver_warning = false;
+const bool OBDPARAM_notify_driver_critical = false;
+
 
 // forward references
 bool obd_oil_pressure_acceptence(StateSignal&, StateSignal&);
@@ -46,7 +50,6 @@ void obd_leds();
 
 // this is where you should put your diagnistic checks. Each check should be enclosed in their own timer.
 void obd_main(){
-
 
 
   // user override time-outs
@@ -121,7 +124,7 @@ bool obd_oil_pressure_acceptence(StateSignal &oil_pressure, StateSignal &rpm){
   // current oil pressure is acceptable
   if ((oil_pressure.value() * 100) / predicted_pressure >= OBDPARAM_oil_pressure_min_percent_allowed){
     oil_pressure_good = true;
-    OBDFLAG_oil_pressure = 1;
+    OBDFLAG_oil_pressure = 0;
     good_until_time = millis() + OBDPARAM_oil_pressure_dip_time_ms;
 
 
@@ -135,32 +138,34 @@ bool obd_oil_pressure_acceptence(StateSignal &oil_pressure, StateSignal &rpm){
       OBDFLAG_oil_pressure = 1;
 
       // send messages to the driver (send 10 times because this is important and can NOT be missed buy DD)
-      for (int i = 0; i < 10; i++){
-        // PDM 31 - driver display LED
-        msg.buf[0] = 3; // LED color code RED
-        msg.buf[1] = 0;
-        msg.buf[2] = 0;
-        msg.buf[3] = 0;
-        msg.buf[4] = 0;
-        msg.buf[5] = 0;
-        msg.buf[6] = 0;
-        msg.buf[7] = 0;
-        msg.id = 281;
-        msg.len = 8;
-        cbus2.write(msg);
+      if (OBDPARAM_notify_driver_warning){
+        for (int i = 0; i < 10; i++){
+          // PDM 31 - driver display LED
+          msg.buf[0] = 3; // LED color code RED
+          msg.buf[1] = 0;
+          msg.buf[2] = 0;
+          msg.buf[3] = 0;
+          msg.buf[4] = 0;
+          msg.buf[5] = 0;
+          msg.buf[6] = 0;
+          msg.buf[7] = 0;
+          msg.id = 281;
+          msg.len = 8;
+          cbus2.write(msg);
 
-        // PDM 30 - driver message
-        msg.buf[0] = 'O';
-        msg.buf[1] = 'I';
-        msg.buf[2] = 'L';
-        msg.buf[3] = 'P';
-        msg.buf[4] = ' ';
-        msg.buf[5] = 'L';
-        msg.buf[6] = 'O';
-        msg.buf[7] = 'W';
-        msg.id = 280;
-        msg.len = 8;
-        cbus2.write(msg);
+          // PDM 30 - driver message
+          msg.buf[0] = 'O';
+          msg.buf[1] = 'I';
+          msg.buf[2] = 'L';
+          msg.buf[3] = 'P';
+          msg.buf[4] = ' ';
+          msg.buf[5] = 'L';
+          msg.buf[6] = 'O';
+          msg.buf[7] = 'W';
+          msg.id = 280;
+          msg.len = 8;
+          cbus2.write(msg);
+        }
       }
     }
   }
@@ -186,7 +191,7 @@ bool obd_oil_temp_checker(StateSignal &oiltemp){
   // current oil temp is acceptable
   if (oiltemp.value() < OBDPARAM_oil_temp_max_temp){
     oil_temp_good = true;
-    OBDFLAG_oil_temp = 1;
+    OBDFLAG_oil_temp = 0;
     good_until_time = millis() + OBDPARAM_oil_temp_time_allowed_ms;
 
 
@@ -200,32 +205,34 @@ bool obd_oil_temp_checker(StateSignal &oiltemp){
       OBDFLAG_oil_temp = 1;
 
       // send messages to the driver (send 10 times because this is important and can NOT be missed buy DD)
-      for (int i = 0; i < 10; i++){
-        // PDM 31 - driver display LED
-        msg.buf[0] = 3; // LED color code RED
-        msg.buf[1] = 0;
-        msg.buf[2] = 0;
-        msg.buf[3] = 0;
-        msg.buf[4] = 0;
-        msg.buf[5] = 0;
-        msg.buf[6] = 0;
-        msg.buf[7] = 0;
-        msg.id = 281;
-        msg.len = 8;
-        cbus2.write(msg);
+      if (OBDPARAM_notify_driver_warning){
+        for (int i = 0; i < 10; i++){
+          // PDM 31 - driver display LED
+          msg.buf[0] = 3; // LED color code RED
+          msg.buf[1] = 0;
+          msg.buf[2] = 0;
+          msg.buf[3] = 0;
+          msg.buf[4] = 0;
+          msg.buf[5] = 0;
+          msg.buf[6] = 0;
+          msg.buf[7] = 0;
+          msg.id = 281;
+          msg.len = 8;
+          cbus2.write(msg);
 
-        // PDM 30 - driver message
-        msg.buf[0] = 'O';
-        msg.buf[1] = 'I';
-        msg.buf[2] = 'L';
-        msg.buf[3] = ' ';
-        msg.buf[4] = 'H';
-        msg.buf[5] = 'O';
-        msg.buf[6] = 'T';
-        msg.buf[7] = '\0';
-        msg.id = 280;
-        msg.len = 8;
-        cbus2.write(msg);
+          // PDM 30 - driver message
+          msg.buf[0] = 'O';
+          msg.buf[1] = 'I';
+          msg.buf[2] = 'L';
+          msg.buf[3] = ' ';
+          msg.buf[4] = 'H';
+          msg.buf[5] = 'O';
+          msg.buf[6] = 'T';
+          msg.buf[7] = '\0';
+          msg.id = 280;
+          msg.len = 8;
+          cbus2.write(msg);
+        }
       }
     }
   }
@@ -248,21 +255,21 @@ bool obd_fuel_pressure_checker(StateSignal &fuelp){
   }
 
 
-  // check to see if the car is not running
+  // if the car is not running, do not worry about fuel pressure
   if (GLO_engine_state != 2){
     OBDFLAG_fuel_pressure = 0;
     return true;
   }
 
 
-  // current oil temp is acceptable
+  // current fuel pressure is acceptable
   if (fuelp.value() > OBDPARAM_fuel_pressure_min_pressure){
     fuelp_good = true;
-    OBDFLAG_fuel_pressure= 1;
+    OBDFLAG_fuel_pressure = 0;
     good_until_time = millis() + OBDPARAM_fuel_pressure_time_allowed_ms;
 
 
-  // current oil temp is unacceptable
+  // current fuel pressure is unacceptable
   } else {
     fuelp_good = false;
 
@@ -272,32 +279,34 @@ bool obd_fuel_pressure_checker(StateSignal &fuelp){
       OBDFLAG_fuel_pressure = 1;
 
       // send messages to the driver (send 10 times because this is important and can NOT be missed buy DD)
-      for (int i = 0; i < 10; i++){
-        // PDM 31 - driver display LED
-        msg.buf[0] = 2; // LED color code YELLOW
-        msg.buf[1] = 0;
-        msg.buf[2] = 0;
-        msg.buf[3] = 0;
-        msg.buf[4] = 0;
-        msg.buf[5] = 0;
-        msg.buf[6] = 0;
-        msg.buf[7] = 0;
-        msg.id = 281;
-        msg.len = 8;
-        cbus2.write(msg);
+      if (OBDPARAM_notify_driver_warning){
+        for (int i = 0; i < 10; i++){
+          // PDM 31 - driver display LED
+          msg.buf[0] = 2; // LED color code YELLOW
+          msg.buf[1] = 0;
+          msg.buf[2] = 0;
+          msg.buf[3] = 0;
+          msg.buf[4] = 0;
+          msg.buf[5] = 0;
+          msg.buf[6] = 0;
+          msg.buf[7] = 0;
+          msg.id = 281;
+          msg.len = 8;
+          cbus2.write(msg);
 
-        // PDM 30 - driver message
-        msg.buf[0] = 'L';
-        msg.buf[1] = 'O';
-        msg.buf[2] = 'W';
-        msg.buf[3] = ' ';
-        msg.buf[4] = 'F';
-        msg.buf[5] = 'U';
-        msg.buf[6] = 'E';
-        msg.buf[7] = 'L';
-        msg.id = 280;
-        msg.len = 8;
-        cbus2.write(msg);
+          // PDM 30 - driver message
+          msg.buf[0] = 'L';
+          msg.buf[1] = 'O';
+          msg.buf[2] = 'W';
+          msg.buf[3] = ' ';
+          msg.buf[4] = 'F';
+          msg.buf[5] = 'U';
+          msg.buf[6] = 'E';
+          msg.buf[7] = 'L';
+          msg.id = 280;
+          msg.len = 8;
+          cbus2.write(msg);
+        }
       }
     }
   }

@@ -18,6 +18,7 @@
 // global variable definition
 int GLO_engine_state = 0; // engine state (no need to change this variable)
 const int GLO_read_resolution_bits = 12; // bits for Teensy-based read resolution
+const int GLO_max_analog_write_pwm = 255; // maximum PWN value
 
 // minimum voltage for the engine to be in "cranking" mode
 const int GLO_cranking_starter_volt_threshold = 5;
@@ -37,7 +38,7 @@ const int GLO_data_circuit_teensy_pin = 5;
 const int GLO_NeoPixel_teensy_pin = 2;
       int GLO_NeoPixel_brightness_percent = 10; // 0 - 100 %
 
-// booloean used in the C50 to determine if we should be logging
+// boolean used in the C50 to determine if we should be logging
 bool GLO_data_log_bool = 0;
 const unsigned long data_log_timeout_ms = 5000; // time to log after engine and cooldown mode has stopped
 
@@ -85,6 +86,7 @@ EasyTimer odometer_update_timer(2);
 
 // timer that you can use to print things out for debugging
 EasyTimer debug(1);
+const bool GLO_debug = false;
 
 
 
@@ -131,6 +133,8 @@ void setup() { //high 18 low 26
   pinMode(GLO_data_circuit_teensy_pin, OUTPUT);
   // turn the data circuit on
   digitalWrite(GLO_data_circuit_teensy_pin, HIGH);
+  // initialize brakelight pin
+  pinMode(GLO_brakelight_teensy_pin, OUTPUT);
 
   // EEPROM
   eeprom.begin();
@@ -143,6 +147,9 @@ void setup() { //high 18 low 26
 
   // board temp initialization
   board_temp.begin();
+
+  // neat brakelight animation
+  brakelight_startup();
 
 }
 
@@ -160,7 +167,8 @@ void loop() {
   read_can2();
 
   // run the brakelight
-  brakelight();
+  brakelight_run();
+  
 
   // determine engine state and control PWM outputs
   determine_engine_state(GLO_engine_state);
@@ -187,7 +195,7 @@ void loop() {
   send_can1();
   send_can2();
 
-  if (debug.isup()){
+  if (GLO_debug && debug.isup()){
     Serial.println();
     Serial.println(eeprom_engine_hours.value());
     Serial.println(eeprom_engine_minutes.value());
@@ -285,3 +293,8 @@ void set_mailboxes(){
   cbus1.setMB(MB18,RX,EXT);
   cbus1.setMB(MB19,RX,EXT);
 }
+
+
+
+
+
