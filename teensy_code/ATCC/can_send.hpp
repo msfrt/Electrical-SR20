@@ -200,8 +200,8 @@ void send_ATCCR_12(){
   msg.len = 8;
 
   ATCCR_teensyTemp = tempmonGetTemp();
-  ATCCR_coolantTempRadInlet = coolant_temp_inlet_sens.avg();
-  ATCCR_coolantTempRadOutlet = coolant_temp_outlet_sens.avg();
+  ATCCR_coolantTempRadInlet = voltage_to_NTC_M12_H_temp(coolant_temp_inlet_sens.avg());
+  ATCCR_coolantTempRadOutlet = voltage_to_NTC_M12_H_temp(coolant_temp_outlet_sens.avg());
 
   msg.buf[0] = ctr.value();
   msg.buf[1] = 0;
