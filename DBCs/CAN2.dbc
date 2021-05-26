@@ -68,6 +68,7 @@ BO_ 160 TCGPS_10: 8 Vector__XXX
  SG_ TCGPS_boardTemp : 16|16@1- (0.1,0) [0|150] "C" Vector__XXX
 
 BO_ 210 DD_10: 8 Vector__XXX
+ SG_ DD_gearCalc : 8|8@1- (1,0) [-128|127] "" Vector__XXX
  SG_ DD_counterMsg210 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
  SG_ DD_teensyTemp : 32|16@1- (0.1,0) [0|150] "C" Vector__XXX
  SG_ DD_requestDRS : 48|16@1- (1,0) [0|5] "" Vector__XXX
@@ -284,6 +285,7 @@ CM_ SG_ 160 TCGPS_counterMsg160 "Counter for Message 410
 ";
 CM_ SG_ 160 TCGPS_teensyTemp "Teensy chip temp";
 CM_ SG_ 160 TCGPS_boardTemp "board temp";
+CM_ SG_ 210 DD_gearCalc "Driver request for DRS";
 CM_ SG_ 210 DD_counterMsg210 "Counter for Message 410
 ";
 CM_ SG_ 210 DD_teensyTemp "Driver Display Teensy chip temp";
