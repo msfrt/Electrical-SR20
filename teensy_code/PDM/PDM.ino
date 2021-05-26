@@ -38,7 +38,7 @@ const int GLO_data_circuit_teensy_pin = 5;
 const int GLO_NeoPixel_teensy_pin = 2;
       int GLO_NeoPixel_brightness_percent = 10; // 0 - 100 %
 
-// booloean used in the C50 to determine if we should be logging
+// boolean used in the C50 to determine if we should be logging
 bool GLO_data_log_bool = 0;
 const unsigned long data_log_timeout_ms = 5000; // time to log after engine and cooldown mode has stopped
 
