@@ -93,7 +93,10 @@ int screen_mode = 1;
 #include "warning_lights.hpp"
 #include "lockup_indicator.hpp"
 
-unsigned long warning_lights_timeout_dur = 5000; // 15s
+unsigned long warning_lights_timeout_dur = 5000; // milliseconds
+
+// rate at which to calculate gear
+const int gear_calculation_averaging_rate = 2; // Hz
 
 // signal definitions
 #include "sigs_inside.hpp" // eventually move signal and can message definitions to shared folder, then link using the full file path
@@ -591,17 +594,66 @@ void set_mailboxes(){
 // temporarily used to determine what gear we are in for the driver display shift lights
 int determine_gear(StateSignal &rpm, StateSignal &speed, StateSignal &gear){
 
-  // set the gear signal to non-valid
+  // the last calculated rpm to speed ratio average
+  static int rpm_over_speed_avg = 0;
+  static int gear_calc = -1; // negative 1 will be reserved for invalid value 
+  static int current_sum = 0; // Sigma(rpm_i / speed_i)
+  static int point_count = 0; // number of point contained within the sum
+  static EasyTimer calc_timer(gear_calculation_averaging_rate);
+
+  // set the m400_gear signal to invalid
   gear.set_validity(false);
 
-  // if rpm is decently high and the car is moving, we'll say that we're at least in gear 1
-  if ((rpm.value() >= 1500) && (speed.value() >= 5)){
-    gear.set_secondary_value(1);
-    return 1;
-  } else {
-    gear.set_secondary_value(0);
-    return 0;
+  // avoid division by 0 errors
+  int current_speed = static_cast<int>(speed.value());
+  if (current_speed < 1)
+    current_speed = 1;
+
+  // add to running total
+  current_sum += rpm.value() / speed.value();
+  point_count++;
+
+  // calculate average if necessary
+  if (calc_timer.isup()){
+    rpm_over_speed_avg = current_sum / point_count;
+    current_sum = 0;
+    point_count = 0;
+
+
+    // 1st gear data avg = 315
+    //                   - 270 midpoint
+    // 2nd gear data avg = 225
+    // 3rd gear data avg = 
+    // 4th gear data avg = 
+    // 5th gear data avg = 
+
+    if (rpm_over_speed_avg > 330){
+      gear_calc = 0;
+    } else if (rpm_over_speed_avg > 270) {
+      gear_calc = 1;
+    } else if (rpm_over_speed_avg > 200) {
+      gear_calc = 2; 
+
+      // need the other gears
+    } else {
+      gear_calc = -1;
+    }
+
+    gear.set_secondary_value(gear_calc);
   }
+
+  // old method  
+
+  // // if rpm is decently high and the car is moving, we'll say that we're at least in gear 1
+  // if ((rpm.value() >= 1500) && (speed.value() >= 5)){
+  //   gear.set_secondary_value(1);
+  //   return 1;
+  // } else {
+  //   gear.set_secondary_value(0);
+  //   return 0;
+  // }
+
+  return gear_calc;
 
 }
 

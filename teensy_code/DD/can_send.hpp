@@ -28,7 +28,7 @@ void send_DD_10(){
 
   // load up the message buffer
   msg.buf[0] = ctr.value();
-  msg.buf[1] = 0;
+  msg.buf[1] = static_cast<int>(M400_gear.secondary_value()); // driver display gear calculation
   msg.buf[2] = DD_boardTemp.can_value();
   msg.buf[3] = DD_boardTemp.can_value() >> 8;
   msg.buf[4] = DD_teensyTemp.can_value();

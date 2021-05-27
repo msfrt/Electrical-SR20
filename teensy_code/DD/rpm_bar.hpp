@@ -54,10 +54,10 @@ bool rpm_bar(Adafruit_NeoPixel &top, StateSignal &rpm, StateSignal &gear){
   static int pwm_current_led;
 
   // determine if downshift mode
-  if ((rpm.value() <= downshift12_rpm && (static_cast<int>(gear.value() == 2))) || // currently gear 2
-      (rpm.value() <= downshift23_rpm && (static_cast<int>(gear.value() == 3))) || // 3
-      (rpm.value() <= downshift34_rpm && (static_cast<int>(gear.value() == 4))) || // 4
-      (rpm.value() <= downshift45_rpm && (static_cast<int>(gear.value() == 5)))){  // 5
+  if ((rpm.value() <= downshift12_rpm && (static_cast<int>(gear.value()) == 2)) || // currently gear 2
+      (rpm.value() <= downshift23_rpm && (static_cast<int>(gear.value()) == 3)) || // 3
+      (rpm.value() <= downshift34_rpm && (static_cast<int>(gear.value()) == 4)) || // 4
+      (rpm.value() <= downshift45_rpm && (static_cast<int>(gear.value()) == 5))){  // 5
     bar_mode = 1;
 
   // determine if upshift mode
