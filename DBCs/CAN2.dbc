@@ -285,7 +285,7 @@ CM_ SG_ 160 TCGPS_counterMsg160 "Counter for Message 410
 ";
 CM_ SG_ 160 TCGPS_teensyTemp "Teensy chip temp";
 CM_ SG_ 160 TCGPS_boardTemp "board temp";
-CM_ SG_ 210 DD_gearCalc "Driver request for DRS";
+CM_ SG_ 210 DD_gearCalc "Gear estimation based off of rpm and rear drive speed";
 CM_ SG_ 210 DD_counterMsg210 "Counter for Message 410
 ";
 CM_ SG_ 210 DD_teensyTemp "Driver Display Teensy chip temp";
