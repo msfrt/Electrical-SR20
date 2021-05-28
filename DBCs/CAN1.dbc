@@ -36,6 +36,15 @@ BS_:
 BU_: C50 TC_GPS_TELEM PDM MM5 DRIVERDISPLAY M400
 
 
+BO_ 120 C50_m400Data: 8 Vector__XXX
+ SG_ C50rowCounterM400Data M : 7|8@0+ (1,0) [0|255] "" Vector__XXX
+ SG_ C50_tcSet m1 : 55|16@0- (1,0) [0|0] "" Vector__XXX
+ SG_ C50_mm5YawRate m1 : 39|16@0- (0.01,0) [0|0] "" Vector__XXX
+ SG_ C50_m400ExhaustGasTemp4 m1 : 23|16@0- (0.1,0) [0|0] "" Vector__XXX
+ SG_ C50_m400ExhaustGasTemp3 m0 : 55|16@0- (0.1,0) [0|0] "" Vector__XXX
+ SG_ C50_m400ExhaustGasTemp2 m0 : 39|16@0- (0.1,0) [0|0] "" Vector__XXX
+ SG_ C50_m400ExhaustGasTemp1 m0 : 23|16@0- (0.1,0) [0|0] "" Vector__XXX
+
 BO_ 161 TCGPS_11: 8 Vector__XXX
  SG_ TCGPS_laptrigger : 0|8@1- (1,0) [0|0] "bool" Vector__XXX
 
@@ -131,6 +140,7 @@ BO_ 100 M400_dataSet1: 8 M400
 
 
 
+CM_ SG_ 120 C50rowCounterM400Data "Multiplexer Row Counter for M400 Custom Data Set 2";
 CM_ SG_ 161 TCGPS_laptrigger "100 = sucess";
 CM_ SG_ 101 M400_oilTemp "Oil Temp ";
 CM_ SG_ 101 M400_oilPressure "Oil Pressure ";
