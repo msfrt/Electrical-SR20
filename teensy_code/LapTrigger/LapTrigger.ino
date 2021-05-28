@@ -40,7 +40,7 @@ ZBTxStatusResponse check = ZBTxStatusResponse();
 
 //TFT SD Card Pins
 #define TFT_MISO 12
-#define TFT_SD_CS 19
+#define TFT_SD_CS 15
 
 //PWM Pin
 #define TFT_LITE 6
