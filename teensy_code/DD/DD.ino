@@ -141,7 +141,7 @@ InfoScreen auxilary_info_left_screen(display_left, M400_groundSpeed, PDM_pdmVolt
 
 
 NumberDisplay gear_display_left(display_left, M400_gear, "GEAR");
-NumberDisplay tc_display_left(display_left, M400_gear, "TC"); // change signal when C50 signals are set up
+NumberDisplay tc_display_left(display_left, C50_tcSet, "TC"); 
 
 // lap-time array declaration
 float prev_lap_times[4]; // arrays to hold the last 4 lap time details

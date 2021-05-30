@@ -105,4 +105,13 @@ StateSignal PDM_wpVoltMin(16, true, 1000, 0, -32, 32, 0);
 
 StateSignal PDM_teensyTemp(16, true, 10, 0, -3276, 3276, 0);
 
+
+// Message: C50_m400Data [0x78]
+StateSignal C50_m400ExhaustGasTemp4(16, true, 10, 0.0, 0, 0, 0.0, 0);
+StateSignal C50_m400ExhaustGasTemp1(16, true, 10, 0.0, 0, 0, 0.0, 0);
+StateSignal C50_mm5YawRate(16, true, 100, 0.0, 0, 0, 0.0, 0);
+StateSignal C50_m400ExhaustGasTemp2(16, true, 10, 0.0, 0, 0, 0.0, 0);
+StateSignal C50_tcSet(16, true, 1, 0.0, 0, 0, 0.0, 0);
+StateSignal C50_m400ExhaustGasTemp3(16, true, 10, 0.0, 0, 0, 0.0, 0);
+
 #endif

@@ -125,6 +125,34 @@ void read_M400_101(CAN_message_t &imsg){
 }
 
 
+/*
+ * Decode a CAN frame for the message C50_m400Data
+ * \param imsg A reference to the incoming CAN message frame
+ */
+void read_C50_m400Data(CAN_message_t &imsg) {
+
+	// multiplexer signal
+	int C50rowCounterM400Data = imsg.buf[0];
+
+	switch (C50rowCounterM400Data) {
+
+		case 0:
+			C50_m400ExhaustGasTemp1.set_can_value((imsg.buf[3]) | (imsg.buf[2] << 8));
+			C50_m400ExhaustGasTemp2.set_can_value((imsg.buf[5]) | (imsg.buf[4] << 8));
+			C50_m400ExhaustGasTemp3.set_can_value((imsg.buf[7]) | (imsg.buf[6] << 8));
+			break;
+
+		case 1:
+			C50_m400ExhaustGasTemp4.set_can_value((imsg.buf[3]) | (imsg.buf[2] << 8));
+			C50_mm5YawRate.set_can_value((imsg.buf[5]) | (imsg.buf[4] << 8));
+			C50_tcSet.set_can_value((imsg.buf[7]) | (imsg.buf[6] << 8));
+			break;
+
+	}
+
+}
+
+
 
 // function that reads the msg and then directs that data elsewhere
 void read_can1(){
@@ -136,6 +164,9 @@ void read_can1(){
         break;
       case 101:
         read_M400_101(rxmsg);
+        break;
+      case 120:
+        read_C50_m400Data(rxmsg);
         break;
       case 161:
         read_TCGPS_11(rxmsg);
