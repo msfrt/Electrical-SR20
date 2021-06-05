@@ -90,6 +90,7 @@ void setup() {
   pinMode(button2,INPUT);
   pinMode(button3,INPUT);
 
+  // For future
   //attachInterrupt(digitalPinToInterrupt(button1),IRQ_Button1,FALLING);
   //attachInterrupt(digitalPinToInterrupt(button2),IRQ_Button2,FALLING);
   //attachInterrupt(digitalPinToInterrupt(button3),IRQ_Button3,FALLING);
@@ -115,7 +116,6 @@ void setup() {
       Data = SD.open(fileName,FILE_WRITE);        // Create File
       Data.println("Lap,Time(Sec)");              // Make Header. If file is alread created header does not need to be rewritten
       Data.close();                               // Close File
-      //fileNumber = i;                           // Dont need with String defined globaly
       fileEval = false;
     }
     else{
@@ -162,31 +162,8 @@ void loop() {
     lastTime = millis();
     lapNotReset = true;
 
-    //String for sending to XBee
-
-    //Sending Lap Info as string
-    //String lapInfo ="Lap " + String(lapNum) + ": "+ String(lapTime) + "\n";
-    //Serial.print(lapInfo);
-
     //Sending Constant for Lap Trigger
     sendMsg("SR20",addr64); //cannot use broadcast for error checking
-
-    /*Keyboard.begin();*/
-
-    /* Unneeded code to reset SD Card
-    SD.begin(TFT_SD_CS);
-    //Create File Name
-    String nameString = "Data"+String(fileNumber)+".csv";
-
-    //Convert File Name to Character Array for SD Functions
-    char fileName[nameString.length()+1];
-    nameString.toCharArray(fileName,nameString.length()+1);
-    Data= SD.open(fileName,FILE_WRITE);
-    Data.print("1");
-    Data.close();
-    */
-
-    //startScreen();
 
     // SPI Select Screen
     digitalWrite(TFT_SD_CS, HIGH);
@@ -212,23 +189,9 @@ void loop() {
     }
     int pushTime = millis();
 
-
-    /*
-    //Use Keyboard to print to file
-    Keyboard.print(laps[0],3);
-    Keyboard.press(KEY_RETURN);
-    Keyboard.releaseAll();
-    Keyboard.end();
-    Data.print( "1 \n"); //String(lapNum) + "," + String(laps[0],3)
-    Data.flush();
-    */
-
-
     Serial.println("Done!");
 
     lapNum++;
-
-
 
     //Delay button Press
     while((millis() - pushTime) <500){
@@ -252,38 +215,29 @@ void loop() {
 
 }
 
-//void IRQ_Button1(void){ // full reset
-//  lapNum = 0;
-//  lastTime = millis();
-//  // SPI Select Screen
-//    digitalWrite(TFT_SD_CS, HIGH);
-//    digitalWrite(TFT_CS, LOW);
-//  //Clear Screen on reset
-//    tft.fillRect(0,37,159,127,BLK);
-//    tft.fillRect(0,0,129,29,BLK);
-//    tft.drawLine(0,30,159,30,GRN);
-//    tft.drawXBitmap(130,1,FSAE_bits,28,28,GRN); //FSAE Logo
-//    tft.setTextSize(2);
-//    Serial.println("Reset!");
-//}
-//
-//void IRQ_Button2(void){
-//  
-//}
-//
-//void IRQ_Button3(void){
-//  
-//}
-void startScreen(){
-  //Initialize the LCD Screen
-  tft.initR(INITR_BLACKTAB);
-  //Text and Screen Layout Properties
-  tft.setTextColor(GRN, BLK);
-  tft.fillScreen(BLK);
-  tft.setRotation(3);
-  tft.drawLine(0,30,159,30,GRN);
-  tft.drawXBitmap(130,1,FSAE_bits,28,28,GRN); //FSAE Logo
+// Future Interupts
+/*void IRQ_Button1(void){ // full reset
+  lapNum = 0;
+  lastTime = millis();
+  // SPI Select Screen
+    digitalWrite(TFT_SD_CS, HIGH);
+    digitalWrite(TFT_CS, LOW);
+  //Clear Screen on reset
+    tft.fillRect(0,37,159,127,BLK);
+    tft.fillRect(0,0,129,29,BLK);
+    tft.drawLine(0,30,159,30,GRN);
+    tft.drawXBitmap(130,1,FSAE_bits,28,28,GRN); //FSAE Logo
+    tft.setTextSize(2);
+    Serial.println("Reset!");
 }
+
+void IRQ_Button2(void){
+  
+}
+
+void IRQ_Button3(void){
+  
+}*/
 
 void sendMsg(String str, XBeeAddress64 adrs){
   //Arrays for message to be sent
@@ -291,12 +245,14 @@ void sendMsg(String str, XBeeAddress64 adrs){
   str.toCharArray(msgChar,str.length()+1);
   uint8_t msg[sizeof(msgChar)]= {0};
 
-  for(int i=0;i<(sizeof(msg)-1);i++){
+  for(unsigned int i=0;i<(sizeof(msg)-1);i++){
     msg[i]=msgChar[i];
   }
   //Create Packet to Send Out
   ZBExplicitTxRequest sendOut = ZBExplicitTxRequest(adrs,msg,sizeof(msg));
   xbee.send(sendOut);
+
+  // For Error Checking in future
   /*xbee.readPacket();
   xbee.readPacketUntilAvailable();
   Serial.println(xbee.getResponse().getApiId(),HEX);
