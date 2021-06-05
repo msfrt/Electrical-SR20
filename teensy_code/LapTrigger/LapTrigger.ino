@@ -35,15 +35,15 @@ ZBTxStatusResponse check = ZBTxStatusResponse();
 #define TFT_SCK 13
 #define TFT_MOSI 11
 #define TFT_CS 10
-#define TFT_DC 9
-#define TFT_RST 7
+#define TFT_DC 4
+#define TFT_RST 5
 
 //TFT SD Card Pins
 #define TFT_MISO 12
-#define TFT_SD_CS 15
+#define TFT_SD_CS 9
 
 //PWM Pin
-#define TFT_LITE 6
+#define TFT_LITE 3
 
 //Set Up Screen
 Adafruit_ST7735 tft = Adafruit_ST7735(TFT_CS, TFT_DC, TFT_MOSI, TFT_SCK, TFT_RST);
@@ -60,6 +60,9 @@ Adafruit_ST7735 tft = Adafruit_ST7735(TFT_CS, TFT_DC, TFT_MOSI, TFT_SCK, TFT_RST
 
 //Button Pins
 #define photoGateSignalPin 23
+#define button1 16
+#define button2 17
+#define button3 18
 
 unsigned long lastTime;
 float lapTime = 0.0;
@@ -82,6 +85,15 @@ void setup() {
   Serial1.begin(115200);
   xbee.setSerial(Serial1);
 
+  // Button Pin Setup
+  pinMode(button1,INPUT);
+  pinMode(button2,INPUT);
+  pinMode(button3,INPUT);
+
+  //attachInterrupt(digitalPinToInterrupt(button1),IRQ_Button1,FALLING);
+  //attachInterrupt(digitalPinToInterrupt(button2),IRQ_Button2,FALLING);
+  //attachInterrupt(digitalPinToInterrupt(button3),IRQ_Button3,FALLING);
+  
   pinMode(TFT_SD_CS,OUTPUT);
   pinMode(TFT_CS,OUTPUT);
   SD.begin(TFT_SD_CS);
@@ -240,6 +252,28 @@ void loop() {
 
 }
 
+void IRQ_Button1(void){ // full reset
+  lapNum = 0;
+  lastTime = millis();
+  // SPI Select Screen
+    digitalWrite(TFT_SD_CS, HIGH);
+    digitalWrite(TFT_CS, LOW);
+  //Clear Screen on reset
+    tft.fillRect(0,37,159,127,BLK);
+    tft.fillRect(0,0,129,29,BLK);
+    tft.drawLine(0,30,159,30,GRN);
+    tft.drawXBitmap(130,1,FSAE_bits,28,28,GRN); //FSAE Logo
+    tft.setTextSize(2);
+    Serial.println("Reset!");
+}
+
+void IRQ_Button2(void){
+  
+}
+
+void IRQ_Button3(void){
+  
+}
 void startScreen(){
   //Initialize the LCD Screen
   tft.initR(INITR_BLACKTAB);
