@@ -292,16 +292,16 @@ void openFile(String fileTitle){
   digitalWrite(TFT_CS, LOW);
   }
 
-  void printLap(int onLap, float timeOfLap) {
-    // SPI Select SD Card
-    digitalWrite(TFT_SD_CS, LOW);
-    digitalWrite(TFT_CS, HIGH);
+void printLap(int onLap, float timeOfLap) {
+  // SPI Select SD Card
+  digitalWrite(TFT_SD_CS, LOW);
+  digitalWrite(TFT_CS, HIGH);
 
-    String fileOutput = String(onLap) + "," + String(timeOfLap) + "\n";
-    Data.print(fileOutput);
-    Data.flush();
+  String fileOutput = String(onLap) + "," + String(timeOfLap) + "\n";
+  Data.print(fileOutput);
+  Data.flush();
 
-    // SPI Select Screen
-    digitalWrite(TFT_SD_CS, HIGH);
-    digitalWrite(TFT_CS, LOW);
-  }
+  // SPI Select Screen
+  digitalWrite(TFT_SD_CS, HIGH);
+  digitalWrite(TFT_CS, LOW);
+}
