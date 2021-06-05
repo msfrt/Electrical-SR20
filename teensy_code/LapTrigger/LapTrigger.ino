@@ -171,7 +171,7 @@ void loop() {
     //Sending Constant for Lap Trigger
     sendMsg("SR20",addr64); //cannot use broadcast for error checking
 
-    //Keyboard.begin();
+    /*Keyboard.begin();*/
 
     /* Unneeded code to reset SD Card
     SD.begin(TFT_SD_CS);
@@ -252,28 +252,28 @@ void loop() {
 
 }
 
-void IRQ_Button1(void){ // full reset
-  lapNum = 0;
-  lastTime = millis();
-  // SPI Select Screen
-    digitalWrite(TFT_SD_CS, HIGH);
-    digitalWrite(TFT_CS, LOW);
-  //Clear Screen on reset
-    tft.fillRect(0,37,159,127,BLK);
-    tft.fillRect(0,0,129,29,BLK);
-    tft.drawLine(0,30,159,30,GRN);
-    tft.drawXBitmap(130,1,FSAE_bits,28,28,GRN); //FSAE Logo
-    tft.setTextSize(2);
-    Serial.println("Reset!");
-}
-
-void IRQ_Button2(void){
-  
-}
-
-void IRQ_Button3(void){
-  
-}
+//void IRQ_Button1(void){ // full reset
+//  lapNum = 0;
+//  lastTime = millis();
+//  // SPI Select Screen
+//    digitalWrite(TFT_SD_CS, HIGH);
+//    digitalWrite(TFT_CS, LOW);
+//  //Clear Screen on reset
+//    tft.fillRect(0,37,159,127,BLK);
+//    tft.fillRect(0,0,129,29,BLK);
+//    tft.drawLine(0,30,159,30,GRN);
+//    tft.drawXBitmap(130,1,FSAE_bits,28,28,GRN); //FSAE Logo
+//    tft.setTextSize(2);
+//    Serial.println("Reset!");
+//}
+//
+//void IRQ_Button2(void){
+//  
+//}
+//
+//void IRQ_Button3(void){
+//  
+//}
 void startScreen(){
   //Initialize the LCD Screen
   tft.initR(INITR_BLACKTAB);
@@ -297,7 +297,7 @@ void sendMsg(String str, XBeeAddress64 adrs){
   //Create Packet to Send Out
   ZBExplicitTxRequest sendOut = ZBExplicitTxRequest(adrs,msg,sizeof(msg));
   xbee.send(sendOut);
-  xbee.readPacket();
+  /*xbee.readPacket();
   xbee.readPacketUntilAvailable();
   Serial.println(xbee.getResponse().getApiId(),HEX);
   if (xbee.getResponse().getApiId() == ZB_TX_STATUS_RESPONSE){
@@ -318,7 +318,7 @@ void sendMsg(String str, XBeeAddress64 adrs){
         Serial.println(check.getDeliveryStatus(),HEX);
       }
     }
-  }
+  }*/
 }
 
 void openFile(String fileTitle){
