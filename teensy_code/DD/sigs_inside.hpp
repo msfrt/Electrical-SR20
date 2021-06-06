@@ -12,6 +12,12 @@ StateSignal DD_teensyTemp(16, true, 10, 0, -3276, 3276, 0);
 StateSignal DD_boardTemp(16, true, 10, 0, -3276, 3276, 0);
 StateSignal DD_requestDRS(16, true, 1, 0, 0, 5, 0);
 
+// calculated signals primarily for internal use
+StateSignal DD_adjRotorTempFL(16, true, 10, 0, -3276, 3276, 0);
+StateSignal DD_adjRotorTempFR(16, true, 10, 0, -3276, 3276, 0);
+StateSignal DD_adjRotorTempRL(16, true, 10, 0, -3276, 3276, 0);
+StateSignal DD_adjRotorTempRR(16, true, 10, 0, -3276, 3276, 0);
+
 // incoming signals
 StateSignal TCGPS_laptrigger(8, true, 1, 0, 0, 100, 0, 500);
 
@@ -30,6 +36,7 @@ StateSignal M400_driveSpeedRight(16, true, 10, 0, -3276, 3276, 0, 1000);
 StateSignal M400_fuelUsed(16, true, 1, 0, -3276.8, 3276.7, 0, 1000);
 StateSignal M400_ignCutLevelTotal(16, true, 1, 0, 0, 256, 0, 50);
 StateSignal M400_tcPowerReduction(16, true, 10, 0, 0, 75, 0, 50);
+StateSignal M400_inletAirTemp(16, true, 10, 0.0, -3276, 3276, 0.0, 0);
 
 StateSignal MM5_Ax(16, true, -7849, 4.2, -5, 5, 0, 0);
 
@@ -42,6 +49,18 @@ StateSignal USER_driverSignal(8, true, 1, 0, -5, 100, 0, 1000);
 StateSignal ATCCF_brakeBias(16, true, 10, 0, 0, 100, 0, 500);
 StateSignal ATCCF_brakePressureF(16, true, 10, 0, -3276.8, 3276.7, 0, 500);
 StateSignal ATCCF_brakePressureR(16, true, 10, 0, -3276.8, 3276.7, 0, 500);
+
+// Message: ATCCF_12 [0x19c]
+StateSignal ATCCF_counterMsg412(4, false, 1, 0.0, 0, 15, 0.0, 0);
+StateSignal ATCCF_coolantTempRadMiddle(16, true, 10, 0.0, -3276, 3276, 0.0, 0);
+StateSignal ATCCF_rotorTempFL(16, true, 10, 0.0, -3276, 3276, 0.0, 0);
+StateSignal ATCCF_rotorTempFR(16, true, 10, 0.0, -3276, 3276, 0.0, 0);
+
+// Message: ATCCR_11 [0x1cd]
+StateSignal ATCCR_counterMsg461(4, false, 1, 0.0, 0, 15, 0.0, 0);
+StateSignal ATCCR_boardTemp(16, true, 10, 0.0, -3276, 3276, 0.0, 0);
+StateSignal ATCCR_rotorTempRL(16, true, 10, 0.0, -3276, 3276, 0.0, 0);
+StateSignal ATCCR_rotorTempRR(16, true, 10, 0.0, -3276, 3276, 0.0, 0);
 
 StateSignal PDM_driverDisplayLEDs(8, true, 1, 0, -5, 100, 0, 1000);
 
