@@ -260,30 +260,47 @@ bool rpm_bar_gradient(Adafruit_NeoPixel &top, StateSignal &rpm, StateSignal &gea
 
 
 // lights up the light bar during ignition cut events. The motec ignition cut value is an integer 0-256
-bool engine_cut_bar(Adafruit_NeoPixel &leds, StateSignal &tc_sig){
-  static const int num_leds = 3; // currently, there are 3 LEDs on the light strip that are designated cut level lights
-  static const int max_bar_pwm_posns = num_leds * 256;
+bool engine_cut_bar(Adafruit_NeoPixel &leds, StateSignal &tc_sig, float max_signal_value = -1.0, bool flash = false){
+  int num_leds = leds.numPixels(); // currently, there are 3 LEDs on the light strip that are designated cut level lights
+  static int max_bar_pwm_posns = num_leds * 256;
 
-  // variables used in every valculation. Static because there's no need to create and and delete them every time.
+  // variables used in every calculation. Static because there's no need to create and and delete them every time.
   static int bar_pwms;
   static int current_led_pwm;
+  static int upper_bound;
   static bool leds_on = false;
+  static EasyTimer flash_timer(50);  // Hz
 
   // calculations begin below ---------------
 
   // the total number of pwms to be written this iteration
-  bar_pwms = map(tc_sig.value(), tc_sig.lower_bound(), tc_sig.upper_bound(), 0, max_bar_pwm_posns);
-
-  if (bar_pwms > 0){
-    leds_on = true;
+  if (max_signal_value > 0){
+    upper_bound = max_signal_value;
   } else {
-    leds_on = false;
+    upper_bound = tc_sig.upper_bound();
+  }
+  
+  bar_pwms = map(tc_sig.value(), tc_sig.lower_bound(), upper_bound, 0, max_bar_pwm_posns);
+  //bar_pwms = map(upper_bound, tc_sig.lower_bound(), upper_bound, 0, max_bar_pwm_posns); // for testing the bar
+
+  // flash if required
+  if (flash && flash_timer.isup()){
+    leds_on = (leds_on) ? false : true;
+  } else if (!flash) {
+    leds_on = true;  // LED pwms will take care of the rest
   }
 
   // turn them on!
-  for (int i = leds.numPixels() - 1; i >= leds.numPixels() - num_leds; i--){
+  for (int i = leds.numPixels() - 1; i >= 0; i--){
     current_led_pwm = led_pwm(bar_pwms);
-    leds.setPixelColor(i, 0, 0, current_led_pwm);
+    leds.setPixelColor(i, current_led_pwm / 5, 0, current_led_pwm);
+  }
+
+  // if we need to turn them off
+  if (!leds_on){
+    for (int i = leds.numPixels() - 1; i >= 0; i--){
+      leds.setPixelColor(i, 0, 0, 0);
+    }
   }
 
   return leds_on;

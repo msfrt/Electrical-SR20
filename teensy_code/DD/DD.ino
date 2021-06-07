@@ -363,8 +363,9 @@ void loop() {
 
   if (led_mode == 1){
     rpm_bar(pixels_top, M400_rpm, M400_gear);
-    engine_cut_bar(pixels_left,  M400_tcPowerReduction);
-    engine_cut_bar(pixels_right, M400_tcPowerReduction);
+    static float max_power_reduction_value = 25;
+    engine_cut_bar(pixels_left,  M400_tcPowerReduction, max_power_reduction_value, true);
+    engine_cut_bar(pixels_right, M400_tcPowerReduction, max_power_reduction_value, true);
 
     // this will prolly be changed
     //lockup_indicator(pixels_left, 0, M400_groundSpeedLeft, MM5_Ax, ATCCF_brakePressureF, ATCCF_brakePressureR);
