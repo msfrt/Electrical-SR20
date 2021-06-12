@@ -27,8 +27,8 @@
 
 //XBee Serial Setup
 XBee xbee = XBee();
-XBeeAddress64 addr64 = XBeeAddress64(0x0013A200,0x4154D778);
-XBeeAddress64 broadcast = XBeeAddress64(0x00000000,0x0000FFFF);
+XBeeAddress64 addr64 = XBeeAddress64(0x0013A200, 0x4154D778);
+XBeeAddress64 broadcast = XBeeAddress64(0x00000000, 0x0000FFFF);
 ZBTxStatusResponse check = ZBTxStatusResponse();
 
 //TFT Display Board Pins
@@ -60,13 +60,13 @@ Adafruit_ST7735 tft = Adafruit_ST7735(TFT_CS, TFT_DC, TFT_MOSI, TFT_SCK, TFT_RST
 
 //Button Pins
 #define photoGateSignalPin 23
-#define button1 16
-#define button2 17
-#define button3 18
+#define button1 16 //Reset
+#define button2 17 //Manual Lap
+#define button3 18 //Change Lap Page
 
 unsigned long lastTime;
 float lapTime = 0.0;
-float laps[4] = {0.0, 0.0, 0.0, 0.0};
+float laps[100] = {0.0};
 unsigned long printTime;
 unsigned long serialTime;
 int lapNum = 1;
@@ -75,6 +75,9 @@ bool lapNotReset = true;
 File Data;
 int fileNumber = 0;
 String nameString = "";
+
+int pageCount = 1;
+int pageNum = 1;
 
 extern const uint8_t MSU_bits[];
 extern const uint8_t FSAE_bits[];
@@ -86,39 +89,39 @@ void setup() {
   xbee.setSerial(Serial1);
 
   // Button Pin Setup
-  pinMode(button1,INPUT);
-  pinMode(button2,INPUT);
-  pinMode(button3,INPUT);
+  pinMode(button1, INPUT);
+  pinMode(button2, INPUT);
+  pinMode(button3, INPUT);
 
   //attachInterrupt(digitalPinToInterrupt(button1),IRQ_Button1,FALLING);
   //attachInterrupt(digitalPinToInterrupt(button2),IRQ_Button2,FALLING);
   //attachInterrupt(digitalPinToInterrupt(button3),IRQ_Button3,FALLING);
-  
-  pinMode(TFT_SD_CS,OUTPUT);
-  pinMode(TFT_CS,OUTPUT);
+
+  pinMode(TFT_SD_CS, OUTPUT);
+  pinMode(TFT_CS, OUTPUT);
   SD.begin(TFT_SD_CS);
   bool fileEval = true;
 
-  for(int i=0; fileEval == true; i++){
+  for (int i = 0; fileEval == true; i++) {
 
     //Create New File Name
-    nameString = "Data"+String(i)+".csv";
+    nameString = "Data" + String(i) + ".csv";
 
     //Convert File Name to Character Array for SD Functions
-    char fileName[nameString.length()+1];
-    nameString.toCharArray(fileName,nameString.length()+1);
+    char fileName[nameString.length() + 1];
+    nameString.toCharArray(fileName, nameString.length() + 1);
 
     Serial.println(fileName);
 
     //Test For Files And Set Up Headers
-    if (!SD.exists(fileName)){
-      Data = SD.open(fileName,FILE_WRITE);        // Create File
+    if (!SD.exists(fileName)) {
+      Data = SD.open(fileName, FILE_WRITE);       // Create File
       Data.println("Lap,Time(Sec)");              // Make Header. If file is alread created header does not need to be rewritten
       Data.close();                               // Close File
       //fileNumber = i;                           // Dont need with String defined globaly
       fileEval = false;
     }
-    else{
+    else {
       fileEval = true;
     }
   }
@@ -132,8 +135,8 @@ void setup() {
   tft.initR(INITR_BLACKTAB);
 
   //IN/OUT for pins
-  pinMode(photoGateSignalPin,INPUT);
-  pinMode(TFT_LITE,OUTPUT);
+  pinMode(photoGateSignalPin, INPUT);
+  pinMode(TFT_LITE, OUTPUT);
 
   //Turn on screen
   digitalWrite(TFT_LITE, HIGH);
@@ -147,17 +150,17 @@ void setup() {
   tft.setTextColor(GRN, BLK);
   tft.fillScreen(BLK);
   tft.setRotation(3);
-  tft.drawLine(0,30,159,30,GRN);
-  tft.drawXBitmap(130,1,FSAE_bits,28,28,GRN); //FSAE Logo
+  tft.drawLine(0, 30, 159, 30, GRN);
+  tft.drawXBitmap(130, 1, FSAE_bits, 28, 28, GRN); //FSAE Logo
 
 
 }
 
 void loop() {
-  if((digitalRead(photoGateSignalPin) == LOW) && (lapNotReset == true)){
+  if ((digitalRead(photoGateSignalPin) == LOW) && (lapNotReset == true)) {
     lapNotReset = false;
   }
-  if((digitalRead(photoGateSignalPin) == HIGH) && (lapNotReset != true)){
+  if ((digitalRead(photoGateSignalPin) == HIGH) && (lapNotReset != true)) {
     Serial.println(lapTime);
     lastTime = millis();
     lapNotReset = true;
@@ -169,21 +172,21 @@ void loop() {
     //Serial.print(lapInfo);
 
     //Sending Constant for Lap Trigger
-    sendMsg("SR20",addr64); //cannot use broadcast for error checking
+    sendMsg("SR20", addr64); //cannot use broadcast for error checking
 
     /*Keyboard.begin();*/
 
     /* Unneeded code to reset SD Card
-    SD.begin(TFT_SD_CS);
-    //Create File Name
-    String nameString = "Data"+String(fileNumber)+".csv";
+      SD.begin(TFT_SD_CS);
+      //Create File Name
+      String nameString = "Data"+String(fileNumber)+".csv";
 
-    //Convert File Name to Character Array for SD Functions
-    char fileName[nameString.length()+1];
-    nameString.toCharArray(fileName,nameString.length()+1);
-    Data= SD.open(fileName,FILE_WRITE);
-    Data.print("1");
-    Data.close();
+      //Convert File Name to Character Array for SD Functions
+      char fileName[nameString.length()+1];
+      nameString.toCharArray(fileName,nameString.length()+1);
+      Data= SD.open(fileName,FILE_WRITE);
+      Data.print("1");
+      Data.close();
     */
 
     //startScreen();
@@ -192,115 +195,114 @@ void loop() {
     digitalWrite(TFT_SD_CS, HIGH);
     digitalWrite(TFT_CS, LOW);
     //Clear Screen on new lap
-    tft.fillRect(0,37,159,127,BLK);
-    tft.fillRect(0,0,129,29,BLK);
+    tft.fillRect(0, 37, 159, 127, BLK);
+    tft.fillRect(0, 0, 129, 29, BLK);
     tft.setTextSize(2);
 
+    //Shift Laps
+    for (int i = 40; i > 0; i--) {
+      laps[i] = laps[i - 1];
+    }
+    laps[0] = lapTime;
     //Show only last 4 Laps
-    for(int i = 3; i > -1; i--){
-      if(i != 0){
-        laps[i]=laps[i-1];
-      }
-      else{
-        laps[0] = lapTime;
-      }
-      if(laps[i] != 0.0){
-        tft.setCursor(2,37+(24*i));
-        tft.print("Lap " + String(lapNum - i) +":");
-        tft.print(laps[i],2);
+    for (int i = 0; i <= 3; i++) {
+      if (laps[i] != 0.0) {
+        tft.setCursor(2, 37 + (24 * i));
+        tft.print("Lap " + String(lapNum - i) + ":");
+        tft.print(laps[i], 2);
       }
     }
     int pushTime = millis();
 
 
     /*
-    //Use Keyboard to print to file
-    Keyboard.print(laps[0],3);
-    Keyboard.press(KEY_RETURN);
-    Keyboard.releaseAll();
-    Keyboard.end();
-    Data.print( "1 \n"); //String(lapNum) + "," + String(laps[0],3)
-    Data.flush();
+      //Use Keyboard to print to file
+      Keyboard.print(laps[0],3);
+      Keyboard.press(KEY_RETURN);
+      Keyboard.releaseAll();
+      Keyboard.end();
+      Data.print( "1 \n"); //String(lapNum) + "," + String(laps[0],3)
+      Data.flush();
     */
 
 
     Serial.println("Done!");
 
     lapNum++;
-
+    pageCount = ceil(lapNum / 4);
 
 
     //Delay button Press
-    while((millis() - pushTime) <500){
+    while ((millis() - pushTime) < 500) {
     }
   }
 
   lapTime = (float)(millis() - lastTime) / 1000.0;
 
-  if((micros() - printTime) > 10000){
+  if ((micros() - printTime) > 10000) {
     //Set Text Settings for Current Time
     tft.setTextSize(3);
-    tft.setCursor(2,2);
-    tft.print(lapTime,3);
+    tft.setCursor(2, 2);
+    tft.print(lapTime, 3);
 
     //Clocking
     printTime = micros();
   }
-  if ((millis()- serialTime) > 100){
+  if ((millis() - serialTime) > 100) {
     //Put data to print to serial every .1 seconds
   }
 
 }
 
-//void IRQ_Button1(void){ // full reset
-//  lapNum = 0;
-//  lastTime = millis();
-//  // SPI Select Screen
-//    digitalWrite(TFT_SD_CS, HIGH);
-//    digitalWrite(TFT_CS, LOW);
-//  //Clear Screen on reset
-//    tft.fillRect(0,37,159,127,BLK);
-//    tft.fillRect(0,0,129,29,BLK);
-//    tft.drawLine(0,30,159,30,GRN);
-//    tft.drawXBitmap(130,1,FSAE_bits,28,28,GRN); //FSAE Logo
-//    tft.setTextSize(2);
-//    Serial.println("Reset!");
-//}
-//
-//void IRQ_Button2(void){
-//  
-//}
-//
-//void IRQ_Button3(void){
-//  
-//}
-void startScreen(){
+void IRQ_Button1(void) { // full reset
+  lapNum = 0;
+  lastTime = millis();
+  // SPI Select Screen
+  digitalWrite(TFT_SD_CS, HIGH);
+  digitalWrite(TFT_CS, LOW);
+  //Clear Screen on reset
+  tft.fillRect(0, 37, 159, 127, BLK);
+  tft.fillRect(0, 0, 129, 29, BLK);
+  tft.drawLine(0, 30, 159, 30, GRN);
+  tft.drawXBitmap(130, 1, FSAE_bits, 28, 28, GRN); //FSAE Logo
+  tft.setTextSize(2);
+  Serial.println("Reset!");
+}
+
+void IRQ_Button2(void) {
+
+}
+
+void IRQ_Button3(void) {
+
+}
+void startScreen() {
   //Initialize the LCD Screen
   tft.initR(INITR_BLACKTAB);
   //Text and Screen Layout Properties
   tft.setTextColor(GRN, BLK);
   tft.fillScreen(BLK);
   tft.setRotation(3);
-  tft.drawLine(0,30,159,30,GRN);
-  tft.drawXBitmap(130,1,FSAE_bits,28,28,GRN); //FSAE Logo
+  tft.drawLine(0, 30, 159, 30, GRN);
+  tft.drawXBitmap(130, 1, FSAE_bits, 28, 28, GRN); //FSAE Logo
 }
 
-void sendMsg(String str, XBeeAddress64 adrs){
+void sendMsg(String str, XBeeAddress64 adrs) {
   //Arrays for message to be sent
-  char msgChar[str.length()+1] = {0};
-  str.toCharArray(msgChar,str.length()+1);
-  uint8_t msg[sizeof(msgChar)]= {0};
+  char msgChar[str.length() + 1] = {0};
+  str.toCharArray(msgChar, str.length() + 1);
+  uint8_t msg[sizeof(msgChar)] = {0};
 
-  for(int i=0;i<(sizeof(msg)-1);i++){
-    msg[i]=msgChar[i];
+  for (int i = 0; i < (sizeof(msg) - 1); i++) {
+    msg[i] = msgChar[i];
   }
   //Create Packet to Send Out
-  ZBExplicitTxRequest sendOut = ZBExplicitTxRequest(adrs,msg,sizeof(msg));
+  ZBExplicitTxRequest sendOut = ZBExplicitTxRequest(adrs, msg, sizeof(msg));
   xbee.send(sendOut);
   /*xbee.readPacket();
-  xbee.readPacketUntilAvailable();
-  Serial.println(xbee.getResponse().getApiId(),HEX);
-  if (xbee.getResponse().getApiId() == ZB_TX_STATUS_RESPONSE){
+    xbee.readPacketUntilAvailable();
+    Serial.println(xbee.getResponse().getApiId(),HEX);
+    if (xbee.getResponse().getApiId() == ZB_TX_STATUS_RESPONSE){
     xbee.getResponse().getZBTxStatusResponse(check);
     Serial.print("Status: ");
     if(check.getDeliveryStatus() == SUCCESS){
@@ -318,34 +320,53 @@ void sendMsg(String str, XBeeAddress64 adrs){
         Serial.println(check.getDeliveryStatus(),HEX);
       }
     }
-  }*/
+    }*/
 }
 
-void openFile(String fileTitle){
+void openFile(String fileTitle) {
   // SPI Select SD Card
   digitalWrite(TFT_SD_CS, LOW);
   digitalWrite(TFT_CS, HIGH);
 
   //Convert File Name to Character Array for SD Functions
-  char fileName[fileTitle.length()+1];
-  nameString.toCharArray(fileName,fileTitle.length()+1);
-  Data= SD.open(fileName,FILE_WRITE);
+  char fileName[fileTitle.length() + 1];
+  nameString.toCharArray(fileName, fileTitle.length() + 1);
+  Data = SD.open(fileName, FILE_WRITE);
 
   // SPI Select Screen
   digitalWrite(TFT_SD_CS, HIGH);
   digitalWrite(TFT_CS, LOW);
+}
+
+void printLap(int onLap, float timeOfLap) {
+  // SPI Select SD Card
+  digitalWrite(TFT_SD_CS, LOW);
+  digitalWrite(TFT_CS, HIGH);
+
+  String fileOutput = String(onLap) + "," + String(timeOfLap) + "\n";
+  Data.print(fileOutput);
+  Data.flush();
+
+  // SPI Select Screen
+  digitalWrite(TFT_SD_CS, HIGH);
+  digitalWrite(TFT_CS, LOW);
+}
+
+void changePage(int lapCount, int page, int pageMax) {
+  int numLapsMax = 40;
+  // SPI Select Screen
+  digitalWrite(TFT_SD_CS, HIGH);
+  digitalWrite(TFT_CS, LOW);
+  //Clear Screen on new lap
+  tft.fillRect(0, 37, 159, 127, BLK);
+  tft.fillRect(0, 0, 129, 29, BLK);
+  tft.setTextSize(2);
+
+  for (int i = 4 * (page - 1) ; i <= 3; i++) {
+    if (laps[i] != 0.0) {
+      tft.setCursor(2, 37 + (24 * i));
+      tft.print("Lap " + String(lapCount - i) + ":");
+      tft.print(laps[i], 2);
+    }
   }
-
-  void printLap(int onLap, float timeOfLap) {
-    // SPI Select SD Card
-    digitalWrite(TFT_SD_CS, LOW);
-    digitalWrite(TFT_CS, HIGH);
-
-    String fileOutput = String(onLap) + "," + String(timeOfLap) + "\n";
-    Data.print(fileOutput);
-    Data.flush();
-
-    // SPI Select Screen
-    digitalWrite(TFT_SD_CS, HIGH);
-    digitalWrite(TFT_CS, LOW);
-  }
+}
