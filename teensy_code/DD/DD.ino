@@ -64,8 +64,8 @@ Adafruit_NeoPixel pixels_right = Adafruit_NeoPixel(pixels_right_cnt, pixels_righ
 #define TFTR_BL 7
     int display_right_brightness_percent = 100;
 
-const int DISPLAY_HEIGHT = 240;
-const int DISPLAY_WIDTH = 320;
+#define DISPLAY_HEIGHT 240
+#define DISPLAY_WIDTH 320
 
 // used for light-sensor dimming
 const int display_brightness_percent_nighttime = 75;
@@ -74,6 +74,9 @@ const int display_brightness_percent_daytime = 100;
 
 ILI9341_t3n display_left = ILI9341_t3n(TFTL_CS, TFTL_DC, TFTL_RST);
 ILI9341_t3n display_right = ILI9341_t3n(TFTR_CS, TFTR_DC, TFTR_RST);
+
+GFXcanvas1 left_canvas(DISPLAY_WIDTH, DISPLAY_HEIGHT); // 128x32 pixel canvas
+GFXcanvas1 right_canvas(DISPLAY_WIDTH, DISPLAY_HEIGHT); // 128x32 pixel canvas
 
 // pins for the steering wheel buttons
 const int button1_pin = 14;
@@ -140,8 +143,17 @@ InfoScreen auxilary_info_left_screen(display_left, M400_groundSpeed, PDM_pdmVolt
                           /* string formatting */  speed_form,       battv_form,     bias_form,       fanl_form);
 
 
+char fl_form[] = "%05.1f";
+char fr_form[] = "%05.1f";
+char rl_form[] = "%05.1f";
+char rr_form[] = "%05.1f";
+InfoScreen brake_temp_info_left_screen(display_left, ATCCF_rotorTempFL, ATCCF_rotorTempFR, ATCCR_rotorTempRL, ATCCR_rotorTempRR,
+                                      /* label */    "FL:",             "FR:",             "RL:",             "RR:",
+                          /* string formatting */    fl_form,           fr_form,           rl_form,           rr_form);
+
+
 NumberDisplay gear_display_left(display_left, M400_gear, "GEAR");
-NumberDisplay tc_display_left(display_left, M400_gear, "TC"); // change signal when C50 signals are set up
+NumberDisplay tc_display_left(display_left, C50_tcSet, "TC"); 
 
 // lap-time array declaration
 float prev_lap_times[4]; // arrays to hold the last 4 lap time details
@@ -307,7 +319,7 @@ void loop() {
 
     // increment the screen
     } else {
-      if (++screen_mode > 5){ // upper bound
+      if (++screen_mode > 6){ // upper bound
         screen_mode = 1;
       }
       screen_mode_begins(screen_mode, true);
@@ -351,8 +363,9 @@ void loop() {
 
   if (led_mode == 1){
     rpm_bar(pixels_top, M400_rpm, M400_gear);
-    engine_cut_bar(pixels_left,  M400_tcPowerReduction);
-    engine_cut_bar(pixels_right, M400_tcPowerReduction);
+    static float max_power_reduction_value = 25;
+    engine_cut_bar(pixels_left,  M400_tcPowerReduction, max_power_reduction_value, true);
+    engine_cut_bar(pixels_right, M400_tcPowerReduction, max_power_reduction_value, true);
 
     // this will prolly be changed
     //lockup_indicator(pixels_left, 0, M400_groundSpeedLeft, MM5_Ax, ATCCF_brakePressureF, ATCCF_brakePressureR);
@@ -418,9 +431,21 @@ void loop() {
           engine_vitals_right_screen.update();
         }
 
+    // Mode 2 - brake temp and engine info
+    } else if (screen_mode == 2){ // add && !user_message
 
-    // Mode 2 - gear display and engine info
-    } else if (screen_mode == 2){
+      // run the initializations again
+      if (lap_timer_on == true){
+        lap_timer_on = false;
+        screen_mode_begins(screen_mode, false); // skip startup screens
+      } else {
+        brake_temp_info_left_screen.update();
+        engine_vitals_right_screen.update();
+      }
+
+
+    // Mode 2 - gear display and engine info 
+    } else if (screen_mode == 3){
 
       // run the initializations again
       if (lap_timer_on == true){
@@ -432,7 +457,7 @@ void loop() {
       }
 
     // Mode 3 - tc display and engine info
-    } else if (screen_mode == 3){
+    } else if (screen_mode == 4){
 
       // run the initializations again
       if (lap_timer_on == true){
@@ -444,7 +469,7 @@ void loop() {
       }
 
     // Mode 4 - lap times
-    } else if (screen_mode == 4){
+    } else if (screen_mode == 5){
 
       // run the initializations again
       if (lap_timer_on == true){
@@ -493,27 +518,30 @@ void screen_mode_begins(int &screen_mode, bool startup_screen){
     auxilary_info_left_screen.begin();
     engine_vitals_right_screen.begin();
 
+  } else if (screen_mode == 2){
+    brake_temp_info_left_screen.begin();
+    engine_vitals_right_screen.begin();
 
   // gear screen and carry-over of engine vitals
-  } else if (screen_mode == 2){
+  } else if (screen_mode == 3){
     gear_display_left.begin(startup_screen);
     engine_vitals_right_screen.begin();
 
 
-  } else if (screen_mode == 3){
+  } else if (screen_mode == 4){
     tc_display_left.begin(startup_screen);
     engine_vitals_right_screen.begin();
 
-  } else if (screen_mode == 4) {
+  } else if (screen_mode == 5) {
     lap_time_display_left.begin(startup_screen);
     lap_time_display_right.begin(startup_screen);
 
-  } else if (screen_mode == 5) {
+  } else if (screen_mode == 6) {
     // display titans
     display_left.writeRect(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, (uint16_t*)titans1);
     display_right.writeRect(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, (uint16_t*)titans2);
 
-  } else if (screen_mode == 6) {
+  } else if (screen_mode == 7) {
     // display titans
     display_left.writeRect(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, (uint16_t*)titans1);
     display_right.writeRect(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, (uint16_t*)titans2);
@@ -627,4 +655,6 @@ bool determine_if_party_time(StateSignal &rpm, int &led_mode){
   return party_time;
 
 }
+
+
 

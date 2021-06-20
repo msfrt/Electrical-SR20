@@ -4,6 +4,7 @@
 #include "sigs_inside.hpp"
 #include <FlexCAN_T4.h>
 #include "user_message_display.hpp"
+#include "rotor_temp_adjustment.hpp"
 
 static CAN_message_t rxmsg;
 extern UserMessageDisplay warning_message_display;
@@ -23,6 +24,48 @@ void read_ATCCF_10(CAN_message_t &imsg){
 void read_ATCCF_11(CAN_message_t &imsg){
   ATCCF_brakePressureF.set_can_value(imsg.buf[2] | imsg.buf[3] << 8);
   ATCCF_brakePressureR.set_can_value(imsg.buf[4] | imsg.buf[5] << 8);
+}
+
+/*
+ * Decode a CAN frame for the message ATCCF_12
+ * \param imsg A reference to the incoming CAN message frame
+ */
+void read_ATCCF_12(CAN_message_t &imsg) {
+
+	ATCCF_counterMsg412.set_can_value(((imsg.buf[0] & 0b00001111)));
+	ATCCF_coolantTempRadMiddle.set_can_value((imsg.buf[2]) | (imsg.buf[3] << 8));
+	ATCCF_rotorTempFL.set_can_value((imsg.buf[4]) | (imsg.buf[5] << 8));
+	ATCCF_rotorTempFR.set_can_value((imsg.buf[6]) | (imsg.buf[7] << 8));
+
+  // new rotor temp values, update the adjusted ones
+  // calculate_adjusted_rotor_temp(ATCCF_rotorTempFL, M400_inletAirTemp, DD_adjRotorTempFL, FL_ROTOR_DISC_AREA_RATIO);
+  // calculate_adjusted_rotor_temp(ATCCF_rotorTempFR, M400_inletAirTemp, DD_adjRotorTempFR, FR_ROTOR_DISC_AREA_RATIO);
+
+  // Serial.println(ATCCF_rotorTempFL.value());
+  // Serial.println(M400_inletAirTemp.value());
+  // Serial.println(FR_ROTOR_DISC_AREA_RATIO);
+  // Serial.print("Calculated: ");
+  // Serial.println(DD_adjRotorTempFL.value());
+  
+  // Serial.println();
+
+}
+
+/*
+ * Decode a CAN frame for the message ATCCR_11
+ * \param imsg A reference to the incoming CAN message frame
+ */
+void read_ATCCR_11(CAN_message_t &imsg) {
+
+	ATCCR_counterMsg461.set_can_value(((imsg.buf[0] & 0b00001111)));
+	ATCCR_boardTemp.set_can_value((imsg.buf[2]) | (imsg.buf[3] << 8));
+	ATCCR_rotorTempRL.set_can_value((imsg.buf[4]) | (imsg.buf[5] << 8));
+	ATCCR_rotorTempRR.set_can_value((imsg.buf[6]) | (imsg.buf[7] << 8));
+
+  // new rotor temp values, update the adjusted ones
+  //calculate_adjusted_rotor_temp(ATCCR_rotorTempRL, M400_inletAirTemp, DD_adjRotorTempRL, RL_ROTOR_DISC_AREA_RATIO);
+  //calculate_adjusted_rotor_temp(ATCCR_rotorTempRR, M400_inletAirTemp, DD_adjRotorTempRR, RR_ROTOR_DISC_AREA_RATIO);
+
 }
 
 
@@ -113,6 +156,12 @@ void read_M400_101(CAN_message_t &imsg){
     case 10:
       M400_fuelPressure.set_can_value(imsg.buf[2] << 8 | imsg.buf[3]);
       break;
+    
+    case 14:
+			// M400_ignEtComp.set_can_value((imsg.buf[3]) | (imsg.buf[2] << 8));
+			// M400_ignMapComp.set_can_value((imsg.buf[5]) | (imsg.buf[4] << 8));
+			M400_inletAirTemp.set_can_value((imsg.buf[7]) | (imsg.buf[6] << 8));
+			break;
 
     case 15:
       M400_oilPressure.set_can_value(imsg.buf[6] << 8 | imsg.buf[7]);
@@ -122,6 +171,34 @@ void read_M400_101(CAN_message_t &imsg){
       M400_oilTemp.set_can_value(imsg.buf[2] << 8 | imsg.buf[3]);
       break;
   }
+}
+
+
+/*
+ * Decode a CAN frame for the message C50_m400Data
+ * \param imsg A reference to the incoming CAN message frame
+ */
+void read_C50_m400Data(CAN_message_t &imsg) {
+
+	// multiplexer signal
+	int C50rowCounterM400Data = imsg.buf[0];
+
+	switch (C50rowCounterM400Data) {
+
+		case 0:
+			C50_m400ExhaustGasTemp1.set_can_value((imsg.buf[3]) | (imsg.buf[2] << 8));
+			C50_m400ExhaustGasTemp2.set_can_value((imsg.buf[5]) | (imsg.buf[4] << 8));
+			C50_m400ExhaustGasTemp3.set_can_value((imsg.buf[7]) | (imsg.buf[6] << 8));
+			break;
+
+		case 1:
+			C50_m400ExhaustGasTemp4.set_can_value((imsg.buf[3]) | (imsg.buf[2] << 8));
+			C50_mm5YawRate.set_can_value((imsg.buf[5]) | (imsg.buf[4] << 8));
+			C50_tcSet.set_can_value((imsg.buf[7]) | (imsg.buf[6] << 8));
+			break;
+
+	}
+
 }
 
 
@@ -136,6 +213,9 @@ void read_can1(){
         break;
       case 101:
         read_M400_101(rxmsg);
+        break;
+      case 120:
+        read_C50_m400Data(rxmsg);
         break;
       case 161:
         read_TCGPS_11(rxmsg);
@@ -175,6 +255,12 @@ void read_can2(){
         break;
       case 711:
         read_USER_11(rxmsg);
+        break;
+      case 461:
+        read_ATCCR_11(rxmsg);
+        break;
+      case 412:
+        read_ATCCF_12(rxmsg);
         break;
     } // end switch statement
 

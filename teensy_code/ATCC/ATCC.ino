@@ -4,9 +4,10 @@
 #include <StateCAN.h>
 #include <FlexCAN_T4.h>
 #include <SPI.h>
+#include <Adafruit_NeoPixel.h>
 
 // ATCC Module Select - 0 front, 1 back
-const int ATCCMS = 0;
+const int ATCCMS = 1;
 
 // sensor definitions
 #include "sensors.hpp"
@@ -20,8 +21,21 @@ const int ATCCMS = 0;
 // brake bias calculation for front ATCC
 #include "bias_calc.hpp"
 
+// rainbow RGB
+#include "rainbow_pixels.hpp"
+
+const int GLO_NeoPixel_teensy_pin = 0;
+      int GLO_NeoPixel_brightness_percent = 100; // 0 - 100 %
+Adafruit_NeoPixel GLO_neopixel(1, GLO_NeoPixel_teensy_pin, NEO_GRB + NEO_KHZ800);
+
 
 void setup() {
+
+  // begin Neopixel
+  GLO_neopixel.begin();
+  GLO_neopixel.setBrightness(map(GLO_NeoPixel_brightness_percent, 0, 100, 0, 255));
+  GLO_neopixel.setPixelColor(0, 255, 0, 0); // red
+  GLO_neopixel.show();
 
   // Initialize serial communication
   Serial.begin(112500);
@@ -33,16 +47,21 @@ void setup() {
   cbus2.begin();
   cbus2.setBaudRate(1000000);
 
-  // initialize SPI communication
-  SPI.begin();
-
   //initialize ADCs
   initialize_ADCs();
+
+  // turn neopixel green
+  GLO_neopixel.setPixelColor(0, 0, 255, 0); // green
+  GLO_neopixel.show();
+
 
 }
 
 
 void loop() {
+
+  msu_pixels(GLO_neopixel);
+
   switch (ATCCMS)
   {
     case 0:
@@ -55,4 +74,7 @@ void loop() {
       send_can_R();
       break;
   }
+
+
+
 }
