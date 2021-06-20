@@ -17,7 +17,7 @@ ADCChip adc3(ADC3_CS);
 ADCSensor sus_travel_fl_sens(0, 0, 1000); // will need corrected values
 ADCSensor sus_travel_fr_sens(2, 0, 1000); // (sensor is not chosen yet  ??? nice.)
 
-ADCSensor brake_temp_fr_sens(10, 500, 5);
+ADCSensor brake_temp_fr_sens(7, 500, 5);
 ADCSensor brake_temp_fl_sens(4, 500, 5);
 
 ADCSensor brake_pressure_front_sens(1, 500, 2);

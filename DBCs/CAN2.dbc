@@ -42,7 +42,7 @@ BO_ 3221225472 VECTOR__INDEPENDENT_SIG_MSG: 0 Vector__XXX
 
 BO_ 276 PDM_26: 8 Vector__XXX
  SG_ PDM_uptime : 0|32@1+ (1,0) [0|4294967295] "ms" Vector__XXX
-
+ 
 BO_ 259 PDM_09: 8 Vector__XXX
  SG_ PDM_engineState : 56|8@1- (1,0) [0|3] "int" Vector__XXX
  SG_ PDM_OBD_oilTemp : 8|1@1+ (1,0) [0|0] "bool" Vector__XXX
@@ -71,6 +71,7 @@ BO_ 160 TCGPS_10: 8 Vector__XXX
  SG_ TCGPS_boardTemp : 16|16@1- (0.1,0) [0|150] "C" Vector__XXX
 
 BO_ 210 DD_10: 8 Vector__XXX
+ SG_ DD_gearCalc : 8|8@1- (1,0) [-128|127] "" Vector__XXX
  SG_ DD_counterMsg210 : 0|4@1+ (1,0) [0|15] "" Vector__XXX
  SG_ DD_teensyTemp : 32|16@1- (0.1,0) [0|150] "C" Vector__XXX
  SG_ DD_requestDRS : 48|16@1- (1,0) [0|5] "" Vector__XXX
@@ -259,7 +260,7 @@ BO_ 410 ATCCF_10: 8 ATCCF
 CM_ BO_ 3221225472 "This is a message for not used signals, created by Vector CANdb++ DBC OLE DB Provider.";
 CM_ SG_ 3221225472 PDM_driverDisplayMessage "8 character message sent to the driver display and shown to the driver";
 CM_ SG_ 3221225472 ATCCR_counterMsg465 "Counter for Message 465";
-CM_ SG_ 276 PDM_uptime "Counter for Message 260";
+CM_ SG_ 276 PDM_uptime "Uptime for the PDM";
 CM_ BO_ 259 "OBD flags";
 CM_ SG_ 259 PDM_engineState "0 = off
 1 = cranking
@@ -288,6 +289,7 @@ CM_ SG_ 160 TCGPS_counterMsg160 "Counter for Message 410
 ";
 CM_ SG_ 160 TCGPS_teensyTemp "Teensy chip temp";
 CM_ SG_ 160 TCGPS_boardTemp "board temp";
+CM_ SG_ 210 DD_gearCalc "Gear estimation based off of rpm and rear drive speed";
 CM_ SG_ 210 DD_counterMsg210 "Counter for Message 410
 ";
 CM_ SG_ 210 DD_teensyTemp "Driver Display Teensy chip temp";
