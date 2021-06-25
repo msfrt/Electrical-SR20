@@ -29,8 +29,8 @@ const int GLO_engine_on_rpm_threshold = 900;
 // engine cooldown state duration in milliseconds
 const int GLO_engine_cooldown_duration = 5000;
 
-const int GLO_brakelight_min_pressure_F = 60; // minimum pressure required to activate the brakelight (PSI)
-const int GLO_brakelight_min_pressure_R = 60;
+const int GLO_brakelight_min_pressure_F = 150; // minimum pressure required to activate the brakelight (PSI)
+const int GLO_brakelight_min_pressure_R = 125;
 const int GLO_brakelight_teensy_pin = 4;
 
 const int GLO_data_circuit_teensy_pin = 5;
