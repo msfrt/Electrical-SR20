@@ -403,6 +403,24 @@ void send_PDM_25(){
 }
 
 
+void send_PDM_26(){
+  msg.id = 0x114;
+  msg.len = 8;
+
+  auto time = millis();
+
+  msg.buf[1] = time;
+  msg.buf[2] = time >> 8;
+  msg.buf[3] = time >> 16;
+  msg.buf[4] = time >> 24;
+  msg.buf[5] = 0;
+  msg.buf[6] = 0;
+  msg.buf[7] = 0;
+
+  cbus2.write(msg);
+}
+
+
 void send_can1(){
   // hey, there's nothing in here! (for now, at least)
 }
@@ -492,6 +510,11 @@ void send_can2(){
   static EasyTimer PDM_25_timer(10); // 10Hz
   if (PDM_25_timer.isup()){
     send_PDM_25();
+  }
+
+  static EasyTimer PDM_26_timer(50); // 50 Hz
+  if (PDM_26_timer.isup()){
+    send_PDM_26();
   }
 
 }
